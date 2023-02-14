@@ -5,8 +5,8 @@ cacheContent = [
   'img/badge-144x144.png',
   'img/badge-192x192.png',
   'img/badge-512x512.png',
-  'js/webapp.js',
-  'index.html'
+  'js/webApp.js',
+  './index.html'
 ]
 
 self.addEventListener('install', (event) => {
