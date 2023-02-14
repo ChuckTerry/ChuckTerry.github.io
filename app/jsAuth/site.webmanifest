@@ -15,21 +15,28 @@
       "label": "jsAuthenticator App",
       "purpose": "any",
       "sizes": "48x48",
-      "src": "./app/img/badge-48x48.png",
+      "src": "./img/badge-48x48.png",
       "type": "image/png"
     },
     {
       "label": "jsAuthenticator App",
       "purpose": "any",
       "sizes": "144x144",
-      "src": "./app/img/badge-144x144.png",
+      "src": "./img/badge-144x144.png",
       "type": "image/png"
     },
     {
       "label": "jsAuthenticator App",
       "purpose": "any",
       "sizes": "192x192",
-      "src": "./app/img/badge-192x192.png",
+      "src": "./img/badge-192x192.png",
+      "type": "image/png"
+    },
+    {
+      "label": "jsAuthenticator App",
+      "purpose": "any",
+      "sizes": "512x512",
+      "src": "./img/badge-512x512.png",
       "type": "image/png"
     }
   ],
