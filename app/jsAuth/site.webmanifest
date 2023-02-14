@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json.schemastore.org/web-manifest-combined.json",
+  "background_color": "#E3E3DE",
+  "categories": [
+    "developer tools",
+    "productivity",
+    "security",
+    "utilities"
+  ],
+  "description": "Online Authenticator (MFA/2FAC) Alternative",
+  "dir": "ltr",
+  "display": "standalone",
+  "icons": [
+    {
+      "label": "jsAuthenticator App",
+      "purpose": "any",
+      "sizes": "48x48",
+      "src": "./app/img/badge-48x48.png",
+      "type": "image/png"
+    },
+    {
+      "label": "jsAuthenticator App",
+      "purpose": "any",
+      "sizes": "144x144",
+      "src": "./app/img/badge-144x144.png",
+      "type": "image/png"
+    },
+    {
+      "label": "jsAuthenticator App",
+      "purpose": "any",
+      "sizes": "192x192",
+      "src": "./app/img/badge-192x192.png",
+      "type": "image/png"
+    }
+  ],
+  "id": "/jsAuthenticator_predev",
+  "lang": "en-US",
+  "launch_handler": {
+    "client_mode": "focus-existing"
+  },
+  "name": "jsAuthenticator",
+  "orientation": "landscape",
+  "short_name": "jsAuth",
+  "start_url": "./index.html",
+  "theme_color": "#1E90FF"
+}
