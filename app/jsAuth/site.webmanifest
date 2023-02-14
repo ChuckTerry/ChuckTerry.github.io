@@ -40,7 +40,6 @@
       "type": "image/png"
     }
   ],
-  "id": "/jsAuthenticator_predev",
   "lang": "en-US",
   "launch_handler": {
     "client_mode": "focus-existing"
@@ -48,6 +47,6 @@
   "name": "jsAuthenticator",
   "orientation": "landscape",
   "short_name": "jsAuth",
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "theme_color": "#1E90FF"
 }
