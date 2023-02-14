@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-  navigator?.serviceWorker?.register('../sw-pwa.js');
+  navigator?.serviceWorker?.register('./sw-pwa.js');
 });
 
 const installButton = document.querySelector('#install-web-app');
