@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>Invictus - Overview</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <meta name="author" content="Chuck Terry" />
+    <meta name="description" content="Invictus - Flash Card Set Manager" />
+    <script type="text/javascript" src="index.js" defer></script>
+    <link href="styles.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div class="sidebar"></div>
+    <main>
+      <section>
+        <h1>Invictus Flash Card Manager Demo</h1><br/>
+        <form>
+          <div>
+            <div class="title-wrapper">
+              <h2 class="card-set-title">Title</h2><span class="card-set-title-edit">✎</span>
+            </div>
+            <div id="card-list">
+              <div class="card-list-new-card" title="Create New Card"><span>➕</span>
+            </div>
+          </div>
+        </form>
+        <div class="output-button-wrapper">
+          <button type="button" id="button-generate-output">Get HTML for Moodle</button>
+        </div>
+      </section>
+      <!-- Begin Modals -->
+      <div id="card-edit-modal" class="hidden">
+        <div id="card-edit-modal-target-index" class="hidden">0</div>
+        <div id="card-edit-modal-target-new" class="hidden">0</div>
+        <div id="card-edit-modal-dimmer"></div>
+        <div id="card-edit-modal-content">
+          <div id="card-edit-modal-body">
+            <!-- Term -->
+            <div id="card-edit-modal-term-wrapper">
+              <label for="card-edit-term-textarea">Term</label>
+              <textarea id="card-edit-term-textarea" name="card-edit-term-textarea" rows="3"></textarea>
+            </div>
+            <!-- Definition -->
+            <div id="card-edit-modal-definition-wrapper">
+              <label for="card-edit-definition-textarea">Definition</label>
+              <textarea id="card-edit-definition-textarea" name="card-edit-definition-textarea" rows="5"></textarea>
+            </div>
+          </div>
+          <!-- Modal Controls -->
+          <div id="card-edit-modal-controls">
+            <button type="button" id="card-edit-modal-cancel">Cancel</button>
+            <button type="button" id="card-edit-modal-save">Save</button>
+          </div>
+        </div>
+      </div>
+      <div id="title-edit-modal" class="hidden modal">
+        <div class="dimmer"></div>
+        <div class="modal-content">
+          <div class="modal-body">
+            <!-- Term -->
+            <div id="title-edit-modal-form-wrapper">
+              <label for="title-edit-textarea">Title</label>
+              <textarea id="title-edit-textarea" name="title-edit-textarea" rows="1">Title</textarea>
+            </div>
+          </div>
+          <!-- Modal Controls -->
+          <div class="modal-controls">
+            <button type="button" id="title-edit-modal-cancel">Cancel</button>
+            <button type="button" id="title-edit-modal-save">Save</button>
+          </div>
+        </div>
+      </div>
+      <div id="output-modal" class="hidden modal">
+        <div class="dimmer"></div>
+        <div class="modal-content">
+          <div class="modal-body">
+            <!-- Term -->
+            <div id="output-modal-form-wrapper">
+              <label for="output-textarea">HTML Code</label>
+              <textarea id="output-textarea" name="output-textarea" rows="7"></textarea>
+            </div>
+            <p>To add this set of flash cards to a Moodle page containing an Invictus Logic Drive: Copy the above text to your clipboard and paste it into a new text block</p>
+          </div>
+          <!-- Modal Controls -->
+          <div class="modal-controls">
+            <button type="button" id="output-modal-copy">Copy</button>
+            <button type="button" id="output-modal-close">Close</button>
+          </div>
+        </div>
+      </div>
+    </main>
+    <div class="sidebar"></div>
+    <footer>
+      <p>Copyright 2022 - 2023 &copy; Chuck Terry, Broken Blue Jeans, LLC - All RIghts Reserved.</p>
+    </footer>
+  </body>
+</html>
