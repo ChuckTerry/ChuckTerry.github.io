@@ -1,7 +1,6 @@
 body {
   width: 100%;
-  height: 100vh;
-  display: flex;
+  
   margin: 0;
   padding: 0;
 }
@@ -22,15 +21,17 @@ h1 {
 
 section {
   padding: 2px 12px;
+  min-height: calc(100vh - 110px);
 }
 
 footer {
   border-top: 4px double #111111;
-  position: absolute;
+  position: fixed;
   width: 100%;
   bottom: 0;
   text-align: center;
   background-color: #88CCEE;
+  min-height: 55px;
 }
 
 a {
@@ -49,9 +50,27 @@ a:hover {
 
 main {
   width: 84%;
+  padding-bottom: 55px;
 }
 
-.sidebar {
+.three-bar {
+  display: flex;
+  flex-direction: column;
+}
+
+.three-bar-upper {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+}
+
+.three-bar > main {
+    flex-grow: 1;
+}
+
+
+.sidebar-left,
+.sidebar-right {
   display: flex;
   background: linear-gradient(181deg, #59bde8, #5c7bed);
   flex-grow: 100;
