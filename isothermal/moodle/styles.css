@@ -1,6 +1,11 @@
+:root, body {
+    --white: #FFFFFF;
+    --black: #000000;
+}
+
+
 body {
   width: 100%;
-  
   margin: 0;
   padding: 0;
 }
@@ -12,8 +17,7 @@ h1 {
   font-size: 3.5em;
   font-family: math;
   font-variant: small-caps;
-  border-bottom: 4px black;
-  border-bottom-style: double;
+  border-bottom: 4px double var(--black);
   text-shadow: 0px 3px 14px #2f8dbd, 0px 2px 6px #1a1d69a8;
   -webkit-text-stroke: 1px aliceblue;
   stroke-opacity: 0.1;
@@ -35,7 +39,7 @@ footer {
 }
 
 a {
-  color: #000000;
+  color: var(--black);
   text-decoration: underline solid #4477DD;
   text-underline-offset: 2px;
   text-decoration-thickness: 1.5px;
@@ -53,49 +57,53 @@ main {
   padding-bottom: 55px;
 }
 
-.three-bar {
-  display: flex;
-  flex-direction: column;
-}
-
-.three-bar-upper {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: row;
-}
-
-.three-bar > main {
-    flex-grow: 1;
-}
-
-
-.sidebar-left,
-.sidebar-right {
-  display: flex;
-  background: linear-gradient(181deg, #59bde8, #5c7bed);
-  flex-grow: 100;
+button:hover {
+  background-color: #FBFBFB;
+  outline: 3px solid var(--black);
 }
 
 .hidden {
   display: none;
 }
 
-.title-wrapper {
+.three-bar {
+  display: flex;
+  flex-direction: column;
+}
+
+.three-bar-upper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.three-bar > main {
+  flex-grow: 1;
+}
+
+.sidebar-left,
+.sidebar-right {
+  display: flex;
+  background: linear-gradient(181deg, #59bde8, #5c7bed);
+  flex-grow: 1;
+}
+
+.title-wrapper,
+.card-content-wrapper > div {
   font-size: 20pt;
 }
 
 #card-list {
   min-width: 300px;
-  margin: 18px;
-  margin-top: 0px;
-  border: 2px solid black;
-  border-right: 3px solid black;
-  border-bottom: 5px solid black;
+  margin: 0px 18px 18px 18px;
+  border: 2px solid var(--black);
+  border-right: 3px solid var(--black);
+  border-bottom: 5px solid var(--black);
   background-color: #DDDDDD;
   font-size: 2em;
 }
 
-.card-control-wrapper > span,
+.card-set-title-edit,
 .card-postion-control-wrapper span {
   cursor: pointer;
 }
@@ -110,10 +118,7 @@ main {
 
 .card-content-wrapper {
   width: 100%;
-  padding-bottom: 8px;
-  padding-top: 8px;
-  padding-left: 7%;
-
+  padding: 8px 1px 8px 7%;
 }
 
 .card-content-term {
@@ -122,9 +127,7 @@ main {
 
 .card-set-title {
   display: inline-block;
-  margin-right: 18px;
-  margin-left: 60px;
-  margin-bottom: 10px;
+  margin: 1px 18px 10px 60px;
 }
 
 .card-list-entry-wrapper {
@@ -149,13 +152,14 @@ main {
 }
 
 .card-control-wrapper > span {
-    padding-right: 16px;
+  padding-right: 16px;
+  cursor: pointer;
 }
 
 .card-list-new-card {
   cursor: pointer;
   font-weight: bolder;
-  border: 2px solid black;
+  border: 2px solid var(--black);
   border-radius: 40px;
   width: min-content;
   margin: 18px 2px 18px 26px;
@@ -164,11 +168,6 @@ main {
 .card-list-new-card > span {
   position: relative;
   top: -1.5px;
-}
-
-
-.card-content-wrapper > div {
-    font-size: 20pt;
 }
 
 .card-postion-control-wrapper {
@@ -185,18 +184,9 @@ main {
   top: 34px;
 }
 
-.card-control-delete {
-  color: red;
-}
-
 .card-list-new-card:hover,
 .card-list-entry-wrapper:hover {
   background-color: #FBFBFB;
-}
-
-button:hover {
-  background-color: #FBFBFB;
-  outline: 3px solid black;
 }
 
 .position-inc:hover {
@@ -205,7 +195,7 @@ button:hover {
   left: -3px;
   font-size: larger;
   color: gray;
-  -webkit-text-stroke: 2px black;
+  -webkit-text-stroke: 2px var(--black);
 }
 
 .position-dec:hover {
@@ -214,7 +204,7 @@ button:hover {
   left: -3px;
   font-size: larger;
   color: gray;
-  -webkit-text-stroke: 2px black;
+  -webkit-text-stroke: 2px var(--black);
 }
 
 .card-control-edit {
@@ -224,7 +214,7 @@ button:hover {
 
 .card-control-edit:hover {
   color: darkgray;
-  -webkit-text-stroke: 2px black;
+  -webkit-text-stroke: 2px var(--black);
   font-size: larger;
   position: relative;
   right: 60px;
@@ -234,6 +224,7 @@ button:hover {
 .card-control-delete {
   position: absolute;
   right: 25px;
+  color: red;
 }
 
 .card-control-delete:hover {
@@ -257,12 +248,6 @@ button:hover {
   background-color: rgba(0,0,0,0.4);
 }
 
-.modal > .dimmer,
-#card-edit-modal-dimmer {
-  background-color: black;
-  opacity: 0.24;
-}
-
 .modal > .modal-content,
 #card-edit-modal-content {
   position: relative;
@@ -270,8 +255,6 @@ button:hover {
   padding: 0;
   min-width: 500px;
   width: 60%;
-  -webkit-animation-name: animatetop;
-  -webkit-animation-duration: 0.4s;
   animation-name: animatetop;
   animation-duration: 0.4s
 }
@@ -283,6 +266,7 @@ button:hover {
   box-shadow: 3px 4px 8px 0 rgba(0,0,0,0.2), 9px 13px 20px 2px rgba(0,0,0,0.19);
   text-align: -webkit-center;
   font-size: 1.5em;
+  border-radius: 14px;
 }
 
 .modal-body > div,
@@ -297,6 +281,11 @@ button:hover {
 #card-edit-modal label {
   display: block;
   padding: 20px 1px 4px 14px;
+}
+
+.modal-body > p {
+  padding-left: 50px;
+  padding-right: 50px;
 }
 
 .modal-controls,
