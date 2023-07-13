@@ -1,60 +1,67 @@
-function multiAddEventListener(selector, event, callback) {
-  const elementArray = [...document.querySelectorAll(selector)];
-  const count = elementArray.length;
-  for (let index = 0; index < count; index++) {
-    elementArray[index].addEventListener(callback);
-  }
+import { Toast } from 'Toast.js';
+
+const CARD_LIST = document.querySelector('#card-list');
+
+const OUTPUT_MODAL = document.querySelector('#output-modal');
+const OUTPUT_TEXTAREA = document.querySelector('#output-textarea');
+const OUTPUT_COPY = document.querySelector('#output-modal-copy');
+
+const TITLE_MODAL = document.querySelector('#title-edit-modal');
+const TITLE_TEXTAREA = document.querySelector('#title-edit-textarea');
+const CARD_SET_TITLE = document.querySelector('.card-set-title');
+
+const EDIT_MODAL = document.querySelector('#card-edit-modal');
+const EDIT_INDEX = document.querySelector('#card-edit-modal-target-index');
+const EDIT_IS_NEW = document.querySelector('#card-edit-modal-target-new');
+const TERM_TEXTAREA = document.querySelector('#card-edit-term-textarea');
+const DEFINITION_TEXTAREA = document.querySelector('#card-edit-definition-textarea');
+
+/** @todo Use with contenteditable to make ellipses safe */
+function isOverflowing(htmlElement) {
+  const { clientHeight, clientWidth, scrollHeight, scrollWidth } = htmlElement;
+  return clientHeight < scrollHeight || clientWidth < scrollWidth;
 }
 
 function openEditModal(cardWrapper = false) {
-  const modal = document.querySelector('#card-edit-modal')
-  modal.classList.remove('hidden');
-  if (cardWrapper === false) {
-    cardWrapper = createCardListEntry();
-  }
-  
-  const cardIndex = [...document.querySelector('#card-list').children].indexOf(cardWrapper);
-  
-  document.querySelector('#card-edit-modal-target-index').innerText = cardIndex;
+  EDIT_MODAL.classList.remove('hidden');
+  if (cardWrapper === false) cardWrapper = createCardListEntry();
+  const cardIndex = [...CARD_LIST.children].indexOf(cardWrapper);
+  EDIT_INDEX.innerText = cardIndex;
   const term = cardWrapper.querySelector('.card-content-term').innerText;
   const definition = cardWrapper.querySelector('.card-content-definition').innerText;
-  modal.querySelector('#card-edit-term-textarea').value = term;
-  modal.querySelector('#card-edit-definition-textarea').value = definition;
+  TERM_TEXTAREA.value = term;
+  DEFINITION_TEXTAREA.value = definition;
 }
 
 function resetEditModal() {
-  document.querySelector('#card-edit-term-textarea').value = '';
-  document.querySelector('#card-edit-definition-textarea').value = '';
-  document.querySelector('#card-edit-modal-target-index').innerText = document.querySelector('#card-list').children.length;
-  document.querySelector('#card-edit-modal-target-new').innerText = '0';
-  
-  document.querySelector('#card-edit-modal').classList.add('hidden');
+  TERM_TEXTAREA.value = '';
+  DEFINITION_TEXTAREA.value = '';
+  EDIT_INDEX.innerText = CARD_LIST.children.length;
+  EDIT_IS_NEW.innerText = '0';
+  EDIT_MODAL.classList.add('hidden');
 }
 
-function updateCardDetails() {
-  const targetWrapperIndex = document.querySelector('#card-edit-modal-target-index').innerText;
-  const targetWrapper = document.querySelector('#card-list').children[targetWrapperIndex];
-  const term = document.querySelector('#card-edit-term-textarea').value;
-  const definition = document.querySelector('#card-edit-definition-textarea').value;
-  targetWrapper.querySelector('.card-content-term').innerText = term;
-  targetWrapper.querySelector('.card-content-definition').innerText = definition;
+function saveEditModal() {
+  const targetWrapperIndex = EDIT_INDEX.innerText;
+  const targetWrapper = CARD_LIST.children[targetWrapperIndex];
+  targetWrapper.querySelector('.card-content-term').innerText = TERM_TEXTAREA.value;
+  targetWrapper.querySelector('.card-content-definition').innerText = DEFINITION_TEXTAREA.value;
   resetEditModal();
+  Toast('Flash Card Saved');
 }
 
 function incrementCardPosition(event) {
   const cardWrapper = event.target.parentElement.parentElement.parentElement;
   if (cardWrapper.previousElementSibling === null) return;
-  const cardList = cardWrapper.parentElement;
   const previousSibling = cardWrapper.previousElementSibling;
-  cardList.insertBefore(cardWrapper, previousSibling);
+  cardWrapper.parentElement.insertBefore(cardWrapper, previousSibling);
 }
 
 function decrementCardPosition(event) {
   const cardWrapper = event.target.parentElement.parentElement.parentElement;
   if (cardWrapper.nextElementSibling.classList.contains('card-list-new-card')) return;
-  const cardList = cardWrapper.parentElement;
   const nextNextSibling = cardWrapper.nextElementSibling.nextElementSibling;
-  cardList.insertBefore(cardWrapper, nextNextSibling);
+  cardWrapper.parentElement.insertBefore(cardWrapper, nextNextSibling);
 }
 
 function editCard(event) {
@@ -63,96 +70,62 @@ function editCard(event) {
 
 function deleteCard(event) {
   event.target.parentElement.parentElement.remove();
+  Toast('Flash Card Deleted');
 }
-
 
 function createCardListEntry(term = 'Term Text (Front)', definition = 'Definition Text (Back)') {
   const wrapper = document.createElement('div');
   wrapper.classList.add('card-list-entry-wrapper');
+  /** @todo @security The following innerHTML is safe - Relies on static string */
   wrapper.innerHTML = '<div class="card-control-wrapper"><span class="card-control-edit" title="Edit Card">✎</span><span class="card-control-delete" title="Delete Card">🗙</span></div><div class="card-postion-control-wrapper"><div class="card-postion-control-inc"><span class="position-inc" title="Raise Card Position">⮝</span></div><div class="card-postion-control-dec"><span class="position-dec" title="Lower Card Position">⮟</span></div></div><div class="card-content-wrapper"><div class="card-content-term">Term</div><div class="card-content-definition">Definition</div></div>';
-  console.dir(wrapper);
   wrapper.querySelector('.position-inc').addEventListener('click', incrementCardPosition);
   wrapper.querySelector('.position-dec').addEventListener('click', decrementCardPosition);
   wrapper.querySelector('.card-content-term').innerText = term;
   wrapper.querySelector('.card-content-definition').innerText = definition;
   wrapper.querySelector('.card-control-edit').addEventListener('click', editCard);
   wrapper.querySelector('.card-control-delete').addEventListener('click', deleteCard);
-  
-  const cardList = document.querySelector('#card-list');
-  const addCardButton = document.querySelector('.card-list-new-card');
-  cardList.insertBefore(wrapper, addCardButton);
+  CARD_LIST.insertBefore(wrapper, document.querySelector('.card-list-new-card'));
   return wrapper;
 }
 
-document.querySelector('#card-list').lastElementChild.addEventListener('click', () => {
-  const newCard = createCardListEntry();
-  document.querySelector('#card-edit-modal-target-new').innerText = '1';
-  openEditModal(newCard);
-});
-
-document.querySelector('#card-edit-modal-cancel').addEventListener('click', (event) => {
-  const removeCard = document.querySelector('#card-edit-modal-target-new').innerText === "1"
-  resetEditModal();
-  if (removeCard) {
-    const newCard = document.querySelector('#card-list').lastElementChild.previousElementSibling;
-    newCard.remove();
-  }
-  
-});
-document.querySelector('#card-edit-modal-save').addEventListener('click', updateCardDetails);
-document.querySelector('#title-edit-modal-cancel').addEventListener('click', resetTitleModal);
-document.querySelector('#title-edit-modal-save').addEventListener('click', saveTitle);
-document.querySelector('.card-set-title-edit').addEventListener('click', openTitleModal);
-document.querySelector('#button-generate-output').addEventListener('click', generateOutputHtml);
-document.querySelector('#output-modal-close').addEventListener('click', resetOutputModal);
-document.querySelector('#output-modal-copy').addEventListener('click', copyOutputHtml);
-
-
-
 function openTitleModal() {
-  document.querySelector('#title-edit-modal').classList.remove('hidden');
+  TITLE_MODAL.classList.remove('hidden');
 }
 
 function resetTitleModal() {
-  document.querySelector('#title-edit-modal').classList.add('hidden');
-  document.querySelector('#title-edit-textarea').value = document.querySelector('.card-set-title').innerText;
-  
+  TITLE_MODAL.classList.add('hidden');
+  TITLE_TEXTAREA.value = CARD_SET_TITLE.innerText;
 }
 
 function saveTitle() {
-  document.querySelector('.card-set-title').innerText = document.querySelector('#title-edit-textarea').value;
+  CARD_SET_TITLE.innerText = TITLE_TEXTAREA.value;
   resetTitleModal();
+  Toast('Title Updated');
 }
 
+function copyOutputHtml() {
+  OUTPUT_TEXTAREA.select();
+  OUTPUT_TEXTAREA.setSelectionRange(0, 99999);
+  navigator.clipboard.writeText(OUTPUT_TEXTAREA.value);
+  window.getSelection().removeAllRanges();
+  Toast('Copied to Clipboard');
+}
 
 function generateOutputHtml() {
   const htmlString = convertCardsToHtml();
-  document.querySelector('#output-textarea').value = htmlString;
-  document.querySelector('#output-modal').classList.remove('hidden');
-}
-
-
-function copyOutputHtml() {
-  const textareaElement = document.querySelector('#output-textarea');
-  textareaElement.select();
-  textareaElement.setSelectionRange(0, 99999);
-  navigator.clipboard.writeText(textareaElement.value);
-  document.querySelector('#output-modal-copy').innerText = 'Copied!'
-  window.setTimeout(() => document.querySelector('#output-modal-copy').innerText = 'Copy', 2500);
+  OUTPUT_TEXTAREA.value = htmlString;
+  OUTPUT_MODAL.classList.remove('hidden');
 }
 
 function resetOutputModal() {
-  document.querySelector('#output-textarea').innerText = 'Copy';
-  document.querySelector('#output-modal').classList.add('hidden');
-  
+  OUTPUT_TEXTAREA.innerText = '';
+  OUTPUT_MODAL.classList.add('hidden');
 }
 
-
 function convertCardsToHtml() {
-  const title = document.querySelector('.card-set-title').innerText;
-  
+  const title = CARD_SET_TITLE.innerText;
   let htmlOutput = `<div class="invictus placeholder"><span class="card-set-name">${title}</span>`;
-  const cardArray = [...document.querySelector('#card-list').children];
+  const cardArray = [...CARD_LIST.children];
   const count = cardArray.length;
   for (let index = 0; index < count; index++) {
     const card = cardArray[index];
@@ -162,8 +135,28 @@ function convertCardsToHtml() {
     const html = `<div><div>${term}</div><div>${definition}</div></div>`;
     htmlOutput += html;
   }
-  htmlOutput += '</div>';
-  return htmlOutput;
+  return htmlOutput + '</div>';
 }
 
 window.addEventListener('load', () => createCardListEntry());
+
+CARD_LIST.lastElementChild.addEventListener('click', () => {
+  EDIT_IS_NEW.innerText = '1';
+  openEditModal(createCardListEntry());
+});
+
+document.querySelector('#card-edit-modal-cancel').addEventListener('click', (event) => {
+  if (EDIT_IS_NEW.innerText === "1") {
+    const newCard = CARD_LIST.lastElementChild.previousElementSibling;
+    newCard.remove();
+  }
+  return resetEditModal();
+});
+
+document.querySelector('#card-edit-modal-save').addEventListener('click', saveEditModal);
+document.querySelector('#title-edit-modal-cancel').addEventListener('click', resetTitleModal);
+document.querySelector('#title-edit-modal-save').addEventListener('click', saveTitle);
+document.querySelector('.card-set-title-edit').addEventListener('click', openTitleModal);
+document.querySelector('#button-generate-output').addEventListener('click', generateOutputHtml);
+document.querySelector('#output-modal-close').addEventListener('click', resetOutputModal);
+OUTPUT_COPY.addEventListener('click', copyOutputHtml);
