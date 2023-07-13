@@ -1,4 +1,4 @@
-enum_TOAST_THEME = {
+export const enum_TOAST_THEME = {
   DEFUALT: null,
   ERROR: 'error',
   SUCCESS: 'success',
