@@ -3,11 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <title>Invictus - Overview</title>
-    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width">
     <meta name="author" content="Chuck Terry" />
     <meta name="description" content="Invictus - Flash Card Set Manager" />
-    <script type="text/javascript" src="index.js" defer></script>
+    <script type="text/javascript" src="index.js" type="module" defer></script>
     <link href="styles.css" rel="stylesheet" type="text/css" />
+    <link href="Toast.css" rel="stylesheet" type="text/css" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
   </head>
   <body>
     <div class="three-bar">
@@ -29,10 +31,10 @@
             </div>
           </section>
           <!-- Begin Modals -->
+          <!-- Edit Modal -->
           <div id="card-edit-modal" class="hidden">
             <div id="card-edit-modal-target-index" class="hidden">0</div>
             <div id="card-edit-modal-target-new" class="hidden">0</div>
-            <div id="card-edit-modal-dimmer"></div>
             <div id="card-edit-modal-content">
               <div id="card-edit-modal-body">
                 <div id="card-edit-modal-term-wrapper">
@@ -50,8 +52,8 @@
               </div>
             </div>
           </div>
+          <!-- Title Modal -->
           <div id="title-edit-modal" class="hidden modal">
-            <div class="dimmer"></div>
             <div class="modal-content">
               <div class="modal-body">
                 <div id="title-edit-modal-form-wrapper">
@@ -65,15 +67,15 @@
               </div>
             </div>
           </div>
+          <!-- Output Modal -->
           <div id="output-modal" class="hidden modal">
-            <div class="dimmer"></div>
             <div class="modal-content">
               <div class="modal-body">
                 <div id="output-modal-form-wrapper">
                   <label for="output-textarea">HTML Code</label>
                   <textarea id="output-textarea" name="output-textarea" rows="7"></textarea>
                 </div>
-                <p>To add this set of flash cards to a Moodle page containing an Invictus Logic Drive: Copy the above text to your clipboard and paste it into a new text block</p>
+                <p>To add this set of flash cards to a Moodle page containing an Invictus Logic Driver: Copy the above text to your clipboard and paste it into a new text block</p>
               </div>
               <div class="modal-controls">
                 <button type="button" id="output-modal-copy">Copy</button>
@@ -84,11 +86,11 @@
         </main>
         <div class="sidebar-right"></div>
       </div>
+      <!-- Footer -->
       <footer>
         <p>Copyright 2022 - 2023 &copy; Chuck Terry, Broken Blue Jeans, LLC - All RIghts Reserved.</p>
       </footer>
     </div>
-    
-    
+    <div id="toaster"></div>
   </body>
 </html>
