@@ -2,6 +2,7 @@ import { Toast } from './Toast.js';
 import { makeUuid } from './uuidGenerator.js';
 
 const CARD_LIST = document.querySelector('#card-list');
+const NEW_CARD_BUTTON = CARD_LIST.lastElementChild;
 
 const OUTPUT_MODAL = document.querySelector('#output-modal');
 const OUTPUT_TEXTAREA = document.querySelector('#output-textarea');
@@ -17,29 +18,50 @@ const EDIT_IS_NEW = document.querySelector('#card-edit-modal-target-new');
 const TERM_TEXTAREA = document.querySelector('#card-edit-term-textarea');
 const DEFINITION_TEXTAREA = document.querySelector('#card-edit-definition-textarea');
 
-
-
 const VERSION = '1.0.0';
+const DAWN_OF_TIME = {
+  date: new Date(-62167201438000),
+  epoch: '-62167201438000'
+};
 
-/** @todo Use with contenteditable to make ellipses safe */
-function isOverflowing(htmlElement) {
-  const { clientHeight, clientWidth, scrollHeight, scrollWidth } = htmlElement;
-  return clientHeight < scrollHeight || clientWidth < scrollWidth;
-}
-
-function clearAllCards() {
-  const cardArray = [...CARD_LIST.children];
-  const cardCount = cardArray.length;
-  for (let index = 0; index < cardCount; index++) {
-    cardArray[index].remove();
-  }
-}
-
+/******************************************************************************/
+/*                             Page Load Functions                            */
+/******************************************************************************/
 function getEditString() {
   const searchString = window.location.search;
   const matchString = '?action=edit&content=';
   if (!searchString?.startsWith(matchString)) return null;
   return searchString.slice(matchString.length);
+}
+
+function onLoadFunction() {
+  const editString = getEditString();
+  if (!editString) return createCardListEntry();
+  const json = JSON.parse(decodeURI(editString));
+  const cardArray = json.FlashCards;
+  const count = cardArray.length;
+  for (let index = 0; index < count; index++) {
+    quiteAddCard(cardArray[index]);
+  }
+}
+
+/******************************************************************************/
+/*                           Card Creation & Loading                          */
+/******************************************************************************/
+
+function createCardListEntry(term = 'Term Text (Front)', definition = 'Definition Text (Back)') {
+  const wrapper = document.createElement('div');
+  wrapper.classList.add('card-list-entry-wrapper');
+  /** @todo @security The following innerHTML is safe - Relies on static string */
+  wrapper.innerHTML = '<div class="card-control-wrapper"><span class="card-control-edit" title="Edit Card">✎</span><span class="card-control-delete" title="Delete Card">🗙</span></div><div class="card-postion-control-wrapper"><div class="card-postion-control-inc"><span class="position-inc" title="Raise Card Position">⮝</span></div><div class="card-postion-control-dec"><span class="position-dec" title="Lower Card Position">⮟</span></div></div><div class="card-content-wrapper"><div class="card-content-term">Term</div><div class="card-content-definition">Definition</div></div>';
+  wrapper.querySelector('.position-inc').addEventListener('click', incrementCardPosition);
+  wrapper.querySelector('.position-dec').addEventListener('click', decrementCardPosition);
+  wrapper.querySelector('.card-content-term').innerText = term;
+  wrapper.querySelector('.card-content-definition').innerText = definition;
+  wrapper.querySelector('.card-control-edit').addEventListener('click', editCard);
+  wrapper.querySelector('.card-control-delete').addEventListener('click', deleteCard);
+  CARD_LIST.insertBefore(wrapper, document.querySelector('.card-list-new-card'));
+  return wrapper;
 }
 
 function loadPlainTextCardSet(string, deleteCurrentSet = false) {
@@ -67,6 +89,14 @@ function quiteAddCard(json) {
   createCardListEntry(json.Term.Content, json.Definition.Content);
 }
 
+function createCard() {
+  EDIT_IS_NEW.innerText = '1';
+  openEditModal(createCardListEntry());
+}
+
+/******************************************************************************/
+/*                                 Edit Modal                                 */
+/******************************************************************************/
 function openEditModal(cardWrapper = false) {
   EDIT_MODAL.classList.remove('hidden');
   if (cardWrapper === false) cardWrapper = createCardListEntry();
@@ -86,6 +116,13 @@ function resetEditModal() {
   EDIT_MODAL.classList.add('hidden');
 }
 
+function cancelEditModal() {
+  if (EDIT_IS_NEW.innerText === "1") {
+    NEW_CARD_BUTTON.previousElementSibling.remove();
+  }
+  return resetEditModal();
+}
+
 function saveEditModal() {
   const targetWrapperIndex = EDIT_INDEX.innerText;
   const targetWrapper = CARD_LIST.children[targetWrapperIndex];
@@ -95,44 +132,13 @@ function saveEditModal() {
   Toast('Flash Card Saved');
 }
 
-function incrementCardPosition(event) {
-  const cardWrapper = event.target.parentElement.parentElement.parentElement;
-  if (cardWrapper.previousElementSibling === null) return;
-  const previousSibling = cardWrapper.previousElementSibling;
-  cardWrapper.parentElement.insertBefore(cardWrapper, previousSibling);
-}
-
-function decrementCardPosition(event) {
-  const cardWrapper = event.target.parentElement.parentElement.parentElement;
-  if (cardWrapper.nextElementSibling.classList.contains('card-list-new-card')) return;
-  const nextNextSibling = cardWrapper.nextElementSibling.nextElementSibling;
-  cardWrapper.parentElement.insertBefore(cardWrapper, nextNextSibling);
-}
-
 function editCard(event) {
   openEditModal(event.target.parentElement.parentElement);
 }
 
-function deleteCard(event) {
-  event.target.parentElement.parentElement.remove();
-  Toast('Flash Card Deleted');
-}
-
-function createCardListEntry(term = 'Term Text (Front)', definition = 'Definition Text (Back)') {
-  const wrapper = document.createElement('div');
-  wrapper.classList.add('card-list-entry-wrapper');
-  /** @todo @security The following innerHTML is safe - Relies on static string */
-  wrapper.innerHTML = '<div class="card-control-wrapper"><span class="card-control-edit" title="Edit Card">✎</span><span class="card-control-delete" title="Delete Card">🗙</span></div><div class="card-postion-control-wrapper"><div class="card-postion-control-inc"><span class="position-inc" title="Raise Card Position">⮝</span></div><div class="card-postion-control-dec"><span class="position-dec" title="Lower Card Position">⮟</span></div></div><div class="card-content-wrapper"><div class="card-content-term">Term</div><div class="card-content-definition">Definition</div></div>';
-  wrapper.querySelector('.position-inc').addEventListener('click', incrementCardPosition);
-  wrapper.querySelector('.position-dec').addEventListener('click', decrementCardPosition);
-  wrapper.querySelector('.card-content-term').innerText = term;
-  wrapper.querySelector('.card-content-definition').innerText = definition;
-  wrapper.querySelector('.card-control-edit').addEventListener('click', editCard);
-  wrapper.querySelector('.card-control-delete').addEventListener('click', deleteCard);
-  CARD_LIST.insertBefore(wrapper, document.querySelector('.card-list-new-card'));
-  return wrapper;
-}
-
+/******************************************************************************/
+/*                                 Title Modal                                */
+/******************************************************************************/
 function openTitleModal() {
   TITLE_MODAL.classList.remove('hidden');
 }
@@ -148,6 +154,9 @@ function saveTitle() {
   Toast('Title Updated');
 }
 
+/******************************************************************************/
+/*                                Output Modal                                */
+/******************************************************************************/
 function copyOutputJson() {
   OUTPUT_TEXTAREA.select();
   OUTPUT_TEXTAREA.setSelectionRange(0, 99999);
@@ -156,20 +165,15 @@ function copyOutputJson() {
   Toast('Copied to Clipboard');
 }
 
-function escapeBackTicks(string) {
-  return string.replaceAll(/`/g, '\\`');
-}
-
 function generateOutput() {
   const uuid = makeUuid();
   const json = convertCardsToJsonString(uuid);
 
-  let string = `<div class="invictus placeholder" id="{{{UUID}}}"></div><script class="invictus loader" id="loader-{{{UUID}}}">{{{LOADER}}}</script><script class="invictus initializer" id="init-{{{UUID}}}">(()=>{const json=\`{{{ JSON_CONTENT };
-}}\`;new invictus.classDefinitions.FlashCardSet(json);window.setTimeout(()=>{document.querySelector('#loader-{{{UUID}}}').remove();document.querySelector('#init-{{{UUID}}}').remove()},500)})()</script>`;
+  let string = `<div class="invictus placeholder" id="{{{UUID}}}"></div><script class="invictus loader" id="loader-{{{UUID}}}">{{{LOADER}}}</script><script class="invictus initializer" id="init-{{{UUID}}}">(()=>{const json=\`{{{JSON_CONTENT}}}\`;new invictus.classDefinitions.FlashCardSet(json);window.setTimeout(()=>{document.querySelector('#loader-{{{UUID}}}').remove();document.querySelector('#init-{{{UUID}}}').remove()},500)})()</script>`;
   string = string.replaceAll(/\{\{\{UUID\}\}\}/g, uuid);
   string = string.replaceAll(/\{\{\{JSON_CONTENT\}\}\}/g, json);
   string = string.replaceAll(/\{\{\{LOADER\}\}\}/g, `/* Loader Goes Here */`);
-  
+
   OUTPUT_TEXTAREA.value = string;
   OUTPUT_MODAL.classList.remove('hidden');
 }
@@ -183,7 +187,7 @@ function convertCardsToJsonString(uuid = makeUuid()) {
   const json = {
     Title: CARD_SET_TITLE.innerText,
     Created: "",
-    Modified: Date.now(),
+    Modified: getTimeStamp(),
     UUID: uuid,
     FlashCards: [],
     Version: VERSION
@@ -206,7 +210,7 @@ function convertCardsToJsonString(uuid = makeUuid()) {
       },
       Created: "",
       Modified: ""
-    }
+    };
     cardJson.Term.Content = card.querySelector('.card-content-term').innerText;
     cardJson.Definition.Content = card.querySelector('.card-content-definition').innerText;
     json.FlashCards.push(cardJson);
@@ -214,40 +218,72 @@ function convertCardsToJsonString(uuid = makeUuid()) {
   return JSON.stringify(json);
 }
 
-function onLoadFunction() {
-  const editString = getEditString();
-  if (!editString) return createCardListEntry();
-  const json = JSON.parse(decodeURI(editString));
-  const cardArray = json.FlashCards;
-  const count = cardArray.length;
-  for (let index = 0; index < count; index++) {
-    quiteAddCard(cardArray[index]);
+/******************************************************************************/
+/*                           Card Position Functions                          */
+/******************************************************************************/
+function incrementCardPosition(event) {
+  const cardWrapper = event.target.parentElement.parentElement.parentElement;
+  if (cardWrapper.previousElementSibling === null) return;
+  const previousSibling = cardWrapper.previousElementSibling;
+  cardWrapper.parentElement.insertBefore(cardWrapper, previousSibling);
+}
+
+function decrementCardPosition(event) {
+  const cardWrapper = event.target.parentElement.parentElement.parentElement;
+  if (cardWrapper.nextElementSibling.classList.contains('card-list-new-card')) return;
+  const nextNextSibling = cardWrapper.nextElementSibling.nextElementSibling;
+  cardWrapper.parentElement.insertBefore(cardWrapper, nextNextSibling);
+}
+
+/******************************************************************************/
+/*                           Card Removal Functions                           */
+/******************************************************************************/
+
+function deleteCard(event) {
+  event.target.parentElement.parentElement.remove();
+  Toast('Flash Card Deleted');
+}
+
+function clearAllCards() {
+  const cardArray = [...CARD_LIST.children];
+  const cardCount = cardArray.length;
+  for (let index = 0; index < cardCount; index++) {
+    cardArray[index].remove();
   }
 }
 
+/******************************************************************************/
+/*                                   Utility                                  */
+/******************************************************************************/
+function getTimeStamp(anonymous = false) {
+  return globalThis.anonymous || anonymous ? DAWN_OF_TIME.epoch : Date.now();
+}
+
+/** @todo Use with contenteditable to make ellipses safe */
+function isOverflowing(htmlElement) {
+  const { clientHeight, clientWidth, scrollHeight, scrollWidth } = htmlElement;
+  return clientHeight < scrollHeight || clientWidth < scrollWidth;
+}
+
+function escapeBackTicks(string) {
+  return string.replaceAll(/`/g, '\\`');
+}
+
+/******************************************************************************/
+/*                               Initialization                               */
+/******************************************************************************/
 if (document.readyState === 'complete') {
   onLoadFunction();
 } else {
   window.addEventListener('load', onLoadFunction);
 }
 
-CARD_LIST.lastElementChild.addEventListener('click', () => {
-  EDIT_IS_NEW.innerText = '1';
-  openEditModal(createCardListEntry());
-});
-
-document.querySelector('#card-edit-modal-cancel').addEventListener('click', (event) => {
-  if (EDIT_IS_NEW.innerText === "1") {
-    const newCard = CARD_LIST.lastElementChild.previousElementSibling;
-    newCard.remove();
-  }
-  return resetEditModal();
-});
-
+document.querySelector('#card-edit-modal-cancel').addEventListener('click', cancelEditModal);
 document.querySelector('#card-edit-modal-save').addEventListener('click', saveEditModal);
 document.querySelector('#title-edit-modal-cancel').addEventListener('click', resetTitleModal);
 document.querySelector('#title-edit-modal-save').addEventListener('click', saveTitle);
 document.querySelector('.card-set-title-edit').addEventListener('click', openTitleModal);
 document.querySelector('#button-generate-output').addEventListener('click', generateOutput);
 document.querySelector('#output-modal-close').addEventListener('click', resetOutputModal);
+NEW_CARD_BUTTON.addEventListener('click', createCard);
 OUTPUT_COPY.addEventListener('click', copyOutputJson);
