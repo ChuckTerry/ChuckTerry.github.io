@@ -73,6 +73,7 @@ function loadPlainTextCardSet(string, deleteCurrentSet = false) {
     const title = string.slice(5, firstLineBreak).trim();
     CARD_SET_TITLE.innerText = title;
     string = string.slice(firstLineBreak + EOL.length);
+    resetTitleModal();
   }
   const cards = string.split(EOL);
   const cardCount = cards.length;
