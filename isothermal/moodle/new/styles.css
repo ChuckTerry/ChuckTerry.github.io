@@ -1,0 +1,333 @@
+:root, body {
+    --white: #FFFFFF;
+    --black: #000000;
+}
+
+
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+h1 {
+  margin-bottom: 0px;
+  margin-top: 14px;
+  text-align: center;
+  font-size: 3.5em;
+  font-family: math;
+  font-variant: small-caps;
+  border-bottom: 4px double var(--black);
+  text-shadow: 0px 3px 14px #2f8dbd, 0px 2px 6px #1a1d69a8;
+  -webkit-text-stroke: 1px aliceblue;
+  stroke-opacity: 0.1;
+}
+
+section {
+  padding: 2px 12px;
+  min-height: calc(100vh - 110px);
+}
+
+footer {
+  border-top: 4px double #111111;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  text-align: center;
+  background-color: #88CCEE;
+  min-height: 55px;
+}
+
+a {
+  color: var(--black);
+  text-decoration: underline solid #4477DD;
+  text-underline-offset: 2px;
+  text-decoration-thickness: 1.5px;
+  letter-spacing: 0.25pt;
+}
+
+a:hover {
+  color: #2244EE;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+
+main {
+  width: 84%;
+  padding-bottom: 55px;
+}
+
+button:hover {
+  background-color: #FBFBFB;
+  outline: 3px solid var(--black);
+}
+
+.hidden {
+  display: none;
+}
+
+.three-bar {
+  display: flex;
+  flex-direction: column;
+}
+
+.three-bar-upper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.three-bar > main {
+  flex-grow: 1;
+}
+
+.sidebar-left,
+.sidebar-right {
+  display: flex;
+  background: linear-gradient(181deg, #59bde8, #5c7bed);
+  flex-grow: 1;
+}
+
+.title-wrapper,
+.card-content-wrapper > div {
+  font-size: 20pt;
+}
+
+#card-list {
+  min-width: 300px;
+  margin: 0px 18px 18px 18px;
+  border: 2px solid var(--black);
+  border-right: 3px solid var(--black);
+  border-bottom: 5px solid var(--black);
+  background-color: #DDDDDD;
+  font-size: 2em;
+}
+
+.card-set-title-edit,
+.card-postion-control-wrapper span {
+  cursor: pointer;
+}
+
+.card-content-term,
+.card-content-definition {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: calc(70% + 10px);
+}
+
+.card-content-wrapper {
+  width: 100%;
+  padding: 8px 1px 8px 7%;
+}
+
+.card-content-term {
+  padding-bottom: 4px;
+}
+
+.card-set-title {
+  display: inline-block;
+  margin: 1px 18px 10px 60px;
+}
+
+.card-list-entry-wrapper {
+  margin-top: 2px;
+  position: relative;
+}
+
+.card-list-entry-wrapper:after {
+  content: "";
+  width: 85%;
+  position: absolute;
+  margin: auto;
+  right: 0;
+  left: 0;
+  border-bottom: 2px solid darkslategray;
+}
+
+.card-control-wrapper {
+  vertical-align: middle;
+  float: right;
+  padding: 18px 26px 8px 2%;
+}
+
+.card-control-wrapper > span {
+  padding-right: 16px;
+  cursor: pointer;
+}
+
+.card-list-new-card {
+  cursor: pointer;
+  font-weight: bolder;
+  border: 2px solid var(--black);
+  border-radius: 40px;
+  width: min-content;
+  margin: 18px 2px 18px 26px;
+}
+
+.card-list-new-card > span {
+  position: relative;
+  top: -1.5px;
+}
+
+.card-postion-control-wrapper {
+  padding: 2px 42px 2px 30px;
+}
+
+.card-postion-control-inc {
+  position: absolute;
+  top: 5px;
+}
+
+.card-postion-control-dec {
+  position: absolute;
+  top: 34px;
+}
+
+.card-list-new-card:hover,
+.card-list-entry-wrapper:hover {
+  background-color: #FBFBFB;
+}
+
+.position-inc:hover {
+  position: relative;
+  top: -2px;
+  left: -3px;
+  font-size: larger;
+  color: gray;
+  -webkit-text-stroke: 2px var(--black);
+}
+
+.position-dec:hover {
+  position: relative;
+  top: -6px;
+  left: -3px;
+  font-size: larger;
+  color: gray;
+  -webkit-text-stroke: 2px var(--black);
+}
+
+.card-control-edit {
+  position: absolute;
+  right: 90px;
+}
+
+.card-control-edit:hover {
+  color: darkgray;
+  -webkit-text-stroke: 2px var(--black);
+  font-size: larger;
+  position: relative;
+  right: 60px;
+  top: -5px;
+}
+
+.card-control-delete {
+  position: absolute;
+  right: 25px;
+  color: red;
+}
+
+.card-control-delete:hover {
+  -webkit-text-stroke: 2px darkred;
+  font-size: larger;
+  position: relative;
+  right: -4px;
+  top: -5px;
+}
+
+.modal,
+#card-edit-modal {
+  position: fixed;
+  z-index: 1;
+  padding-top: 200px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal > .modal-content,
+#card-edit-modal-content {
+  position: relative;
+  margin: auto;
+  padding: 0;
+  min-width: 500px;
+  width: 60%;
+  animation-name: animatetop;
+  animation-duration: 0.4s
+}
+
+.modal-body,
+#card-edit-modal-body {
+  background-color: #FDFDFD;
+  border: 1px solid #FFFFFF;
+  box-shadow: 3px 4px 8px 0 rgba(0,0,0,0.2), 9px 13px 20px 2px rgba(0,0,0,0.19);
+  text-align: -webkit-center;
+  font-size: 1.5em;
+  border-radius: 14px;
+}
+
+.modal-body > div,
+#card-edit-modal-body > div {
+  padding: 4px 2px 14px 20px;
+  text-align: left;
+  min-width: 500px;
+  max-width: 80%;
+}
+
+.modal label,
+#card-edit-modal label {
+  display: block;
+  padding: 20px 1px 4px 14px;
+}
+
+.modal-body > p {
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.modal-controls,
+#card-edit-modal-controls {
+  padding-top: 16px;
+  text-align: center;
+}
+
+.modal-controls > button,
+#card-edit-modal-controls > button {
+  padding: 20px 60px;
+  border-radius: 14px;
+  font-size: 1.8em;
+  text-align: center;
+  margin: 4px 24px 20px 24px;
+  box-shadow: 3px 4px 8px 0 rgba(0,0,0,0.2), 9px 13px 20px 2px rgba(0,0,0,0.19);
+  cursor: pointer;
+}
+
+.modal-body > div > textarea,
+#card-edit-modal-body > div > textarea {
+  width: 100%;
+  font-size: 1em;
+  padding-left: 8px;
+}
+
+#title-edit-textarea,
+#card-edit-definition-textarea {
+  margin-bottom: 30px;
+}
+
+.output-button-wrapper {
+  min-width: 600px;
+  width: 40%;
+  text-align: center;
+}
+
+#button-generate-output {
+  padding: 20px 60px;
+  border-radius: 14px;
+  font-size: 1.8em;
+  margin: 4px 24px 20px 24px;
+  box-shadow: 3px 4px 2px 0 rgba(0,0,0,0.2);
+  cursor: pointer;
+}
