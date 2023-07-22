@@ -1,0 +1,13 @@
+Title: Computer Acronyms
+BIOS: Basic Input Output System
+CPU: Central Processing Unit
+HDD: Hard Disk Drive
+LCD: Liquid Crystal Display
+OS: Operating System
+PC: Personal Computer
+RAID: Redundant Array of Independent Disks
+RAM: Random Access Memory
+ROM: Read Only-Memory
+SATA: Serial Advanced Technology Attachment 
+SSD: Solid State Drive
+VGA: Video Graphics Array

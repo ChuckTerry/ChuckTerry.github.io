@@ -27,11 +27,39 @@ function isOverflowing(htmlElement) {
   return clientHeight < scrollHeight || clientWidth < scrollWidth;
 }
 
+function clearAllCards() {
+  const cardArray = [...CARD_LIST.children];
+  const cardCount = cardArray.length;
+  for (let index = 0; index < cardCount; index++) {
+    cardArray[index].remove();
+  }
+}
+
 function getEditString() {
   const searchString = window.location.search;
   const matchString = '?action=edit&content=';
   if (!searchString?.startsWith(matchString)) return null;
   return searchString.slice(matchString.length);
+}
+
+function loadPlainTextCardSet(string, deleteCurrentSet = false) {
+  if (deleteCurrentSet) clearAllCards();
+  if (string.trim().startsWith('Title:')) {
+    const firstLineBreak = string.indexOf('\r\n');
+    const title = string.slice(6, firstLineBreak).trim();
+    CARD_SET_TITLE.innerText = title;
+    string = string.slice(firstLineBreak + 2);
+  }
+  const cards = string.split('\r\n');
+  const cardCount = cards.length;
+  for (let index = 0; index < cardCount; index++) {
+    const cardString = cards[index];
+    const colon = cardString.indexOf(':');
+    if (colon === -1) continue;
+    const term = cardString.slice(0, colon);
+    const definition = cardString.slice(colon + 1);
+    quiteAddCard({ Term: { Content: term }, Definition: { Content: definition } });
+  }
 }
 
 function quiteAddCard(json) {
