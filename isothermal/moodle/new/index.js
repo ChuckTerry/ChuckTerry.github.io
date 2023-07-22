@@ -16,10 +16,26 @@ const EDIT_IS_NEW = document.querySelector('#card-edit-modal-target-new');
 const TERM_TEXTAREA = document.querySelector('#card-edit-term-textarea');
 const DEFINITION_TEXTAREA = document.querySelector('#card-edit-definition-textarea');
 
+
+
+const VERSION = '1.0.0';
+
 /** @todo Use with contenteditable to make ellipses safe */
 function isOverflowing(htmlElement) {
   const { clientHeight, clientWidth, scrollHeight, scrollWidth } = htmlElement;
   return clientHeight < scrollHeight || clientWidth < scrollWidth;
+}
+
+function getEditString() {
+  const searchString = window.location.search;
+  const matchString = '?action=edit&content=';
+  if (!searchString?.startsWith(matchString)) return null;
+  return searchString.slice(matchString.length);
+}
+
+function quiteAddCard(json) {
+  if (typeof json === 'string') json = JSON.parse(json);
+  createCardListEntry(json.Term.Content, json.Definition.Content);
 }
 
 function openEditModal(cardWrapper = false) {
@@ -103,7 +119,7 @@ function saveTitle() {
   Toast('Title Updated');
 }
 
-function copyOutputHtml() {
+function copyOutputJson() {
   OUTPUT_TEXTAREA.select();
   OUTPUT_TEXTAREA.setSelectionRange(0, 99999);
   navigator.clipboard.writeText(OUTPUT_TEXTAREA.value);
@@ -111,9 +127,9 @@ function copyOutputHtml() {
   Toast('Copied to Clipboard');
 }
 
-function generateOutputHtml() {
-  const htmlString = convertCardsToHtml();
-  OUTPUT_TEXTAREA.value = htmlString;
+function generateOutputJson() {
+  const jsonString = convertCardsToJsonString();
+  OUTPUT_TEXTAREA.value = jsonString;
   OUTPUT_MODAL.classList.remove('hidden');
 }
 
@@ -122,23 +138,57 @@ function resetOutputModal() {
   OUTPUT_MODAL.classList.add('hidden');
 }
 
-function convertCardsToHtml() {
-  const title = CARD_SET_TITLE.innerText;
-  let htmlOutput = `<div class="invictus placeholder"><span class="card-set-name">${title}</span>`;
+function convertCardsToJsonString() {
+  const json = {
+    Title: CARD_SET_TITLE.innerText,
+    Created: "",
+    Modified: Date.now(),
+    UUID: "",
+    FlashCards: [],
+    Version: VERSION
+  };
   const cardArray = [...CARD_LIST.children];
   const count = cardArray.length;
   for (let index = 0; index < count; index++) {
     const card = cardArray[index];
     if (card.classList.contains('card-list-new-card')) continue;
-    const term = card.querySelector('.card-content-term').innerText;
-    const definition = card.querySelector('.card-content-definition').innerText;
-    const html = `<div><div>${term}</div><div>${definition}</div></div>`;
-    htmlOutput += html;
+    const cardJson = {
+      Term: {
+        Content: "",
+        ContainsHTML: false,
+        IsImage: false
+      },
+      Definition: {
+        Content: "",
+        ContainsHTML: false,
+        IsImage: false
+      },
+      Created: "",
+      Modified: ""
+    }
+    cardJson.Term.Content = card.querySelector('.card-content-term').innerText;
+    cardJson.Definition.Content = card.querySelector('.card-content-definition').innerText;
+    json.FlashCards.push(cardJson);
   }
-  return htmlOutput + '</div>';
+  return JSON.stringify(json);
 }
 
-window.addEventListener('load', () => createCardListEntry());
+function onLoadFunction() {
+  const editString = getEditString();
+  if (!editString) return createCardListEntry();
+  const json = JSON.parse(decodeURI(editString));
+  const cardArray = json.FlashCards;
+  const count = cardArray.length;
+  for (let index = 0; index < count; index++) {
+    quiteAddCard(cardArray[index]);
+  }
+}
+
+if (document.readyState === 'complete') {
+  onLoadFunction();
+} else {
+  window.addEventListener('load', onLoadFunction);
+}
 
 CARD_LIST.lastElementChild.addEventListener('click', () => {
   EDIT_IS_NEW.innerText = '1';
@@ -157,6 +207,6 @@ document.querySelector('#card-edit-modal-save').addEventListener('click', saveEd
 document.querySelector('#title-edit-modal-cancel').addEventListener('click', resetTitleModal);
 document.querySelector('#title-edit-modal-save').addEventListener('click', saveTitle);
 document.querySelector('.card-set-title-edit').addEventListener('click', openTitleModal);
-document.querySelector('#button-generate-output').addEventListener('click', generateOutputHtml);
+document.querySelector('#button-generate-output').addEventListener('click', generateOutputJson);
 document.querySelector('#output-modal-close').addEventListener('click', resetOutputModal);
-OUTPUT_COPY.addEventListener('click', copyOutputHtml);
+OUTPUT_COPY.addEventListener('click', copyOutputJson);
