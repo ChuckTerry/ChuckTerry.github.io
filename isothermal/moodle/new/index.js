@@ -1,4 +1,5 @@
 import { Toast } from './Toast.js';
+import { makeUuid } from './uuidGenerator.js';
 
 const CARD_LIST = document.querySelector('#card-list');
 
@@ -127,9 +128,21 @@ function copyOutputJson() {
   Toast('Copied to Clipboard');
 }
 
-function generateOutputJson() {
-  const jsonString = convertCardsToJsonString();
-  OUTPUT_TEXTAREA.value = jsonString;
+function escapeBackTicks(string) {
+  return string.replaceAll(/`/g, '\\`');
+}
+
+function generateOutput() {
+  const uuid = makeUuid();
+  const json = convertCardsToJsonString(uuid);
+
+  let string = `<div class="invictus placeholder" id="{{{UUID}}}"></div><script class="invictus loader" id="loader-{{{UUID}}}">{{{LOADER}}}</script><script class="invictus initializer" id="init-{{{UUID}}}">(()=>{const json=\`{{{ JSON_CONTENT };
+}}\`;new invictus.classDefinitions.FlashCardSet(json);window.setTimeout(()=>{document.querySelector('#loader-{{{UUID}}}').remove();document.querySelector('#init-{{{UUID}}}').remove()},500)})()</script>`;
+  string = string.replaceAll(/\{\{\{UUID\}\}\}/g, uuid);
+  string = string.replaceAll(/\{\{\{JSON_CONTENT\}\}\}/g, json);
+  string = string.replaceAll(/\{\{\{LOADER\}\}\}/g, `/* Loader Goes Here */`);
+  
+  OUTPUT_TEXTAREA.value = string;
   OUTPUT_MODAL.classList.remove('hidden');
 }
 
@@ -138,12 +151,12 @@ function resetOutputModal() {
   OUTPUT_MODAL.classList.add('hidden');
 }
 
-function convertCardsToJsonString() {
+function convertCardsToJsonString(uuid = makeUuid()) {
   const json = {
     Title: CARD_SET_TITLE.innerText,
     Created: "",
     Modified: Date.now(),
-    UUID: "",
+    UUID: uuid,
     FlashCards: [],
     Version: VERSION
   };
@@ -207,6 +220,6 @@ document.querySelector('#card-edit-modal-save').addEventListener('click', saveEd
 document.querySelector('#title-edit-modal-cancel').addEventListener('click', resetTitleModal);
 document.querySelector('#title-edit-modal-save').addEventListener('click', saveTitle);
 document.querySelector('.card-set-title-edit').addEventListener('click', openTitleModal);
-document.querySelector('#button-generate-output').addEventListener('click', generateOutputJson);
+document.querySelector('#button-generate-output').addEventListener('click', generateOutput);
 document.querySelector('#output-modal-close').addEventListener('click', resetOutputModal);
 OUTPUT_COPY.addEventListener('click', copyOutputJson);
