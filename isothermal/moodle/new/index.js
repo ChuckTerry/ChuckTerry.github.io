@@ -41,8 +41,9 @@ function onLoadFunction() {
   const cardArray = json.FlashCards;
   const count = cardArray.length;
   for (let index = 0; index < count; index++) {
-    quiteAddCard(cardArray[index]);
+    silentAddCard(cardArray[index]);
   }
+  Toast('Flash Card Set Loaded from URL');
 }
 
 /******************************************************************************/
@@ -66,13 +67,14 @@ function createCardListEntry(term = 'Term Text (Front)', definition = 'Definitio
 
 function loadPlainTextCardSet(string, deleteCurrentSet = false) {
   if (deleteCurrentSet) clearAllCards();
+  const EOL = string.indexOf('\r\n') === -1 ? '\n' : '\r\n';
   if (string.trim().startsWith('Title:')) {
-    const firstLineBreak = string.indexOf('\r\n');
-    const title = string.slice(6, firstLineBreak).trim();
+    const firstLineBreak = string.indexOf(EOL);
+    const title = string.slice(5, firstLineBreak).trim();
     CARD_SET_TITLE.innerText = title;
-    string = string.slice(firstLineBreak + 2);
+    string = string.slice(firstLineBreak + EOL.length);
   }
-  const cards = string.split('\r\n');
+  const cards = string.split(EOL);
   const cardCount = cards.length;
   for (let index = 0; index < cardCount; index++) {
     const cardString = cards[index];
@@ -80,11 +82,12 @@ function loadPlainTextCardSet(string, deleteCurrentSet = false) {
     if (colon === -1) continue;
     const term = cardString.slice(0, colon);
     const definition = cardString.slice(colon + 1);
-    quiteAddCard({ Term: { Content: term }, Definition: { Content: definition } });
+    silentAddCard({ Term: { Content: term }, Definition: { Content: definition } });
   }
+  Toast('Flash Cards Loaded');
 }
 
-function quiteAddCard(json) {
+function silentAddCard(json) {
   if (typeof json === 'string') json = JSON.parse(json);
   createCardListEntry(json.Term.Content, json.Definition.Content);
 }
