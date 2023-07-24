@@ -31,7 +31,7 @@
     element.appendChild(innerElement);
     innerElement.outerHTML = '<div class="invictus card-inner"><div class="invictus card-front"><div class="invictus card-term"><p class="invictus term-text"></p></div></div><div class="invictus card-back"><div class="invictus card-definition"><p class="invictus definition-text"></p></div></div></div>';
     element.querySelector('.term-text').innerText = this.term;
-    element.querySelector('.term-definition').innerText = this.definition;
+    element.querySelector('.definition-text').innerText = this.definition;
     innerElement.addEventListener('click', this.flip);
     return element;
   }
@@ -112,20 +112,20 @@ class FlashCardSet {
       this.shuffle();
     });
     this.previousCardButton.addEventListener('click', () => {
-      this.activeCard.classList.toggle('active');
-      this.activeCard.classList.remove('selected');
+      this.activeCard.element.classList.toggle('active');
+      this.activeCard.element.classList.remove('selected');
       this.activeCardSetIndex = this.activeCardSetIndex === 0 ? this.cardSet.length - 1 : this.activeCardSetIndex - 1;
       this.activeCard = this.cardSet[this.activeCardSetIndex];
-      this.activeCard.classList.toggle('hidden');
-      this.activeCard.classList.toggle('active');
+      this.activeCard.element.classList.toggle('hidden');
+      this.activeCard.element.classList.toggle('active');
     });
     this.nextCardButton.addEventListener('click', () => {
-      this.activeCard.classList.toggle('active');
-      this.activeCard.classList.remove('selected');
+      this.activeCard.element.classList.toggle('active');
+      this.activeCard.element.classList.remove('selected');
       this.activeCardSetIndex = this.activeCardSetIndex === this.cardSet.length - 1 ? 0 : this.activeCardSetIndex + 1;
       this.activeCard = this.cardSet[this.activeCardSetIndex];
-      this.activeCard.classList.toggle('hidden');
-      this.activeCard.classList.toggle('active');
+      this.activeCard.element.classList.toggle('hidden');
+      this.activeCard.element.classList.toggle('active');
     });
   }
   makeInvictusElement(classNames, type = 'div', childrenArray = [], innerText) {
@@ -161,13 +161,13 @@ class FlashCardSet {
     const cardAreaCards = [...this.cardArea.children];
     const cardCount = cardAreaCards.length;
     if (cardCount > 0) {
-      for (index = 0; index < cardCount; index++) {
+      for (let index = 0; index < cardCount; index++) {
         cardAreaCards[index].remove();
       }
     }
     if (this.activeCard !== null) {
-      this.activeCard?.classList.remove('selected');
-      this.activeCard?.classList.remove('active');
+      this.activeCard?.element.classList.remove('selected');
+      this.activeCard?.element.classList.remove('active');
     }
     let currentIndex = this.cardSet.length; let randomIndex;
     while (currentIndex !== 0) {
