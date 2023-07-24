@@ -24,6 +24,10 @@ const DAWN_OF_TIME = {
   epoch: '-62167201438000'
 };
 
+fetch('./output-template.html')
+  .then(response => response.text())
+  .then(string => globalThis.templateString = string);
+
 /******************************************************************************/
 /*                             Page Load Functions                            */
 /******************************************************************************/
@@ -187,7 +191,8 @@ function generateOutput() {
   const uuid = makeUuid();
   const json = convertCardsToJsonString(uuid);
 
-  let string = `<div class="invictus placeholder" id="{{{UUID}}}"></div><script class="invictus loader" id="loader-{{{UUID}}}">{{{LOADER}}}</script><script class="invictus initializer" id="init-{{{UUID}}}">(()=>{const json=\`{{{JSON_CONTENT}}}\`;new invictus.classDefinitions.FlashCardSet(json);window.setTimeout(()=>{document.querySelector('#loader-{{{UUID}}}').remove();document.querySelector('#init-{{{UUID}}}').remove()},500)})()</script>`;
+  //let string = `<div class="invictus placeholder" id="{{{UUID}}}"></div><script class="invictus loader" id="loader-{{{UUID}}}">{{{LOADER}}}</script><script class="invictus initializer" id="init-{{{UUID}}}">(()=>{const json=\`{{{JSON_CONTENT}}}\`;new invictus.classDefinitions.FlashCardSet(json);window.setTimeout(()=>{document.querySelector('#loader-{{{UUID}}}').remove();document.querySelector('#init-{{{UUID}}}').remove()},500)})()</script>`;
+  let string = globalThis.templateString;
   string = string.replaceAll(/\{\{\{UUID\}\}\}/g, uuid);
   string = string.replaceAll(/\{\{\{JSON_CONTENT\}\}\}/g, json);
   string = string.replaceAll(/\{\{\{LOADER\}\}\}/g, `/* Loader Goes Here */`);
