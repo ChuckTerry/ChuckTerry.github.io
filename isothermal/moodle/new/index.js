@@ -46,6 +46,20 @@ function onLoadFunction() {
   Toast('Flash Card Set Loaded from URL');
 }
 
+
+function loadCardsFromJson(json) {
+  if (typeof json === 'string') {
+    json = decodeURIComponent(json);
+    json = JSON.parse(json);
+  }
+  const cardArray = Array.isArray(json) ? json : json.FlashCards;
+  const count = cardArray.length;
+  for (let index = 0; index < count; index++) {
+    silentAddCard(cardArray[index]);
+  }
+
+}
+
 /******************************************************************************/
 /*                           Card Creation & Loading                          */
 /******************************************************************************/
