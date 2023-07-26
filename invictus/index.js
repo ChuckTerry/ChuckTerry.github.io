@@ -157,18 +157,6 @@ function submitFileUploadModal() {
   resetUploadModal();
 }
 
-function parseFile(file, name) {
-  const json = JSON.parse(file);
-  const title = json.Title ? json.Title : name.slice(0, name.lastIndexOf('.'));
-  saveTitle(title);
-  const cardArray = json.FlashCards;
-  const cardCount = cardArray.length;
-  for (let index = 0; index < cardCount; index++) {
-    const card = cardArray[index];
-    silentAddCard(card);
-  }
-}
-
 function openUploadModal() {
   UPLOAD_MODAL.classList.remove('hidden');
 }
