@@ -28,6 +28,7 @@
             </form>
             <div class="output-button-wrapper">
               <button type="button" id="button-generate-output">Get HTML for Moodle</button>
+              <button type="button" id="button-upload-file">Upload File</button>
             </div>
           </section>
           <!-- Begin Modals -->
@@ -64,6 +65,27 @@
               <div class="modal-controls">
                 <button type="button" id="title-edit-modal-cancel">Cancel</button>
                 <button type="button" id="title-edit-modal-save">Save</button>
+              </div>
+            </div>
+          </div>
+          <!-- Upload File Modal -->
+          <div id="upload-file-modal" class="hidden modal">
+            <div class="modal-content">
+              <div class="modal-body">
+                <div id="upload-file-modal-form-wrapper">
+                  <label for="upload-file-picker">Select a File</label>
+                  <input type="file" id="upload-file-picker" accept=".invictus" />
+                  <div class="hidden">
+                    <label for="upload-file-name">File Name</label>
+                    <input type="text" id="upload-file-name" name="upload-file-name"></input>
+                    <label for="upload-file-content">Uploaded File Content</label>
+                    <textarea id="upload-file-content" name="upload-file-content"></textarea>
+                  </div>
+                </div>
+              </div>
+              <div class="modal-controls">
+                <button type="button" id="upload-file-modal-cancel">Cancel</button>
+                <button type="button" id="upload-file-modal-submit">Submit</button>
               </div>
             </div>
           </div>

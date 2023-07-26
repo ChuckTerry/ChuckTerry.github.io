@@ -4,6 +4,9 @@ import { makeUuid } from './uuidGenerator.js';
 const CARD_LIST = document.querySelector('#card-list');
 const NEW_CARD_BUTTON = CARD_LIST.lastElementChild;
 
+const UPLOAD_MODAL = document.querySelector('#upload-file-modal');
+const UPLOAD_INPUT = document.querySelector('#upload-file-picker');
+
 const OUTPUT_MODAL = document.querySelector('#output-modal');
 const OUTPUT_TEXTAREA = document.querySelector('#output-textarea');
 const OUTPUT_COPY = document.querySelector('#output-modal-copy');
@@ -50,7 +53,6 @@ function onLoadFunction() {
   Toast('Flash Card Set Loaded from URL');
 }
 
-
 function loadCardsFromJson(json) {
   if (typeof json === 'string') {
     json = decodeURIComponent(json);
@@ -61,7 +63,33 @@ function loadCardsFromJson(json) {
   for (let index = 0; index < count; index++) {
     silentAddCard(cardArray[index]);
   }
+}
+/******************************************************************************/
+/*                                File Handling                               */
+/******************************************************************************/
+function handleUpload() {
+  const file = this.files[0];
+  const name = file.name;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    document.querySelector('#upload-file-name').value = name;
+    document.querySelector('#upload-file-content').value = event.target.result;
+  };
+  reader.readAsText(file);
+}
 
+function parseFile() {
+  const name = document.querySelector('#upload-file-name').value;
+  const string = document.querySelector('#upload-file-content').value
+  const json = JSON.parse(string);
+  const title = json.Title ? json.Title : name.slice(0, name.lastIndexOf('.'));
+  saveTitle(title);
+  const cardArray = json.FlashCards;
+  const cardCount = cardArray.length;
+  for (let index = 0; index < cardCount; index++) {
+    const card = cardArray[index];
+    silentAddCard(card);
+  }
 }
 
 /******************************************************************************/
@@ -114,6 +142,35 @@ function silentAddCard(json) {
 function createCard() {
   EDIT_IS_NEW.innerText = '1';
   openEditModal(createCardListEntry());
+}
+
+/******************************************************************************/
+/*                              File Upload Modal                             */
+/******************************************************************************/
+function resetUploadModal() {
+  UPLOAD_MODAL.classList.add('hidden');
+  UPLOAD_INPUT.value = '';
+}
+
+function submitFileUploadModal() {
+  parseFile();
+  resetUploadModal();
+}
+
+function parseFile(file, name) {
+  const json = JSON.parse(file);
+  const title = json.Title ? json.Title : name.slice(0, name.lastIndexOf('.'));
+  saveTitle(title);
+  const cardArray = json.FlashCards;
+  const cardCount = cardArray.length;
+  for (let index = 0; index < cardCount; index++) {
+    const card = cardArray[index];
+    silentAddCard(card);
+  }
+}
+
+function openUploadModal() {
+  UPLOAD_MODAL.classList.remove('hidden');
 }
 
 /******************************************************************************/
@@ -170,8 +227,8 @@ function resetTitleModal() {
   TITLE_TEXTAREA.value = CARD_SET_TITLE.innerText;
 }
 
-function saveTitle() {
-  CARD_SET_TITLE.innerText = TITLE_TEXTAREA.value;
+function saveTitle(title = TITLE_TEXTAREA.value) {
+  CARD_SET_TITLE.innerText = title;
   resetTitleModal();
   Toast('Title Updated');
 }
@@ -191,7 +248,6 @@ function generateOutput() {
   const uuid = makeUuid();
   const json = convertCardsToJsonString(uuid);
 
-  //let string = `<div class="invictus placeholder" id="{{{UUID}}}"></div><script class="invictus loader" id="loader-{{{UUID}}}">{{{LOADER}}}</script><script class="invictus initializer" id="init-{{{UUID}}}">(()=>{const json=\`{{{JSON_CONTENT}}}\`;new invictus.classDefinitions.FlashCardSet(json);window.setTimeout(()=>{document.querySelector('#loader-{{{UUID}}}').remove();document.querySelector('#init-{{{UUID}}}').remove()},500)})()</script>`;
   let string = globalThis.templateString;
   string = string.replaceAll(/\{\{\{UUID\}\}\}/g, uuid);
   string = string.replaceAll(/\{\{\{JSON_CONTENT\}\}\}/g, json);
@@ -308,5 +364,9 @@ document.querySelector('#title-edit-modal-save').addEventListener('click', saveT
 document.querySelector('.card-set-title-edit').addEventListener('click', openTitleModal);
 document.querySelector('#button-generate-output').addEventListener('click', generateOutput);
 document.querySelector('#output-modal-close').addEventListener('click', resetOutputModal);
+document.querySelector('#button-upload-file').addEventListener('click', openUploadModal);
+document.querySelector('#upload-file-modal-cancel').addEventListener('click', resetUploadModal);
+document.querySelector('#upload-file-modal-submit').addEventListener('click', submitFileUploadModal);
 NEW_CARD_BUTTON.addEventListener('click', createCard);
 OUTPUT_COPY.addEventListener('click', copyOutputJson);
+UPLOAD_INPUT.addEventListener("change", handleUpload);
