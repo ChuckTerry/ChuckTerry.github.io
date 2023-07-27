@@ -6,6 +6,8 @@ const NEW_CARD_BUTTON = CARD_LIST.lastElementChild;
 
 const UPLOAD_MODAL = document.querySelector('#upload-file-modal');
 const UPLOAD_INPUT = document.querySelector('#upload-file-picker');
+const UPLOAD_PROGRESS = document.querySelector('#upload-file-progress-bar');
+const UPLOAD_PROGRESS_FIELDSET = document.querySelector('#upload-file-progess-fieldset');
 
 const OUTPUT_MODAL = document.querySelector('#output-modal');
 const OUTPUT_TEXTAREA = document.querySelector('#output-textarea');
@@ -22,6 +24,7 @@ const TERM_TEXTAREA = document.querySelector('#card-edit-term-textarea');
 const DEFINITION_TEXTAREA = document.querySelector('#card-edit-definition-textarea');
 
 const VERSION = '1.0.0';
+const SAVEFILE_VERSION = 1;
 const DAWN_OF_TIME = {
   date: new Date(-62167201438000),
   epoch: '-62167201438000'
@@ -30,6 +33,39 @@ const DAWN_OF_TIME = {
 fetch('./output-template.html')
   .then(response => response.text())
   .then(string => globalThis.templateString = string);
+
+
+/******************************************************************************/
+/*                            File Writing Functions                          */
+/******************************************************************************/
+const file_WriteIdentifier = () => '1NV1CTUS\x00';
+const file_WriteSavefileVersion = () => `\x11${SAVEFILE_VERSION}\x17`;
+const file_WriteInvictusVersion = () => `\x12${VERSION.split('.').join('\x00')}\x00\x17`;
+const file_WriteHeader = () => `\x01${file_WriteSavefileVersion}${file_WriteInvictusVersion}\r\n\x17`;
+const file_WriteBody = (jsonString) => `\x02${btoa(jsonString)}\x03\x00\x17`;
+const file_WriteDate = () => {
+  const date = new Date();
+  const year = date.getFullYear() - 2000;
+  const month = date.getMonth().length === 1 ? '0' + date.getMonth() : date.getMonth();
+  const day = date.getDate().length === 1 ? '0' + date.getDate() : date.getDate();
+  return `\x13${year}\x00${month}\x00${day}\x00\x17`;
+};
+const file_WriteTime = () => {
+  const date = new Date();
+  const hour = date.getHours().length === 1 ? '0' + date.getHours() : date.getHours();
+  const minute = date.getMinutes().length === 1 ? '0' + date.getMinutes() : date.getMinutes();
+  const second = date.getSeconds().length === 1 ? '0' + date.getSeconds() : date.getSeconds();
+  return `\x14${hour}\x00${minute}\x00${second}\x00\x17`;
+};
+const file_WriteFooter = () => `\x16${file_WriteDate()}\x00${file_WriteTime()}\x17\x04`;
+const file_Encode = (jsonString) => {
+  return file_WriteIdentifier() +
+         file_WriteHeader() +
+         file_WriteBody(jsonString) +
+         file_WriteFooter();
+}
+
+
 
 /******************************************************************************/
 /*                             Page Load Functions                            */
@@ -68,13 +104,27 @@ function loadCardsFromJson(json) {
 /*                                File Handling                               */
 /******************************************************************************/
 function handleUpload() {
+  unhideElements(UPLOAD_PROGRESS_FIELDSET);
+  //UPLOAD_PROGRESS_FIELDSET.classList.remove('hidden');
   const file = this.files[0];
   const name = file.name;
   const reader = new FileReader();
-  reader.onload = (event) => {
+  reader.addEventListener('error', () => {
+    UPLOAD_INPUT.value = '';
+    Toast('ERROR: File Uplaod Failed');
+  });
+  reader.addEventListener('progress', ([lengthComputable, loaded, total]) => {
+    if (lengthComputable) {
+      const percent = loaded / total * 100;
+      const fixedPercent = percent.toFixed(1);
+      UPLOAD_PROGRESS.value = fixedPercent;
+      UPLOAD_PROGRESS.innerText = `${fixedPercent} %`;
+    }
+  });
+  reader.addEventListener('load', (event) => {
     document.querySelector('#upload-file-name').value = name;
     document.querySelector('#upload-file-content').value = event.target.result;
-  };
+  });
   reader.readAsText(file);
 }
 
@@ -148,8 +198,12 @@ function createCard() {
 /*                              File Upload Modal                             */
 /******************************************************************************/
 function resetUploadModal() {
-  UPLOAD_MODAL.classList.add('hidden');
+  hideElements(UPLOAD_MODAL, UPLOAD_PROGRESS_FIELDSET);
+  // UPLOAD_MODAL.classList.add('hidden');
   UPLOAD_INPUT.value = '';
+  UPLOAD_PROGRESS.value = 0;
+  UPLOAD_PROGRESS.innerText = '0.0 %';
+  // UPLOAD_PROGRESS_FIELDSET.classList.add('hidden');
 }
 
 function submitFileUploadModal() {
@@ -158,14 +212,16 @@ function submitFileUploadModal() {
 }
 
 function openUploadModal() {
-  UPLOAD_MODAL.classList.remove('hidden');
+  unhideElements(UPLOAD_MODAL);
+  //UPLOAD_MODAL.classList.remove('hidden');
 }
 
 /******************************************************************************/
 /*                                 Edit Modal                                 */
 /******************************************************************************/
 function openEditModal(cardWrapper = false) {
-  EDIT_MODAL.classList.remove('hidden');
+  unhideElements(EDIT_MODAL);
+  //EDIT_MODAL.classList.remove('hidden');
   if (cardWrapper === false) cardWrapper = createCardListEntry();
   const cardIndex = [...CARD_LIST.children].indexOf(cardWrapper);
   EDIT_INDEX.innerText = cardIndex;
@@ -180,7 +236,8 @@ function resetEditModal() {
   DEFINITION_TEXTAREA.value = '';
   EDIT_INDEX.innerText = CARD_LIST.children.length;
   EDIT_IS_NEW.innerText = '0';
-  EDIT_MODAL.classList.add('hidden');
+  hideElements(EDIT_MODAL);
+  //EDIT_MODAL.classList.add('hidden');
 }
 
 function cancelEditModal() {
@@ -207,11 +264,13 @@ function editCard(event) {
 /*                                 Title Modal                                */
 /******************************************************************************/
 function openTitleModal() {
-  TITLE_MODAL.classList.remove('hidden');
+  unhideElements(TITLE_MODAL);
+  //TITLE_MODAL.classList.remove('hidden');
 }
 
 function resetTitleModal() {
-  TITLE_MODAL.classList.add('hidden');
+  hideElements(TITLE_MODAL);
+  //TITLE_MODAL.classList.add('hidden');
   TITLE_TEXTAREA.value = CARD_SET_TITLE.innerText;
 }
 
@@ -242,12 +301,14 @@ function generateOutput() {
   string = string.replaceAll(/\{\{\{LOADER\}\}\}/g, `/* Loader Goes Here */`);
 
   OUTPUT_TEXTAREA.value = string;
-  OUTPUT_MODAL.classList.remove('hidden');
+  unhideElements(OUTPUT_MODAL);
+  //OUTPUT_MODAL.classList.remove('hidden');
 }
 
 function resetOutputModal() {
   OUTPUT_TEXTAREA.innerText = '';
-  OUTPUT_MODAL.classList.add('hidden');
+  hideElements(OUTPUT_MODAL);
+  //OUTPUT_MODAL.classList.add('hidden');
 }
 
 function convertCardsToJsonString(uuid = makeUuid()) {
@@ -324,6 +385,34 @@ function clearAllCards() {
 /******************************************************************************/
 function getTimeStamp(anonymous = false) {
   return globalThis.anonymous || anonymous ? DAWN_OF_TIME.epoch : Date.now();
+}
+
+function abstract_multiElementClassModify(elements, addClasses = [], removeClasses = []) {
+ const elementCount = elements.length;
+  for (let index = 0; index < elementCount; index++) {
+    const addCount = addClasses.length;
+    for (let addIndex = 0; addIndex < addCount; addIndex++) {
+      elements[index].classList.add(addClasses[addIndex]);
+    }
+    const removeCount = removeClasses.length;
+    for (let removeIndex = 0; removeIndex < removeCount; removeIndex++) {
+      elements[index].classList.remove(removeClasses[removeIndex]);
+    }
+  }
+  return elements;
+}
+
+function hideElements(...args) {
+const elements = [...args];
+  abstract_multiElementClassModify(elements, ['hidden']);
+  return elements;
+}
+
+
+function unhideElements(...args) {
+  const elements = [...args];
+  abstract_multiElementClassModify(elements, [], ['hidden']);
+  return elements;
 }
 
 /** @todo Use with contenteditable to make ellipses safe */

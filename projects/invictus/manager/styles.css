@@ -317,16 +317,16 @@ button:hover {
   margin-bottom: 30px;
 }
 
-.output-button-wrapper {
+.main-area-button-wrapper {
   min-width: 600px;
   width: 40%;
   text-align: center;
 }
 
-#button-generate-output {
-  padding: 20px 60px;
+.main-area-button-wrapper > button {
+  padding: 20px 45px;
   border-radius: 14px;
-  font-size: 1.8em;
+  font-size: 1.6em;
   margin: 4px 24px 20px 24px;
   box-shadow: 3px 4px 2px 0 rgba(0,0,0,0.2);
   cursor: pointer;
