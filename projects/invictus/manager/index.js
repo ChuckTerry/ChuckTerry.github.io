@@ -275,7 +275,7 @@ function resetTitleModal() {
 }
 
 function saveTitle(title = TITLE_TEXTAREA.value) {
-  CARD_SET_TITLE.innerText = title;
+  CARD_SET_TITLE.innerText = title instanceof PointerEvent ? TITLE_TEXTAREA.value : title;
   resetTitleModal();
   Toast('Title Updated');
 }
