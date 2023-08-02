@@ -80,7 +80,9 @@ function getEditString() {
 function onLoadFunction() {
   const editString = getEditString();
   if (!editString) return createCardListEntry();
-  const json = JSON.parse(decodeURI(editString));
+  const decodedString = decodeURI(editString);
+  if (decodedString.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected via Compromised URL Query String!  Aborting Load!');
+  const json = JSON.parse(decodedString);
   const cardArray = json.FlashCards;
   const count = cardArray.length;
   for (let index = 0; index < count; index++) {
@@ -92,6 +94,7 @@ function onLoadFunction() {
 function loadCardsFromJson(json) {
   if (typeof json === 'string') {
     json = decodeURIComponent(json);
+    if (json.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected via Compromised JSON!  Aborting Load!');
     json = JSON.parse(json);
   }
   const cardArray = Array.isArray(json) ? json : json.FlashCards;
@@ -130,7 +133,8 @@ function handleUpload() {
 
 function parseFile() {
   const name = document.querySelector('#upload-file-name').value;
-  const string = document.querySelector('#upload-file-content').value
+  const string = document.querySelector('#upload-file-content').value;
+  if (string.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected via Compromised File!  Aborting Load!');
   const json = JSON.parse(string);
   const title = json.Title ? json.Title : name.slice(0, name.lastIndexOf('.'));
   saveTitle(title);
@@ -185,7 +189,10 @@ function loadPlainTextCardSet(string, deleteCurrentSet = false) {
 }
 
 function silentAddCard(json) {
-  if (typeof json === 'string') json = JSON.parse(json);
+  if (typeof json === 'string') {
+    if (json.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected While Adding Card!  Aborting Add Card!');
+    json = JSON.parse(json);
+  }
   createCardListEntry(json.Term.Content, json.Definition.Content);
 }
 
@@ -275,7 +282,7 @@ function resetTitleModal() {
 }
 
 function saveTitle(title = TITLE_TEXTAREA.value) {
-  CARD_SET_TITLE.innerText = title;
+  CARD_SET_TITLE.innerText = title instanceof PointerEvent ? TITLE_TEXTAREA.value : title;
   resetTitleModal();
   Toast('Title Updated');
 }
