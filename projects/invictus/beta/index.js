@@ -34,7 +34,6 @@ fetch('./output-template.html')
   .then(response => response.text())
   .then(string => globalThis.templateString = string);
 
-
 /******************************************************************************/
 /*                            File Writing Functions                          */
 /******************************************************************************/
@@ -63,9 +62,7 @@ const file_Encode = (jsonString) => {
          file_WriteHeader() +
          file_WriteBody(jsonString) +
          file_WriteFooter();
-}
-
-
+};
 
 /******************************************************************************/
 /*                             Page Load Functions                            */
@@ -73,15 +70,21 @@ const file_Encode = (jsonString) => {
 function getEditString() {
   const searchString = window.location.search;
   const matchString = '?action=edit&content=';
-  if (!searchString?.startsWith(matchString)) return null;
+  if (!searchString?.startsWith(matchString)) {
+    return null;
+  }
   return searchString.slice(matchString.length);
 }
 
 function onLoadFunction() {
   const editString = getEditString();
-  if (!editString) return createCardListEntry();
+  if (!editString) {
+    return createCardListEntry();
+  }
   const decodedString = decodeURI(editString);
-  if (decodedString.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected via Compromised URL Query String!  Aborting Load!');
+  if (decodedString.contains('"__proto__"')) {
+    throw new Error('Prototype Pollution Attempt Detected via Compromised URL Query String!  Aborting Load!');
+  }
   const json = JSON.parse(decodedString);
   const cardArray = json.FlashCards;
   const count = cardArray.length;
@@ -94,7 +97,9 @@ function onLoadFunction() {
 function loadCardsFromJson(json) {
   if (typeof json === 'string') {
     json = decodeURIComponent(json);
-    if (json.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected via Compromised JSON!  Aborting Load!');
+    if (json.contains('"__proto__"')) {
+      throw new Error('Prototype Pollution Attempt Detected via Compromised JSON!  Aborting Load!');
+    }
     json = JSON.parse(json);
   }
   const cardArray = Array.isArray(json) ? json : json.FlashCards;
@@ -103,6 +108,7 @@ function loadCardsFromJson(json) {
     silentAddCard(cardArray[index]);
   }
 }
+
 /******************************************************************************/
 /*                                File Handling                               */
 /******************************************************************************/
@@ -133,7 +139,9 @@ function handleUpload() {
 function parseFile() {
   const name = document.querySelector('#upload-file-name').value;
   const string = document.querySelector('#upload-file-content').value;
-  if (string.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected via Compromised File!  Aborting Load!');
+  if (string.contains('"__proto__"')) {
+    throw new Error('Prototype Pollution Attempt Detected via Compromised File!  Aborting Load!');
+  }
   const json = JSON.parse(string);
   const title = json.Title ? json.Title : name.slice(0, name.lastIndexOf('.'));
   saveTitle(title);
@@ -148,7 +156,6 @@ function parseFile() {
 /******************************************************************************/
 /*                           Card Creation & Loading                          */
 /******************************************************************************/
-
 function createCardListEntry(term = 'Term Text (Front)', definition = 'Definition Text (Back)') {
   const wrapper = document.createElement('div');
   wrapper.classList.add('card-list-entry-wrapper');
@@ -165,7 +172,9 @@ function createCardListEntry(term = 'Term Text (Front)', definition = 'Definitio
 }
 
 function loadPlainTextCardSet(string, deleteCurrentSet = false) {
-  if (deleteCurrentSet) clearAllCards();
+  if (deleteCurrentSet) {
+    clearAllCards();
+  }
   const EOL = string.indexOf('\r\n') === -1 ? '\n' : '\r\n';
   if (string.trim().startsWith('Title:')) {
     const firstLineBreak = string.indexOf(EOL);
@@ -179,20 +188,27 @@ function loadPlainTextCardSet(string, deleteCurrentSet = false) {
   for (let index = 0; index < cardCount; index++) {
     const cardString = cards[index];
     const colon = cardString.indexOf(':');
-    if (colon === -1) continue;
+    if (colon === -1) {
+      continue;
+    }
     const term = cardString.slice(0, colon);
     const definition = cardString.slice(colon + 1);
-    silentAddCard({ Term: { Content: term }, Definition: { Content: definition } });
+    silentAddCard([term, definition]);
   }
   Toast('Flash Cards Loaded');
 }
 
-function silentAddCard(json) {
-  if (typeof json === 'string') {
-    if (json.contains('"__proto__"')) throw new Error('Prototype Pollution Attempt Detected While Adding Card!  Aborting Add Card!');
-    json = JSON.parse(json);
+function silentAddCard(jsonOrEntryArray) {
+  if (Array.isArray(jsonOrEntryArray)) {
+    return createCardListEntry(jsonOrEntryArray[0], jsonOrEntryArray[1]);
   }
-  createCardListEntry(json.Term.Content, json.Definition.Content);
+  if (typeof jsonOrEntryArray === 'string') {
+    if (jsonOrEntryArray.contains('"__proto__"')) {
+      throw new Error('Prototype Pollution Attempt Detected While Adding Card!  Aborting Add Card!');
+    }
+    jsonOrEntryArray = JSON.parse(jsonOrEntryArray);
+  }
+  return createCardListEntry(jsonOrEntryArray.Term.Content, jsonOrEntryArray.Definition.Content);
 }
 
 function createCard() {
@@ -222,9 +238,8 @@ function openUploadModal() {
 /******************************************************************************/
 /*                                 Edit Modal                                 */
 /******************************************************************************/
-function openEditModal(cardWrapper = false) {
+function openEditModal(cardWrapper = createCardListEntry()) {
   unhideElements(EDIT_MODAL);
-  if (cardWrapper === false) cardWrapper = createCardListEntry();
   const cardIndex = [...CARD_LIST.children].indexOf(cardWrapper);
   EDIT_INDEX.innerText = cardIndex;
   const term = cardWrapper.querySelector('.card-content-term').innerText;
@@ -245,6 +260,9 @@ function resetEditModal() {
 function cancelEditModal() {
   if (EDIT_IS_NEW.innerText === "1") {
     NEW_CARD_BUTTON.previousElementSibling.remove();
+    Toast('New Card Discarded');
+  } else {
+    Toast('Flash Card Changes Discarded');
   }
   return resetEditModal();
 }
@@ -294,11 +312,9 @@ function copyOutputJson() {
 function generateOutput() {
   const uuid = makeUuid();
   const json = convertCardsToJsonString(uuid);
-
   let string = globalThis.templateString;
   string = string.replaceAll(/\{\{\{UUID\}\}\}/g, uuid);
   string = string.replaceAll(/\{\{\{JSON_CONTENT\}\}\}/g, json);
-
   OUTPUT_TEXTAREA.value = string;
   unhideElements(OUTPUT_MODAL);
 }
@@ -310,31 +326,33 @@ function resetOutputModal() {
 
 function convertCardsToJsonString(uuid = makeUuid()) {
   const json = {
-    Title: CARD_SET_TITLE.innerText,
-    Created: "",
-    Modified: getTimeStamp(),
-    UUID: uuid,
-    FlashCards: [],
-    Version: VERSION
+    "Title": CARD_SET_TITLE.innerText,
+    "Created": "",
+    "Modified": getTimeStamp(),
+    "UUID": uuid,
+    "FlashCards": [],
+    "Version": VERSION
   };
   const cardArray = [...CARD_LIST.children];
   const count = cardArray.length;
   for (let index = 0; index < count; index++) {
     const card = cardArray[index];
-    if (card.classList.contains('card-list-new-card')) continue;
+    if (card.classList.contains('card-list-new-card')) {
+      continue;
+    }
     const cardJson = {
-      Term: {
-        Content: "",
-        ContainsHTML: false,
-        IsImage: false
+      "Term": {
+        "Content": "",
+        "ContainsHTML": false,
+        "IsImage": false
       },
-      Definition: {
-        Content: "",
-        ContainsHTML: false,
-        IsImage: false
+      "Definition": {
+        "Content": "",
+        "ContainsHTML": false,
+        "IsImage": false
       },
-      Created: "",
-      Modified: ""
+      "Created": "",
+      "Modified": ""
     };
     cardJson.Term.Content = card.querySelector('.card-content-term').innerText;
     cardJson.Definition.Content = card.querySelector('.card-content-definition').innerText;
@@ -348,14 +366,18 @@ function convertCardsToJsonString(uuid = makeUuid()) {
 /******************************************************************************/
 function incrementCardPosition(event) {
   const cardWrapper = event.target.parentElement.parentElement.parentElement;
-  if (cardWrapper.previousElementSibling === null) return;
+  if (cardWrapper.previousElementSibling === null) {
+    return;
+  }
   const previousSibling = cardWrapper.previousElementSibling;
   cardWrapper.parentElement.insertBefore(cardWrapper, previousSibling);
 }
 
 function decrementCardPosition(event) {
   const cardWrapper = event.target.parentElement.parentElement.parentElement;
-  if (cardWrapper.nextElementSibling.classList.contains('card-list-new-card')) return;
+  if (cardWrapper.nextElementSibling.classList.contains('card-list-new-card')) {
+    return;
+  }
   const nextNextSibling = cardWrapper.nextElementSibling.nextElementSibling;
   cardWrapper.parentElement.insertBefore(cardWrapper, nextNextSibling);
 }
@@ -363,7 +385,6 @@ function decrementCardPosition(event) {
 /******************************************************************************/
 /*                           Card Removal Functions                           */
 /******************************************************************************/
-
 function deleteCard(event) {
   event.target.parentElement.parentElement.remove();
   Toast('Flash Card Deleted');
@@ -404,7 +425,6 @@ const elements = [...args];
   abstract_multiElementClassModify(elements, ['hidden']);
   return elements;
 }
-
 
 function unhideElements(...args) {
   const elements = [...args];
