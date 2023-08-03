@@ -298,7 +298,6 @@ function generateOutput() {
   let string = globalThis.templateString;
   string = string.replaceAll(/\{\{\{UUID\}\}\}/g, uuid);
   string = string.replaceAll(/\{\{\{JSON_CONTENT\}\}\}/g, json);
-  string = string.replaceAll(/\{\{\{LOADER\}\}\}/g, `/* Loader Goes Here */`);
 
   OUTPUT_TEXTAREA.value = string;
   unhideElements(OUTPUT_MODAL);
