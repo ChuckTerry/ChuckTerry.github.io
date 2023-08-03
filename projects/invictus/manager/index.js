@@ -1,6 +1,8 @@
 import { Toast } from './Toast.js';
 import { makeUuid } from './uuidGenerator.js';
 
+let BETA_TRIGGER = 0;
+
 const CARD_LIST = document.querySelector('#card-list');
 const NEW_CARD_BUTTON = CARD_LIST.lastElementChild;
 
@@ -358,7 +360,14 @@ function convertCardsToJsonString(uuid = makeUuid()) {
 /******************************************************************************/
 function incrementCardPosition(event) {
   const cardWrapper = event.target.parentElement.parentElement.parentElement;
-  if (cardWrapper.previousElementSibling === null) return;
+  if (cardWrapper.previousElementSibling === null) {
+    BETA_TRIGGER++;
+    window.setTimeout(() => BETA_TRIGGER--, 1500);
+    if (BETA_TRIGGER > 6) {
+      window.location = 'https://chuckterry.me/projects/invictus/beta/';
+    }
+    return;
+  }
   const previousSibling = cardWrapper.previousElementSibling;
   cardWrapper.parentElement.insertBefore(cardWrapper, previousSibling);
 }
