@@ -108,7 +108,6 @@ function loadCardsFromJson(json) {
 /******************************************************************************/
 function handleUpload() {
   unhideElements(UPLOAD_PROGRESS_FIELDSET);
-  //UPLOAD_PROGRESS_FIELDSET.classList.remove('hidden');
   const file = this.files[0];
   const name = file.name;
   const reader = new FileReader();
@@ -206,11 +205,9 @@ function createCard() {
 /******************************************************************************/
 function resetUploadModal() {
   hideElements(UPLOAD_MODAL, UPLOAD_PROGRESS_FIELDSET);
-  // UPLOAD_MODAL.classList.add('hidden');
   UPLOAD_INPUT.value = '';
   UPLOAD_PROGRESS.value = 0;
   UPLOAD_PROGRESS.innerText = '0.0 %';
-  // UPLOAD_PROGRESS_FIELDSET.classList.add('hidden');
 }
 
 function submitFileUploadModal() {
@@ -220,7 +217,6 @@ function submitFileUploadModal() {
 
 function openUploadModal() {
   unhideElements(UPLOAD_MODAL);
-  //UPLOAD_MODAL.classList.remove('hidden');
 }
 
 /******************************************************************************/
@@ -228,7 +224,6 @@ function openUploadModal() {
 /******************************************************************************/
 function openEditModal(cardWrapper = false) {
   unhideElements(EDIT_MODAL);
-  //EDIT_MODAL.classList.remove('hidden');
   if (cardWrapper === false) cardWrapper = createCardListEntry();
   const cardIndex = [...CARD_LIST.children].indexOf(cardWrapper);
   EDIT_INDEX.innerText = cardIndex;
@@ -236,6 +231,7 @@ function openEditModal(cardWrapper = false) {
   const definition = cardWrapper.querySelector('.card-content-definition').innerText;
   TERM_TEXTAREA.value = term;
   DEFINITION_TEXTAREA.value = definition;
+  TERM_TEXTAREA.focus();
 }
 
 function resetEditModal() {
@@ -244,7 +240,6 @@ function resetEditModal() {
   EDIT_INDEX.innerText = CARD_LIST.children.length;
   EDIT_IS_NEW.innerText = '0';
   hideElements(EDIT_MODAL);
-  //EDIT_MODAL.classList.add('hidden');
 }
 
 function cancelEditModal() {
@@ -272,12 +267,10 @@ function editCard(event) {
 /******************************************************************************/
 function openTitleModal() {
   unhideElements(TITLE_MODAL);
-  //TITLE_MODAL.classList.remove('hidden');
 }
 
 function resetTitleModal() {
   hideElements(TITLE_MODAL);
-  //TITLE_MODAL.classList.add('hidden');
   TITLE_TEXTAREA.value = CARD_SET_TITLE.innerText;
 }
 
@@ -309,13 +302,11 @@ function generateOutput() {
 
   OUTPUT_TEXTAREA.value = string;
   unhideElements(OUTPUT_MODAL);
-  //OUTPUT_MODAL.classList.remove('hidden');
 }
 
 function resetOutputModal() {
   OUTPUT_TEXTAREA.innerText = '';
   hideElements(OUTPUT_MODAL);
-  //OUTPUT_MODAL.classList.add('hidden');
 }
 
 function convertCardsToJsonString(uuid = makeUuid()) {
