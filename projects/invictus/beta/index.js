@@ -82,7 +82,7 @@ function onLoadFunction() {
     return createCardListEntry();
   }
   const decodedString = decodeURI(editString);
-  if (decodedString.contains('"__proto__"')) {
+  if (decodedString.includes('"__proto__"')) {
     throw new Error('Prototype Pollution Attempt Detected via Compromised URL Query String!  Aborting Load!');
   }
   const json = JSON.parse(decodedString);
@@ -97,7 +97,7 @@ function onLoadFunction() {
 function loadCardsFromJson(json) {
   if (typeof json === 'string') {
     json = decodeURIComponent(json);
-    if (json.contains('"__proto__"')) {
+    if (json.includes('"__proto__"')) {
       throw new Error('Prototype Pollution Attempt Detected via Compromised JSON!  Aborting Load!');
     }
     json = JSON.parse(json);
@@ -139,7 +139,7 @@ function handleUpload() {
 function parseFile() {
   const name = document.querySelector('#upload-file-name').value;
   const string = document.querySelector('#upload-file-content').value;
-  if (string.contains('"__proto__"')) {
+  if (string.includes('"__proto__"')) {
     throw new Error('Prototype Pollution Attempt Detected via Compromised File!  Aborting Load!');
   }
   const json = JSON.parse(string);
@@ -203,7 +203,7 @@ function silentAddCard(jsonOrEntryArray) {
     return createCardListEntry(jsonOrEntryArray[0], jsonOrEntryArray[1]);
   }
   if (typeof jsonOrEntryArray === 'string') {
-    if (jsonOrEntryArray.contains('"__proto__"')) {
+    if (jsonOrEntryArray.includes('"__proto__"')) {
       throw new Error('Prototype Pollution Attempt Detected While Adding Card!  Aborting Add Card!');
     }
     jsonOrEntryArray = JSON.parse(jsonOrEntryArray);
