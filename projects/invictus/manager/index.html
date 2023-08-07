@@ -2,10 +2,10 @@
 <html lang="en-US">
   <head>
     <meta charset="utf-8" />
-    <title>Invictus - Overview</title>
+    <title>Invictus Flash Card Manager</title>
     <meta name="viewport" content="width=device-width">
     <meta name="author" content="Chuck Terry" />
-    <meta name="description" content="Invictus - Flash Card Set Manager" />
+    <meta name="description" content="Invictus Flash Card Manager makes it easy to add your own set of flash cards to Moodle. Why rely on shady third-party providers when you've got Invictus!" />
     <script type="module" src="index.js"  defer></script>
     <link href="styles.css" rel="stylesheet" type="text/css" />
     <link href="Toast.css" rel="stylesheet" type="text/css" />
@@ -17,17 +17,17 @@
         <div class="sidebar-left"></div>
         <main>
           <section>
-            <h1>Invictus Flash Card Manager Demo</h1><br/>
+            <h1>Invictus Flash Card Manager</h1><br/>
             <form>
                 <div class="title-wrapper">
-                  <h2 class="card-set-title">Title</h2><span class="card-set-title-edit">✎</span>
+                  <h2 class="card-set-title">Title</h2><span class="card-set-title-edit" title="Edit Card Set Title">✎</span>
                 </div>
                 <div id="card-list">
                   <div class="card-list-new-card" title="Create New Card"><span>➕</span></div>
                 </div>
             </form>
             <div class="main-area-button-wrapper">
-              <button type="button" id="button-generate-output">Get HTML for Moodle</button>
+              <button type="button" id="button-generate-output">Get Code for Moodle</button>
               <button type="button" id="button-upload-file">Upload File</button>
             </div>
           </section>
@@ -48,8 +48,8 @@
                 </div>
               </div>
               <div id="card-edit-modal-controls">
-                <button type="button" id="card-edit-modal-cancel">Cancel</button>
-                <button type="button" id="card-edit-modal-save">Save</button>
+                <button type="button" id="card-edit-modal-cancel" title="Discard Changes">Cancel</button>
+                <button type="button" id="card-edit-modal-save" title="Save Changes">Save</button>
               </div>
             </div>
           </div>
@@ -63,8 +63,8 @@
                 </div>
               </div>
               <div class="modal-controls">
-                <button type="button" id="title-edit-modal-cancel">Cancel</button>
-                <button type="button" id="title-edit-modal-save">Save</button>
+                <button type="button" id="title-edit-modal-cancel" title="Discard Title Changes">Cancel</button>
+                <button type="button" id="title-edit-modal-save" title="Save Title">Save</button>
               </div>
             </div>
           </div>
@@ -98,14 +98,14 @@
             <div class="modal-content">
               <div class="modal-body">
                 <div id="output-modal-form-wrapper">
-                  <label for="output-textarea">HTML Code</label>
+                  <label for="output-textarea">Moodle Code</label>
                   <textarea id="output-textarea" name="output-textarea" rows="7"></textarea>
                 </div>
-                <p>To add this set of flash cards to a Moodle page containing an Invictus Logic Driver: Copy the above text to your clipboard and paste it into a new text block</p>
+                <p>To add your set of flash cards to a Moodle page, copy the above text and paste it into a new text block.  Make sure you have the editor in HTML Mode ("&lt;/>" Button) before pasting!</p>
               </div>
               <div class="modal-controls">
-                <button type="button" id="output-modal-copy">Copy</button>
-                <button type="button" id="output-modal-close">Close</button>
+                <button type="button" id="output-modal-copy" title="Copy the Code to Your Clipboard">Copy</button>
+                <button type="button" id="output-modal-close" title="Close Modal">Close</button>
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@
       </div>
       <!-- Footer -->
       <footer>
-        <p>Copyright 2022 - 2023 &copy; Chuck Terry, Broken Blue Jeans, LLC - All RIghts Reserved.</p>
+        <p>Copyright 2022 - 2023 &copy; Chuck Terry, Broken Blue Jeans, LLC - All Rights Reserved.</p>
       </footer>
     </div>
     <div id="toaster"></div>
