@@ -18,6 +18,10 @@ function initializePlayground() {
     functionQueue.push([setupKeyboardEventLogging, [logLevel]]);
   }
 
+  if (document.querySelector('#canvas-preset').selectedOptions[0].value === 'whiteboard') {
+    functionQueue.push([setupWhiteboard, []]);
+  }
+
   document.querySelector('#playground-controller').remove();
   const functionCount = functionQueue.length;
   for (let index = 0; index < functionCount; index++) {
@@ -65,4 +69,87 @@ function initializeCanvas(targetContext, width = window.innerWidth, height = win
   document.body.append(canvas);
   globalThis.context = canvas.getContext(targetContext);
   return canvas;
+}
+
+function deg2rad(degrees) {
+  return degrees * Math.PI / 180;
+}
+
+
+function addWhiteboardToolbar() {
+  const toolbar = document.createElement('div');
+  toolbar.classList.add('toolbar');
+
+  const colorPicker = document.createElement('input');
+  colorPicker.type = 'color';
+  colorPicker.classList.add('whiteboard-color-picker');
+  value = '#0000FF';
+  toolbar.append(colorPicker);
+
+  const brushSizeSlider = document.createElement('input');
+  brushSizeSlider.type = 'range';
+  brushSizeSlider.classList.add('whiteboard-size-slider');
+  brushSizeSlider.min = 1;
+  brushSizeSlider.max = 100;
+  brushSizeSlider.value = 14;
+  toolbar.append(brushSizeSlider);
+
+  const brushSizeValue = document.createElement('span');
+  brushSizeValue.classList.add('readable-size');
+  brushSizeValue.classList.add('whiteboard-size-value');
+  brushSizeValue.innerText = brushSizeSlider.value;
+  toolbar.append(brushSizeValue);
+
+  const clearButton = document.createElement('button');
+  clearButton.classList.add('whiteboard-button-clear');
+  clearButton.innerText = 'Clear';
+  toolbar.append(clearButton);
+
+  brushSizeSlider.addEventListener('input', () => brushSizeValue.innerText = brushSizeSlider.value);
+  document.body.insertBefore(toolbar, canvas);
+
+}
+
+
+function setupWhiteboard() {
+  addWhiteboardToolbar();
+  const width = canvas.width;
+  const height = canvas.height = window.innerHeight - 60;
+
+  context.fillStyle = '#000000';
+  context.fillRect(0, 0, width, height);
+
+  const colorPicker = document.querySelector('.whiteboard-color-picker');
+  const sizePicker = document.querySelector('.whiteboard-size-slider');
+  const clearBtn = document.querySelector('.whiteboard-button-clear');
+
+  let cursorX;
+  let cursorY;
+  let pressed = false;
+
+  document.addEventListener('mousemove', ({x, y}) => {
+    cursorX = x;
+    cursorY = y;
+  });
+
+  canvas.addEventListener('mousedown', () => pressed = true);
+  canvas.addEventListener('mouseup', () => pressed = false);
+
+  clearBtn.addEventListener('click', () => {
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, width, height);
+  });
+
+  function draw() {
+    if (pressed) {
+      context.fillStyle = colorPicker.value;
+      context.beginPath();
+      context.arc(cursorX, cursorY - 60, sizePicker.value, deg2rad(0), deg2rad(360), false);
+      context.fill();
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  draw();
 }
