@@ -1,14 +1,16 @@
 <html>
   <head>
-    <script defer>
-      document.querySelector('#button-canvas').addEventListener(() => {
-        document.querySelector('.controls').remove();
-        const canvas = document.createElement('canvas');
-        globalThis.canvas = canvas;
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        document.body.append(canvas);
-        globalThis.context = canvas.getContext("2d");
+    <script>
+      document.addEventListener('load', () => {
+        document.querySelector('#button-canvas').addEventListener('click', () => {
+          document.querySelector('.controls').remove();
+          const canvas = document.createElement('canvas');
+          globalThis.canvas = canvas;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          document.body.append(canvas);
+          globalThis.context = canvas.getContext("2d");
+        });
       });
     </script>
   </head>
