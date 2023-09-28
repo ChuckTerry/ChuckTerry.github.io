@@ -3,7 +3,12 @@
 {
 	"name": "Node.js",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-18"
+	"image": "mcr.microsoft.com/devcontainers/javascript-node:0-18",
+	"portsAttributes": {
+		"55140": {
+			"label": "App:55140"
+		}
+	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},

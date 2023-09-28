@@ -1,22 +1,31 @@
 <html>
   <head>
-    <script>
-      document.addEventListener('load', () => {
-        document.querySelector('#button-canvas').addEventListener('click', () => {
-          document.querySelector('.controls').remove();
-          const canvas = document.createElement('canvas');
-          globalThis.canvas = canvas;
-          canvas.width = window.innerWidth;
-          canvas.height = window.innerHeight;
-          document.body.append(canvas);
-          globalThis.context = canvas.getContext("2d");
-        });
-      });
-    </script>
+    <script src="./index.js" defer></script>
   </head>
   <body>
-    <div class="controls">
-      <button type="button" id="button-canvas">Canvas</button>
-    </div>
+    <form id="playground-controller">
+      <label for="css-reset">CSS Reset</label>
+      <input type="checkbox" id="css-reset" name="css-reset" checked/>
+      
+      <label for="keyboard-event-logging">Keyboard Event Logging</label>
+      <select id="keyboard-event-logging" name="keyboard-event-logging">
+        <option value="none" selected>none</option>
+        <option value="updown">Up/Down</option>
+        <option value="press">Key Press</option>
+        <option value="consolidated">Consolidated</option>
+        <option value="verbose">Verbose</option>
+      </select>
+
+      <label for="canvas-type">Canvas Type</label>
+      <select id="canvas-type" name="canvas-type">
+        <option value="none" selected>none</option>
+        <option value="2d">2D</option>
+        <option value="webgl">WebGL</option>
+        <option value="webgl2">WebGL 2</option>
+        <option value="webgpu">WebGPU</option>
+        <option value="bitmaprenderer">Image Bitmap</option>
+      </select>
+      <button type="button" id="initialize-playground">Submit</button>
+    </form>
   </body>
 </html>
