@@ -1,0 +1,20 @@
+  <html>
+    <head>
+      <script>
+        document.querySelector('#button-canvas').addEventListener(() => {
+          document.querySelector('.controls').remove();
+          const canvas = document.createElement('canvas');
+          globalThis.canvas = canvas;
+          canvas.width = window.innerWidth;
+          canvas.height = window.innerHeight;
+          document.body.append(canvas);
+          globalThis.context = canvas.getContext("2d");
+        });
+      </script>
+    </head>
+    <body>
+      <div class="controls">
+        <button type="button" id="button-canvas">Canvas</button>
+      </div>
+    </body>
+  </html>
