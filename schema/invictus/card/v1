@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      Invictus Flash Card Set Schema.
+      Copyright 2023 Broken Blue Jeans, LLC. All rights reserved.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <xsd:element name="created" type="xsd:dateTime"/>
+  <xsd:element name="lastmodified" type="xsd:dateTime"/>
+  <xsd:element name="term" type="xsd:string"/>
+  <xsd:element name="definition" type="xsd:string"/>
+
+  <xsd:element name="cardoptions">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:any processContents="lax" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+  <xsd:element name="card">
+    <xsd:complexType>
+      <xsd:sequence>
+        <xsd:element ref="term"/>
+        <xsd:element ref="definition"/>
+        <xsd:element ref="created"/>
+        <xsd:element ref="lastmodified"/>
+        <xsd:element ref="cardoptions" minOccurs="0"/>
+      </xsd:sequence>
+    </xsd:complexType>
+  </xsd:element>
+
+</xsd:schema>
