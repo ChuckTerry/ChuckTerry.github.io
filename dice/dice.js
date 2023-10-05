@@ -127,12 +127,13 @@ class Vertex {
  ***********************************************************************/
 class Face {
 
+  static normals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
   static radius = 0;
 
   constructor(dice, normalIndex, sms) {
     this.points = [];
     this.dice = dice;
-    const normal = faceNormals[normalIndex];
+    const normal = Face.normals[normalIndex];
     this.normal = new Point(normalIndex, normal, true);
     // Ellipse major axis angle
     this.angle = Math.atan2(normal.x, -normal.y);
@@ -156,13 +157,13 @@ class Face {
 
       // A first test near the major axis end.
       let ro = normalX.multiply(Math.cos(-sns * Δ)).add(normalY.multiply(Math.sin(-sns * Δ)), normalZ);
-      let rdo = ro.x * ro.x + ro.y * ro.y;
+      let rdo = ro.x ** 2 + ro.y ** 2;
       let rn = normalX.add(normalZ);
-      let rdn = rn.x * rn.x + rn.y * rn.y;
+      let rdn = rn.x ** 2 + rn.y ** 2;
       let i = rdo <= rdn ? 0 : HALF_TURN; // to guide the search
       let j = i;
       let α = i;// The distance is maximum a the contact (Dice radius)
-      while ((rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ)), rdo <= (rdn = rn.x * rn.x + rn.y * rn.y)) {
+      while ((rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ)), rdo <= (rdn = rn.x ** 2 + rn.y ** 2)) {
         α = i;
         i += sns;
         ro = rn;
@@ -183,7 +184,7 @@ class Face {
       rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ);
       rdn = rn.x * rn.x + rn.y * rn.y;
 
-      while ((rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ)), rdo <= (rdn = rn.x * rn.x + rn.y * rn.y)) {
+      while ((rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ)), rdo <= (rdn = rn.x ** 2 + rn.y ** 2)) {
         beta = i;
         i += sns;
         ro = rn;
@@ -311,18 +312,18 @@ class Dice {
   rollDice(a, b) {
     const [cosA, cosB, sinA, sinB] = [Math.cos(a), Math.cos(b), Math.sin(a), Math.sin(b)];
     for (let index = 0; index < 3; index++) {
-      const normal = faceNormals[index];
+      const normal = Face.normals[index];
       const depthFactor = normal.y * sinA + normal.z * cosA;
       const x = depthFactor * sinB + normal.x * cosB;
       const y = normal.y * cosA - normal.z * sinA;
       const z = depthFactor * cosB - normal.x * sinB;
-      faceNormals[index] = new Vertex(x, y, z);
-      faceNormals[5 - index] = faceNormals[index].negate();
+      Face.normals[index] = new Vertex(x, y, z);
+      Face.normals[5 - index] = Face.normals[index].negate();
     }
-    vertexNormals[0] = faceNormals[0].add(faceNormals[1], faceNormals[2]).multiply(dstFce);
-    vertexNormals[1] = faceNormals[0].negate().add(faceNormals[1], faceNormals[2]).multiply(dstFce);
-    vertexNormals[2] = faceNormals[1].negate().add(faceNormals[0], faceNormals[2]).multiply(dstFce);
-    vertexNormals[3] = faceNormals[2].negate().add(faceNormals[0], faceNormals[1]).multiply(dstFce);
+    vertexNormals[0] = Face.normals[0].add(Face.normals[1], Face.normals[2]).multiply(dstFce);
+    vertexNormals[1] = Face.normals[0].negate().add(Face.normals[1], Face.normals[2]).multiply(dstFce);
+    vertexNormals[2] = Face.normals[1].negate().add(Face.normals[0], Face.normals[2]).multiply(dstFce);
+    vertexNormals[3] = Face.normals[2].negate().add(Face.normals[0], Face.normals[1]).multiply(dstFce);
     vertexNormals[4] = vertexNormals[3].negate();
     vertexNormals[5] = vertexNormals[2].negate();
     vertexNormals[6] = vertexNormals[1].negate();
@@ -397,7 +398,7 @@ class Display {
   }
 
   /**
-   * @param {string} canvasSelector - CSS selector for display canvas.
+   * @param {string} [canvasSelector] - CSS selector for display canvas.
    */
   constructor(canvasSelector = '#display') {
     if (Display.instance instanceof Display) return Display.instance;
@@ -478,7 +479,7 @@ class Display {
     const width = this.canvas.width = this.width = document.body.clientWidth;
     const height = this.canvas.height = this.height = document.body.clientHeight;
     const dieRadius = Dice.radius = Math.min(width >> 3, height >> 3);
-    const faceRadius = Face.radius = dieRadius * Math.sin(φ);
+    Face.radius = dieRadius * Math.sin(φ);
     globalThis.dstFce = dieRadius * Math.cos(φ);
     globalThis.dstObs = 10 * dieRadius;
     this.context.translate(width >> 1, height >> 1);
@@ -501,7 +502,7 @@ class InputManager {
 
   /**
    * @param {Display} display - The display object.
-   * @param {boolean} autoRegister - Should we automatically register event listeners?
+   * @param {boolean} [autoRegister] - Should we automatically register event listeners?
    */
   constructor(display, autoRegister = true) {
     this.display = display;
@@ -579,7 +580,6 @@ function init() {
 
   globalThis.inputManager = new InputManager(new Display(), true);
   const w = Math.sqrt(3);
-  globalThis.faceNormals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
   globalThis.vertexNormals = Vertex.generateArrayFrom([w, w, w], [-w, w, w], [w, -w, w], [w, w, -w], [-w, -w, w], [-w, w, -w], [w, -w, -w], [-w, -w, -w]);
   new Dice().drawDice();
 }
