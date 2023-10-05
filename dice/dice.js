@@ -402,6 +402,7 @@ class Display {
    */
   constructor(canvasSelector = '#display') {
     if (Display.instance instanceof Display) return Display.instance;
+    this.initialRadiusSet = false;
     this.canvas = document.querySelector(canvasSelector);
     this.canvas.width = this.width = document.body.clientWidth;
     this.canvas.height = this.height = document.body.clientHeight;
@@ -478,8 +479,23 @@ class Display {
   onResize() {
     const width = this.canvas.width = this.width = document.body.clientWidth;
     const height = this.canvas.height = this.height = document.body.clientHeight;
+    if (this.initialRadiusSet !== true) {
+      Dice.radius = Math.min(width >> 3, height >> 3);;
+      const slider = document.querySelector('#dice-radius');
+      slider.value = Dice.radius;
+      this.initialRadiusSet = true;
+      slider.addEventListener('change', (event) => {
+        const value = event.target.value;
+        Dice.radius = value;
+        Face.radius = value * Math.sin(φ);
+        globalThis.dstFce = value * Math.cos(φ);
+        globalThis.dstObs = 10 * value;
+      });
+    }
     const dieRadius = Dice.radius = Math.min(width >> 3, height >> 3);
+    document.querySelector('#dice-radius').value = dieRadius;
     Face.radius = dieRadius * Math.sin(φ);
+
     globalThis.dstFce = dieRadius * Math.cos(φ);
     globalThis.dstObs = 10 * dieRadius;
     this.context.translate(width >> 1, height >> 1);
