@@ -3,8 +3,6 @@ const τ = 2 * π;
 const φ = 42 * π / 180;
 const HALF_TURN = 30;
 const Δ = π / HALF_TURN;
-const dieVariantNames = ['RED', 'BLACK'];
-const dieVariantIndex = 0;
 const dieVariantObject = {};
 
 /***********************************************************************
@@ -563,7 +561,7 @@ function init() {
   if (urlParameters.has('style')) {
     const variant = urlParameters.get('style').toUpperCase();
     if (variant === 'RED') {
-      dieVariantObject.contour = (x) => `rgb(${x}, ${x - 166}, ${x - 7})`;
+      dieVariantObject.contour = (x) => `rgb(${x}, ${x - 166}, ${x - 149})`;
       dieVariantObject.valueDotColor = '#FFFEFE';
       dieVariantObject.bodyFill = 'rgb(208, 45, 47)';
     } else if (variant === 'BLACK') {
