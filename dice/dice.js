@@ -577,6 +577,10 @@ function init() {
       dieVariantObject.bodyFill = 'rgb(46, 184, 208)';
     }
 
+  } else {
+    dieVariantObject.contour = (x) => `rgb(${x - 150}, ${x - 16}, ${x + 16})`;
+    dieVariantObject.valueDotColor = '#DDEEFF';
+    dieVariantObject.bodyFill = 'rgb(46, 184, 208)';
   }
 
   const display = new Display();
