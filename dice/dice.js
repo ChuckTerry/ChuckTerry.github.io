@@ -568,21 +568,16 @@ function init() {
       dieVariantObject.contour = (x) => `rgb(${x}, ${x - 3}, ${x - 7})`;
       dieVariantObject.valueDotColor = '#000000';
       dieVariantObject.bodyFill = '#FFFFFF';
-
-    } else {
-      dieVariantObject.contour = (x) => `rgb(${x - 150}, ${x - 16}, ${x + 16})`;
-      dieVariantObject.valueDotColor = '#DDEEFF';
-      dieVariantObject.bodyFill = 'rgb(46, 184, 208)';
     }
+  }
 
-  } else {
+  if (Object.keys(dieVariantObject).length === 0) {
     dieVariantObject.contour = (x) => `rgb(${x - 150}, ${x - 16}, ${x + 16})`;
     dieVariantObject.valueDotColor = '#DDEEFF';
     dieVariantObject.bodyFill = 'rgb(46, 184, 208)';
   }
 
-  const display = new Display();
-  globalThis.inputManager = new InputManager(display, true);
+  globalThis.inputManager = new InputManager(new Display(), true);
   const w = Math.sqrt(3);
   globalThis.faceNormals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
   globalThis.vertexNormals = Vertex.generateArrayFrom([w, w, w], [-w, w, w], [w, -w, w], [w, w, -w], [-w, -w, w], [-w, w, -w], [w, -w, -w], [-w, -w, -w]);
