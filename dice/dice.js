@@ -16,12 +16,16 @@ class Point {
    * @param {Object} coordinates - The coordinates of the point.
    */
   constructor(idNumber, coordinates) {
+
     /** @type {number} */
     this.x = coordinates.x;
+
     /** @type {number} */
     this.y = coordinates.y;
+
     /** @type {number} */
     this.z = coordinates.z;
+
     /** @type {number} */
     this.face = idNumber;
   }
@@ -56,10 +60,13 @@ class Vertex {
    * @param {number} z - The z position of the vertex.
    */
   constructor(x, y, z) {
+
     /** @type {number} */
     this.x = x;
+
     /** @type {number} */
     this.y = y;
+
     /** @type {number} */
     this.z = z;
   }
@@ -175,8 +182,6 @@ class Matrix {
  ***********************************************************************/
 class Face {
 
-  static radius = 0;
-
   /**
    * Face Constructor
    * @param {InstanceController} instanceController - The instance controller.
@@ -269,6 +274,10 @@ class Face {
     }
   }
 
+  /**
+   * draws the face.
+   * @returns {void}
+   */
   draw() {
     if (this.normal.z >= 0) return;
     const display = this.instanceController.display;
@@ -320,8 +329,6 @@ class Face {
  ***********************************************************************/
 class Dice {
 
-  static faceVertices = [[0, 2, 6, 3], [0, 3, 5, 1], [0, 1, 4, 2], [7, 5, 3, 6], [7, 6, 2, 4], [7, 4, 1, 5]];
-
   static deltaAB = [0.005, 0.005];
 
   /**
@@ -345,8 +352,8 @@ class Dice {
     /** @type {number} */
     this.radius = Math.min(width >> 3, height >> 3);
 
+    /** @type {Vertex[]} */
     this.faceNormals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
-
 
     this.recalculateComponentPositions();
   } 
@@ -371,6 +378,10 @@ class Dice {
     }
   }
 
+  /**
+   * Calculates the rotation angles.
+   * @returns {number[]} The rotation angles.
+   */
   calculateRotation() {
     const aChance = Math.random();
     const bChance = Math.random();
@@ -408,10 +419,13 @@ class Dice {
    * Recalculates the positions of the faces and verticies.
    */
   recalculateComponentPositions() {
+
     /** @type {Point[]} */
     this.vertices = [];
+
     /** @type {Face[]} */
     this.faces = [];
+
     this.calculateVerticies();
     this.calculateFaces();
   }
@@ -501,14 +515,19 @@ class Display {
    * @param {string} [canvasSelector] - CSS selector for display canvas.
    */
   constructor(instanceController, canvasSelector = '#display') {
+
     /** @type {InstanceController} */
     this.instanceController = instanceController;
+
     /** @type {HTMLCanvasElement} */
     this.canvas = document.querySelector(canvasSelector);
+
     this.canvas.width = this.width = document.body.clientWidth;
     this.canvas.height = this.height = document.body.clientHeight;
+
     /** @type {CanvasRenderingContext2D} */
     this.context = this.canvas.getContext('2d');
+
     this.context.font = "16px Sans-Serif";
     this.context.lineWidth = this.context.miterLimit = 1;
     this.context.lineJoin = "miter";
@@ -517,7 +536,11 @@ class Display {
     window.dispatchEvent(new Event('resize'));
   }
 
-  beginPath(fillStyle = null) {
+  /**
+   * Begins a new path on the canvas.
+   * @param {string | undefined} [fillStyle] - The fill style.
+   */
+  beginPath(fillStyle) {
     if (fillStyle) this.context.fillStyle = fillStyle;
     this.context.beginPath();
   }
@@ -596,6 +619,11 @@ class Display {
     this.#drawEllipse(x, y, a * Δ, b * Δ, rw, rh, angle, color, true);
   }
 
+  /**
+   * Draws a line on the canvas.
+   * @param {number} x - X coordinate of the center.
+   * @param {number} y - Y coordinate of the center.
+   */
   lineTo(x = 0, y = 0) {
     this.context.lineTo(x, y);
   }
@@ -644,10 +672,13 @@ class InputManager {
    * @param {boolean} [autoRegister] - Should we automatically register event listeners?
    */
   constructor(instanceController, autoRegister = true) {
+
     /** @type {InstanceController} */
     this.instanceController = instanceController;
+    
     /** @type {Display} */
     this.display = instanceController.display;
+
     if (autoRegister) this.registerListeners();
   }
 
@@ -693,6 +724,9 @@ class InputManager {
   onTouchmove(event) { return this.#selectMove(event); }
   onTouchstart(event) { return this.#selectStart(event); }
 
+  /**
+   * Registers event listeners.
+   */
   registerListeners() {
     const eventNames = ['touchstart', 'mousedown', 'touchmove', 'mousemove', 'touchend', 'mouseup'];
     const eventCount = eventNames.length;
@@ -711,15 +745,20 @@ class InputManager {
  * Represents the instance controller.
  ***********************************************************************/ 
 class InstanceController {
+  /** @type {InstanceController[]} */
   static instances = [];
 
   constructor() {
+    
     /** @type {Display} */
     this.display = new Display(this);
+
     /** @type {InputManager} */
     this.inputManager = new InputManager(this, true);
+
     /** @type {Dice} */
     this.dice = new Dice(this);
+
     this.dice.drawDice();
     InstanceController.instances.push(this);
   }
