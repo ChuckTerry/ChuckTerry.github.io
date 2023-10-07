@@ -2,6 +2,7 @@ const π = Math.PI;
 const τ = 2 * π;
 const φ = 42 * π / 180;
 const HALF_TURN = 30;
+const FULL_TURN = HALF_TURN << 1;
 const Δ = π / HALF_TURN;
 const dieVariantObject = {};
 
@@ -220,12 +221,10 @@ class Face {
       const normalX = new Vertex(-normal.y, normal.x, 0).normalize().multiply(Face.radius);
       const normalY = normal.crossProduct(normalX);
       const normalZ = normal.multiply(Face.obverse);
-      const eps = normal.z <= 0 ? 1 : -1;
-      // Turn counter clockwise to draw the contour
-      let sns = eps;
+      const rotationStep = normal.z <= 0 ? 1 : -1;
 
       // A first test near the major axis end.
-      let ro = normalX.multiply(Math.cos(-sns * Δ)).add(normalY.multiply(Math.sin(-sns * Δ)), normalZ);
+      let ro = normalX.multiply(Math.cos(-rotationStep * Δ)).add(normalY.multiply(Math.sin(-rotationStep * Δ)), normalZ);
       let rdo = ro.x ** 2 + ro.y ** 2;
       let rn = normalX.add(normalZ);
       let rdn = rn.x ** 2 + rn.y ** 2;
@@ -234,21 +233,19 @@ class Face {
       let α = i;// The distance is maximum a the contact (Dice radius)
       while ((rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ)), rdo <= (rdn = rn.x ** 2 + rn.y ** 2)) {
         α = i;
-        i += sns;
+        i += rotationStep;
         ro = rn;
         rdo = rdn;
       }
-      const fullTurn = HALF_TURN << 1;
-      this.α = (fullTurn - eps * α) % fullTurn;
+      this.α = (FULL_TURN - rotationStep * α) % FULL_TURN;
       this.γ = Math.atan2(ro.y, ro.x);
       if (this.γ < 0) this.γ += τ;
       if (τ <= this.γ < 0) this.γ -= τ;
 
       i = HALF_TURN - j;
       let beta = i;
-      sns = -sns;
 
-      ro = normalX.multiply(Math.cos((i - sns) * Δ)).add(normalY.multiply(Math.sin((i - sns) * Δ)), normalZ);
+      ro = normalX.multiply(Math.cos((i + rotationStep) * Δ)).add(normalY.multiply(Math.sin((i + rotationStep) * Δ)), normalZ);
       rdo = ro.x ** 2 + ro.y ** 2;
       rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ);
       rdn = rn.x ** 2 + rn.y ** 2;
@@ -256,14 +253,14 @@ class Face {
     
       while (rdo <= rdn) {
         beta = i;
-        i += sns;
+        i -= rotationStep;
         ro = rn;
         rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ);
         rdo = rdn;
         rdn = rn.x ** 2 + rn.y ** 2;
       }
 
-      this.beta = (fullTurn - eps * beta) % fullTurn;
+      this.beta = (FULL_TURN - rotationStep * beta) % FULL_TURN;
       this.θ = Math.atan2(ro.y, ro.x);
       // Add a full turn if the angle is negative
       if (this.θ < 0) this.θ += τ;
@@ -326,8 +323,6 @@ class Dice {
   static vertexEdges = [[1, 2, 3], [0, 5, 4], [0, 4, 6], [0, 6, 5], [7, 2, 1], [7, 1, 3], [7, 3, 2], [6, 4, 5]];
 
   static deltaAB = [0.005, 0.005];
-  static α = (13 + Math.floor(Math.random() * 17)) * (1 - 2 * (Math.random() < 0.5));
-  static beta = (13 + Math.floor(Math.random() * 17)) * (1 - 2 * (Math.random() < 0.5));
   static radius = 0;
 
   /**
@@ -340,37 +335,20 @@ class Dice {
 
     /** @type {Point[]} */
     this.vertexNormals = Vertex.generateArrayFrom([1, 1, 1], [-1, 1, 1], [1, -1, 1], [1, 1, -1], [-1, -1, 1], [-1, 1, -1], [1, -1, -1], [-1, -1, -1]);
+
+    /** @type {number} */
+    this.rotationAngleX = (13 + Math.floor(Math.random() * 17)) * (1 - 2 * (Math.random() < 0.5));
     
+    /** @type {number} */
+    this.rotationAngleY = (13 + Math.floor(Math.random() * 17)) * (1 - 2 * (Math.random() < 0.5));
+
+
     this.recalculateComponentPositions();
   } 
 
-  static resetVelocities() {
-    Dice.α = Dice.beta = 0;
-  }
-
-  static updateVelocities(a, b, addToCurrentValue = false) {
-    if (addToCurrentValue) {
-      a += Dice.α;
-      b += Dice.beta;
-    }
-    Dice.α = a;
-    Dice.beta = b;
-  }
-
-  static calculateVelocities() {
-    const aChance = Math.random();
-    const bChance = Math.random();
-    if (aChance < 0.15) Dice.deltaAB[0] += aChance * 0.01;
-    if (bChance < 0.15) Dice.deltaAB[1] += bChance * 0.01;
-    if (aChance > 0.9) Dice.deltaAB[0] -= (1 - aChance) * 0.009;
-    if (bChance > 0.9) Dice.deltaAB[1] -= (1 - bChance) * 0.009;
-    if (aChance > 0.989) Dice.deltaAB[0] -= aChance * 0.002;
-    if (bChance > 0.989) Dice.deltaAB[1] -= bChance * 0.004;
-    const a = Dice.α * Dice.deltaAB[0];
-    const b = Dice.beta * Dice.deltaAB[1];
-    Dice.α -= a;
-    Dice.beta -= b;
-    return [a, b];
+  addRotation(x, y) {
+    this.rotationAngleX += x;
+    this.rotationAngleY += y;
   }
 
   /**
@@ -382,6 +360,22 @@ class Dice {
     }
   }
 
+  calculateRotation() {
+    const aChance = Math.random();
+    const bChance = Math.random();
+    if (aChance < 0.15) Dice.deltaAB[0] += aChance * 0.01;
+    if (bChance < 0.15) Dice.deltaAB[1] += bChance * 0.01;
+    if (aChance > 0.9) Dice.deltaAB[0] -= (1 - aChance) * 0.009;
+    if (bChance > 0.9) Dice.deltaAB[1] -= (1 - bChance) * 0.009;
+    if (aChance > 0.989) Dice.deltaAB[0] -= aChance * 0.002;
+    if (bChance > 0.989) Dice.deltaAB[1] -= bChance * 0.004;
+    const a = this.rotationAngleX * Dice.deltaAB[0];
+    const b = this.rotationAngleY * Dice.deltaAB[1];
+    this.rotationAngleX -= a;
+    this.rotationAngleY -= b;
+    return [a, b];
+  }
+
   /**
    * Calculates the verticies of the dice.
    */
@@ -389,6 +383,10 @@ class Dice {
     for (let index = 0; index < 8; index++) {
       this.vertices.push(new Point(index, this.vertexNormals[index], false));
     }
+  }
+
+  isRolling() {
+    return Math.abs(this.rotationAngleX) > 1e-5 || Math.abs(this.rotationAngleY) > 1e-5;
   }
 
   /**
@@ -401,6 +399,13 @@ class Dice {
     this.faces = [];
     this.calculateVerticies();
     this.calculateFaces();
+  }
+
+  /**
+   * Stops the rotation of the dice.
+   */
+  stopRotation() {
+    this.rotationAngleX = this.rotationAngleY = 0;
   }
 
   /**
@@ -434,8 +439,8 @@ class Dice {
    * @returns {number[]} Array of alpha and beta values.
    */
   drawDice() {
-    const [a, b] = Dice.calculateVelocities();
-    if (1e-5 < Math.abs(Dice.α) || 1e-5 < Math.abs(Dice.beta)) this.rollDice(a, b);
+    const [a, b] = this.calculateRotation();
+    if (this.isRolling()) this.rollDice(a, b);
 
     this.recalculateComponentPositions();
     const display = this.instanceController.display;
@@ -624,6 +629,7 @@ class InputManager {
    * @param {boolean} [autoRegister] - Should we automatically register event listeners?
    */
   constructor(instanceController, autoRegister = true) {
+    this.instanceController = instanceController;
     this.display = instanceController.display;
     if (autoRegister) this.registerListeners();
   }
@@ -637,7 +643,7 @@ class InputManager {
     this.nsy = event.clientY ?? event.touches[0].clientY;
     this.srs = new Vertex(this.nsx - (this.display.width >> 1), this.nsy - (this.display.height >> 1), 0);
     if (!this.isDragging) return;
-    Dice.updateVelocities(Math.atan((this.nsy - this.osy) / (Display.bounds >> 4)), -Math.atan((this.nsx - this.osx) / (Display.bounds >> 4)), true);
+    this.instanceController.dice.addRotation(Math.atan((this.nsy - this.osy) / (Display.bounds >> 4)), -Math.atan((this.nsx - this.osx) / (Display.bounds >> 4)), true);
     this.osx = this.nsx;
     this.osy = this.nsy;
   }
@@ -646,7 +652,7 @@ class InputManager {
     if (event.target.nodeName !== 'CANVAS') return true;
     this.isx = this.osx = event.clientX ?? event.touches[0].clientX;
     this.isy = this.osy = event.clientY ?? event.touches[0].clientY;
-    Dice.resetVelocities(true);
+    this.instanceController.dice.stopRotation();
     this.isDragging = true;
   }
 
