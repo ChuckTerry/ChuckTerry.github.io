@@ -271,7 +271,7 @@ class Face {
     if (this.normal.z >= 0) return;
     const display = this.instanceController.display;
     // Fast Divide by 8
-    const dmc = Dice.radius >> 3;
+    const dmc = this.dice.radius >> 3;
     // angle of the normal and the look direction to adjust color and Ellipse ratio rh/rw
     const viewAngle = Math.abs(this.normal.z);
     const colorBase = 192 + Math.floor(64 * viewAngle);
@@ -329,6 +329,7 @@ class Dice {
    * @param {InstanceController} instanceController - The instance controller.
    */
   constructor(instanceController) {
+    const {width, height} = instanceController.display;
 
     /** @type {InstanceController} */
     this.instanceController = instanceController;
@@ -341,6 +342,9 @@ class Dice {
     
     /** @type {number} */
     this.rotationAngleY = (13 + Math.floor(Math.random() * 17)) * (1 - 2 * (Math.random() < 0.5));
+
+    /** @type {number} */
+    this.radius = Math.min(width >> 3, height >> 3);
 
 
     this.recalculateComponentPositions();
@@ -452,7 +456,7 @@ class Dice {
     const length = contours.length;
     // A circle without elliptic Arc
     if (length === 0) {
-      display.drawArc(0, 0, Dice.radius, 0, τ);
+      display.drawArc(0, 0, this.dice.radius, 0, τ);
     } else {
       const lineStops = [];
       context.fillStyle = dieVariantObject.bodyFill;
@@ -461,8 +465,8 @@ class Dice {
         const face = contours[index];
         const angleStop = contours[(index + 1) % length].γ;
         display.drawEllipseFromTo(face.originX, face.originY, face.α, face.beta, Face.radius, Face.radius * face.normal.z, face.angle, dieVariantObject.bodyFill);
-        display.drawArc(0, 0, Dice.radius, face.θ, angleStop, true);
-        lineStops.push(Dice.radius * Math.cos(angleStop), Dice.radius * Math.sin(angleStop));
+        display.drawArc(0, 0, this.radius, face.θ, angleStop, true);
+        lineStops.push(this.radius * Math.cos(angleStop), this.radius * Math.sin(angleStop));
       }
       context.beginPath();
       context.moveTo(lineStops.at(-2), lineStops.at(-1));
@@ -586,23 +590,10 @@ class Display {
   onResize() {
     const width = this.canvas.width = this.width = document.body.clientWidth;
     const height = this.canvas.height = this.height = document.body.clientHeight;
-    if (this.initialRadiusSet !== true) {
-      Dice.radius = Math.min(width >> 3, height >> 3);;
-      const slider = document.querySelector('#dice-radius');
-      slider.value = Dice.radius;
-      this.initialRadiusSet = true;
-      slider.addEventListener('change', (event) => {
-        const value = event.target.value;
-        Dice.radius = value;
-        Face.radius = value * Math.sin(φ);
-        Face.obverse = value * Math.cos(φ);
-        Display.bounds = 10 * value;
-      });
-    }
-    const dieRadius = Dice.radius = Math.min(width >> 3, height >> 3);
+    const dieRadius = Math.min(width >> 3, height >> 3);
+    if (this.instanceController.dice) this.instanceController.dice.radius = dieRadius;
     document.querySelector('#dice-radius').value = dieRadius;
     Face.radius = dieRadius * Math.sin(φ);
-
     Face.obverse = dieRadius * Math.cos(φ);
     Display.bounds = 10 * dieRadius;
     this.context.translate(width >> 1, height >> 1);
