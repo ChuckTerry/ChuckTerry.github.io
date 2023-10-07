@@ -175,7 +175,6 @@ class Matrix {
  ***********************************************************************/
 class Face {
 
-  static normals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
   static radius = 0;
 
   /**
@@ -185,7 +184,7 @@ class Face {
    * @param {number} normalIndex - The index of the normal.
    * @param {number[]} verticies - The verticies of the face.
    */
-  constructor(instanceController, dice, normalIndex, verticies) {
+  constructor(instanceController, dice, radius, normalIndex, verticies) {
 
     /** @type {InstanceController} */
     this.instanceController = instanceController;
@@ -197,6 +196,9 @@ class Face {
     this.dice = dice;
 
     const normal = dice.faceNormals[normalIndex];
+
+    /** @type {number} */
+    this.radius = radius;
 
     /** @type {Point} */
     this.normal = new Point(normalIndex, normal, true);
@@ -218,7 +220,7 @@ class Face {
     });
 
     if (Math.abs(normal.z) < Math.cos(φ)) {
-      const normalX = new Vertex(-normal.y, normal.x, 0).normalize().multiply(Face.radius);
+      const normalX = new Vertex(-normal.y, normal.x, 0).normalize().multiply(this.radius);
       const normalY = normal.crossProduct(normalX);
       const normalZ = normal.multiply(Face.obverse);
       const rotationStep = normal.z <= 0 ? 1 : -1;
@@ -276,7 +278,7 @@ class Face {
     const viewAngle = Math.abs(this.normal.z);
     const colorBase = 192 + Math.floor(64 * viewAngle);
     const color = dieVariantObject.contour(colorBase);
-    display.drawEllipse(this.originX, this.originY, Face.radius, Face.radius * viewAngle, this.angle, color);
+    display.drawEllipse(this.originX, this.originY, this.radius, this.radius * viewAngle, this.angle, color);
     const rh = dmc * viewAngle;
     /* Die Face Markings */
     const faceValue = this.normal.face + 1;
@@ -365,7 +367,7 @@ class Dice {
   calculateFaces() {
     const faceVertices = [[0, 2, 6, 3], [0, 3, 5, 1], [0, 1, 4, 2], [7, 5, 3, 6], [7, 6, 2, 4], [7, 4, 1, 5]];
     for (let index = 0; index < 6; index++) {
-      this.faces.push(new Face(this.instanceController, this, index, faceVertices[index]));
+      this.faces.push(new Face(this.instanceController, this, this.radius * Math.sin(φ), index, faceVertices[index]));
     }
   }
 
@@ -471,7 +473,7 @@ class Dice {
       for (let index = 0; index < length; index++) {
         const face = contours[index];
         const angleStop = contours[(index + 1) % length].γ;
-        display.drawEllipseFromTo(face.originX, face.originY, face.α, face.beta, Face.radius, Face.radius * face.normal.z, face.angle, dieVariantObject.bodyFill);
+        display.drawEllipseFromTo(face.originX, face.originY, face.α, face.beta, face.radius, face.radius * face.normal.z, face.angle, dieVariantObject.bodyFill);
         display.drawArc(0, 0, this.radius, face.θ, angleStop, true);
         lineStops.push(this.radius * Math.cos(angleStop), this.radius * Math.sin(angleStop));
       }
@@ -616,7 +618,6 @@ class Display {
     const dieRadius = Math.min(width >> 3, height >> 3);
     if (this.instanceController.dice) this.instanceController.dice.radius = dieRadius;
     document.querySelector('#dice-radius').value = dieRadius;
-    Face.radius = dieRadius * Math.sin(φ);
     Face.obverse = dieRadius * Math.cos(φ);
     Display.bounds = 10 * dieRadius;
     this.context.translate(width >> 1, height >> 1);
