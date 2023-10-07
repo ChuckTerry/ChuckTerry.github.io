@@ -319,11 +319,8 @@ class Face {
 class Dice {
 
   static faceVertices = [[0, 2, 6, 3], [0, 3, 5, 1], [0, 1, 4, 2], [7, 5, 3, 6], [7, 6, 2, 4], [7, 4, 1, 5]];
-  static vertexFaces = [[0, 1, 2], [5, 2, 1], [0, 2, 4], [0, 3, 1], [5, 4, 2], [5, 1, 3], [0, 4, 3], [5, 3, 4]];
-  static vertexEdges = [[1, 2, 3], [0, 5, 4], [0, 4, 6], [0, 6, 5], [7, 2, 1], [7, 1, 3], [7, 3, 2], [6, 4, 5]];
 
   static deltaAB = [0.005, 0.005];
-  static radius = 0;
 
   /**
    * @param {InstanceController} instanceController - The instance controller.
@@ -350,6 +347,11 @@ class Dice {
     this.recalculateComponentPositions();
   } 
 
+  /**
+   * Adds rotation to the dice.
+   * @param {number} x - The x rotation.
+   * @param {number} y - The y rotation.
+   */
   addRotation(x, y) {
     this.rotationAngleX += x;
     this.rotationAngleY += y;
@@ -359,8 +361,9 @@ class Dice {
    * Calculates the faces of the dice.
    */
   calculateFaces() {
+    const faceVertices = [[0, 2, 6, 3], [0, 3, 5, 1], [0, 1, 4, 2], [7, 5, 3, 6], [7, 6, 2, 4], [7, 4, 1, 5]];
     for (let index = 0; index < 6; index++) {
-      this.faces.push(new Face(this.instanceController, this, index, Dice.faceVertices[index]));
+      this.faces.push(new Face(this.instanceController, this, index, faceVertices[index]));
     }
   }
 
@@ -389,6 +392,10 @@ class Dice {
     }
   }
 
+  /**
+   * Checks if the dice is rolling.
+   * @returns {boolean} Whether the dice is rolling.
+   */
   isRolling() {
     return Math.abs(this.rotationAngleX) > 1e-5 || Math.abs(this.rotationAngleY) > 1e-5;
   }
@@ -634,7 +641,8 @@ class InputManager {
     this.nsy = event.clientY ?? event.touches[0].clientY;
     this.srs = new Vertex(this.nsx - (this.display.width >> 1), this.nsy - (this.display.height >> 1), 0);
     if (!this.isDragging) return;
-    this.instanceController.dice.addRotation(Math.atan((this.nsy - this.osy) / (Display.bounds >> 4)), -Math.atan((this.nsx - this.osx) / (Display.bounds >> 4)), true);
+    const divisor = Display.bounds >> 4;
+    this.instanceController.dice.addRotation(Math.atan((this.nsy - this.osy) / divisor), -Math.atan((this.nsx - this.osx) / divisor));
     this.osx = this.nsx;
     this.osy = this.nsy;
   }
