@@ -455,7 +455,6 @@ class Dice {
 
     this.recalculateComponentPositions();
     const display = this.instanceController.display;
-    const context = display.context;
     display.clear();
 
     // Dice background (contour)
@@ -466,8 +465,7 @@ class Dice {
       display.drawArc(0, 0, this.dice.radius, 0, τ);
     } else {
       const lineStops = [];
-      context.fillStyle = dieVariantObject.bodyFill;
-      context.beginPath();
+      display.beginPath(dieVariantObject.bodyFill);
       for (let index = 0; index < length; index++) {
         const face = contours[index];
         const angleStop = contours[(index + 1) % length].γ;
@@ -475,10 +473,10 @@ class Dice {
         display.drawArc(0, 0, this.radius, face.θ, angleStop, true);
         lineStops.push(this.radius * Math.cos(angleStop), this.radius * Math.sin(angleStop));
       }
-      context.beginPath();
-      context.moveTo(lineStops.at(-2), lineStops.at(-1));
+      display.beginPath();
+      display.moveTo(lineStops.at(-2), lineStops.at(-1));
       for (let index = 0; index < lineStops.length; index += 2) {
-        context.lineTo(lineStops[index], lineStops[index + 1]);
+        display.lineTo(lineStops[index], lineStops[index + 1]);
       }
       display.strokeFill();
     }
@@ -515,6 +513,11 @@ class Display {
     this.context.strokeStyle = dieVariantObject.bodyFill;
     window.addEventListener('resize', () => this.onResize());
     window.dispatchEvent(new Event('resize'));
+  }
+
+  beginPath(fillStyle = null) {
+    if (fillStyle) this.context.fillStyle = fillStyle;
+    this.context.beginPath();
   }
 
   /**
@@ -589,6 +592,19 @@ class Display {
    */
   drawEllipseFromTo(x, y, a, b, rw, rh, angle, color) {
     this.#drawEllipse(x, y, a * Δ, b * Δ, rw, rh, angle, color, true);
+  }
+
+  lineTo(x = 0, y = 0) {
+    this.context.lineTo(x, y);
+  }
+
+  /**
+   * Moves the context to the given coordinates.
+   * @param {number} x - X coordinate.
+   * @param {number} y - Y coordinate.
+   */
+  moveTo(x = 0, y = 0) {
+    this.context.moveTo(x, y);
   }
 
   /**
