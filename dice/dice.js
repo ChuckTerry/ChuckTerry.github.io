@@ -43,7 +43,7 @@ class Vertex {
 
   /**
    * Generates an array of Vertex objects from the given arguments.
-   * @param  {...any} args - The coordinates.
+   * @param  {number[][]} args - The coordinates.
    * @returns {Vertex[]} - The array of Vertex objects.
    */
   static generateArrayFrom(...args) {
@@ -196,7 +196,7 @@ class Face {
     /** @type {Dice} */
     this.dice = dice;
 
-    const normal = Face.normals[normalIndex];
+    const normal = dice.faceNormals[normalIndex];
 
     /** @type {Point} */
     this.normal = new Point(normalIndex, normal, true);
@@ -343,6 +343,8 @@ class Dice {
     /** @type {number} */
     this.radius = Math.min(width >> 3, height >> 3);
 
+    this.faceNormals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
+
 
     this.recalculateComponentPositions();
   } 
@@ -427,18 +429,18 @@ class Dice {
   rollDice(a, b) {
     const [cosA, cosB, sinA, sinB] = [Math.cos(a), Math.cos(b), Math.sin(a), Math.sin(b)];
     for (let index = 0; index < 3; index++) {
-      const normal = Face.normals[index];
+      const normal = this.faceNormals[index];
       const depthFactor = normal.y * sinA + normal.z * cosA;
       const x = depthFactor * sinB + normal.x * cosB;
       const y = normal.y * cosA - normal.z * sinA;
       const z = depthFactor * cosB - normal.x * sinB;
-      Face.normals[index] = new Vertex(x, y, z);
-      Face.normals[5 - index] = Face.normals[index].negate();
+      this.faceNormals[index] = new Vertex(x, y, z);
+      this.faceNormals[5 - index] = this.faceNormals[index].negate();
     }
-    this.vertexNormals[0] = Face.normals[0].add(Face.normals[1], Face.normals[2]).multiply(Face.obverse);
-    this.vertexNormals[1] = Face.normals[0].negate().add(Face.normals[1], Face.normals[2]).multiply(Face.obverse);
-    this.vertexNormals[2] = Face.normals[1].negate().add(Face.normals[0], Face.normals[2]).multiply(Face.obverse);
-    this.vertexNormals[3] = Face.normals[2].negate().add(Face.normals[0], Face.normals[1]).multiply(Face.obverse);
+    this.vertexNormals[0] = this.faceNormals[0].add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
+    this.vertexNormals[1] = this.faceNormals[0].negate().add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
+    this.vertexNormals[2] = this.faceNormals[1].negate().add(this.faceNormals[0], this.faceNormals[2]).multiply(Face.obverse);
+    this.vertexNormals[3] = this.faceNormals[2].negate().add(this.faceNormals[0], this.faceNormals[1]).multiply(Face.obverse);
     this.vertexNormals[4] = this.vertexNormals[3].negate();
     this.vertexNormals[5] = this.vertexNormals[2].negate();
     this.vertexNormals[6] = this.vertexNormals[1].negate();
@@ -499,8 +501,6 @@ class Display {
   constructor(instanceController, canvasSelector = '#display') {
     /** @type {InstanceController} */
     this.instanceController = instanceController;
-    /** @type {boolean} */
-    this.initialRadiusSet = false;
     /** @type {HTMLCanvasElement} */
     this.canvas = document.querySelector(canvasSelector);
     this.canvas.width = this.width = document.body.clientWidth;
@@ -643,15 +643,25 @@ class InputManager {
    * @param {boolean} [autoRegister] - Should we automatically register event listeners?
    */
   constructor(instanceController, autoRegister = true) {
+    /** @type {InstanceController} */
     this.instanceController = instanceController;
+    /** @type {Display} */
     this.display = instanceController.display;
     if (autoRegister) this.registerListeners();
   }
 
+  /**
+   * Handles end of cursor activation.
+   * @param {MouseEvent | TouchEvent} event 
+   */
   #selectEnd(event) {
     this.isDragging = false;
   }
 
+  /**
+   * Handles cursor movement.
+   * @param {MouseEvent | TouchEvent} event 
+   */
   #selectMove(event) {
     this.nsx = event.clientX ?? event.touches[0].clientX;
     this.nsy = event.clientY ?? event.touches[0].clientY;
@@ -663,6 +673,10 @@ class InputManager {
     this.osy = this.nsy;
   }
 
+  /**
+   * Handles start of cursor activation.
+   * @param {MouseEvent | TouchEvent} event 
+   */
   #selectStart(event) {
     if (event.target.nodeName !== 'CANVAS') return true;
     this.isx = this.osx = event.clientX ?? event.touches[0].clientX;
@@ -692,13 +706,18 @@ class InputManager {
   }
 }
 
+/***********************************************************************
+ * Represents the instance controller.
+ ***********************************************************************/ 
 class InstanceController {
   static instances = [];
 
   constructor() {
     /** @type {Display} */
     this.display = new Display(this);
+    /** @type {InputManager} */
     this.inputManager = new InputManager(this, true);
+    /** @type {Dice} */
     this.dice = new Dice(this);
     this.dice.drawDice();
     InstanceController.instances.push(this);
