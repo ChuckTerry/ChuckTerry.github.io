@@ -271,6 +271,7 @@ class Face {
   }
 
   draw() {
+    if (this.normal.z >= 0) return;
     const display = this.instanceController.display;
     // Fast Divide by 8
     const dmc = Dice.radius >> 3;
@@ -443,14 +444,6 @@ class Dice {
 
     // Dice background (contour)
     const contours = this.faces.filter(face => face.α > -1).sort((a, b) => b.θ - a.θ);
-    //const faceCount = this.faces.length;
-    //for (let faceIndex = 0; faceIndex < faceCount; faceIndex++) {
-    //  const face = this.faces[faceIndex];
-    //  if (-1 < face.α) facesWithVisibleContour.push(face);
-    //}
-    // Sort the faces to draw the contour counter close wise
-    //contours.sort((a, b) => b.θ - a.θ);
-
     const length = contours.length;
     // A circle without elliptic Arc
     if (length === 0) {
@@ -473,11 +466,8 @@ class Dice {
       }
       display.strokeFill();
     }
-    const faceCount = this.faces.length;
-    for (let faceIndex = 0; faceIndex < faceCount; faceIndex++) {
-      const face = this.faces[faceIndex];
-      if (face.normal.z < 0) face.draw();
-    }
+
+    this.faces.map(face => face.draw());
     window.requestAnimationFrame(() => this.drawDice());
   }
 
