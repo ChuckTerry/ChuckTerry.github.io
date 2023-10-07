@@ -15,9 +15,13 @@ class Point {
    * @param {Object} coordinates - The coordinates of the point.
    */
   constructor(idNumber, coordinates) {
+    /** @type {number} */
     this.x = coordinates.x;
+    /** @type {number} */
     this.y = coordinates.y;
+    /** @type {number} */
     this.z = coordinates.z;
+    /** @type {number} */
     this.face = idNumber;
   }
 
@@ -51,15 +55,26 @@ class Vertex {
    * @param {number} z - The z position of the vertex.
    */
   constructor(x, y, z) {
+    /** @type {number} */
     this.x = x;
+    /** @type {number} */
     this.y = y;
+    /** @type {number} */
     this.z = z;
   }
 
+  /**
+   * Gets the length of the vertex.
+   * @type {number}
+   */
   get length() {
     return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
   }
 
+  /**
+   * Gets the length of the vertex.
+   * @type {number}
+   */
   get magnitude() {
     return this.length;
   }
@@ -99,6 +114,11 @@ class Vertex {
     return new Vertex(x, y, z);
   }
 
+  /**
+   * Returns the cross product this and another Vertex.
+   * @param {Vertex} vertex - The other vertex.
+   * @returns {Vertex} - The cross product.
+   */
   crossProduct(vertex) {
     const x = this.y * vertex.z - vertex.y * this.z;
     const y = this.z * vertex.x - vertex.z * this.x;
@@ -106,6 +126,10 @@ class Vertex {
     return new Vertex(x, y, z);
   }
 
+  /**
+   * Returns the normalized vertex.
+   * @returns {Vertex} - The normalized vertex.
+   */
   normalize() {
     const length = this.length;
     return new Vertex(this.x / length, this.y / length, this.z / length);
@@ -161,13 +185,25 @@ class Face {
    * @param {number[]} verticies - The verticies of the face.
    */
   constructor(instanceController, dice, normalIndex, verticies) {
+
     /** @type {InstanceController} */
     this.instanceController = instanceController;
+
+    /** @type {Point[]} */
     this.points = [];
+
+    /** @type {Dice} */
     this.dice = dice;
+
     const normal = Face.normals[normalIndex];
+
+    /** @type {Point} */
     this.normal = new Point(normalIndex, normal, true);
-    // Ellipse major axis angle
+
+    /**
+     * Angle of Ellipse Major Axis
+     * @type {Number}
+     */
     this.angle = Math.atan2(normal.x, -normal.y);
 
     this.resetOrigins();
@@ -203,7 +239,7 @@ class Face {
         rdo = rdn;
       }
       const fullTurn = HALF_TURN << 1;
-      α = (fullTurn - eps * α) % fullTurn;
+      this.α = (fullTurn - eps * α) % fullTurn;
       this.γ = Math.atan2(ro.y, ro.x);
       if (this.γ < 0) this.γ += τ;
       if (τ <= this.γ < 0) this.γ -= τ;
@@ -213,23 +249,24 @@ class Face {
       sns = -sns;
 
       ro = normalX.multiply(Math.cos((i - sns) * Δ)).add(normalY.multiply(Math.sin((i - sns) * Δ)), normalZ);
-      rdo = ro.x * ro.x + ro.y * ro.y;
+      rdo = ro.x ** 2 + ro.y ** 2;
       rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ);
-      rdn = rn.x * rn.x + rn.y * rn.y;
+      rdn = rn.x ** 2 + rn.y ** 2;
 
-      while ((rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ)), rdo <= (rdn = rn.x ** 2 + rn.y ** 2)) {
+    
+      while (rdo <= rdn) {
         beta = i;
         i += sns;
         ro = rn;
+        rn = normalX.multiply(Math.cos(i * Δ)).add(normalY.multiply(Math.sin(i * Δ)), normalZ);
         rdo = rdn;
+        rdn = rn.x ** 2 + rn.y ** 2;
       }
-      beta = (fullTurn - eps * beta) % fullTurn;
-      this.θ = Math.atan2(ro.y, ro.x);
-      if (this.θ < 0) this.θ += τ;
-      if (τ <= this.θ < 0) this.θ -= τ;
 
-      this.α = α;
-      this.beta = beta;
+      this.beta = (fullTurn - eps * beta) % fullTurn;
+      this.θ = Math.atan2(ro.y, ro.x);
+      // Add a full turn if the angle is negative
+      if (this.θ < 0) this.θ += τ;
     }
   }
 
@@ -268,7 +305,11 @@ class Face {
     }
   }
 
+  /**
+   * Resets the origins of the face.
+   */
   resetOrigins() {
+    /** @type {number} */
     this.originX = this.originY = this.originZ = 0;
   }
 
@@ -287,13 +328,19 @@ class Dice {
   static α = (13 + Math.floor(Math.random() * 17)) * (1 - 2 * (Math.random() < 0.5));
   static beta = (13 + Math.floor(Math.random() * 17)) * (1 - 2 * (Math.random() < 0.5));
   static radius = 0;
-  static instance = null;
 
+  /**
+   * @param {InstanceController} instanceController - The instance controller.
+   */
   constructor(instanceController) {
+
+    /** @type {InstanceController} */
     this.instanceController = instanceController;
+
+    /** @type {Point[]} */
     this.vertexNormals = Vertex.generateArrayFrom([1, 1, 1], [-1, 1, 1], [1, -1, 1], [1, 1, -1], [-1, -1, 1], [-1, 1, -1], [1, -1, -1], [-1, -1, -1]);
+    
     this.recalculateComponentPositions();
-    Dice.instance = this;
   } 
 
   static resetVelocities() {
@@ -325,26 +372,41 @@ class Dice {
     return [a, b];
   }
 
+  /**
+   * Calculates the faces of the dice.
+   */
   calculateFaces() {
     for (let index = 0; index < 6; index++) {
       this.faces.push(new Face(this.instanceController, this, index, Dice.faceVertices[index]));
     }
   }
 
+  /**
+   * Calculates the verticies of the dice.
+   */
   calculateVerticies() {
     for (let index = 0; index < 8; index++) {
       this.vertices.push(new Point(index, this.vertexNormals[index], false));
     }
   }
 
+  /**
+   * Recalculates the positions of the faces and verticies.
+   */
   recalculateComponentPositions() {
+    /** @type {Point[]} */
     this.vertices = [];
+    /** @type {Face[]} */
     this.faces = [];
     this.calculateVerticies();
     this.calculateFaces();
   }
 
-  // a & b are angle of rotation on elliptical x & y axis
+  /**
+   * Caluculates the Dice Position for the next frame.
+   * @param {number} a - Angle of rotation on elliptical x axis.
+   * @param {number} b - Angle of rotation on elliptical y axis.
+   */
   rollDice(a, b) {
     const [cosA, cosB, sinA, sinB] = [Math.cos(a), Math.cos(b), Math.sin(a), Math.sin(b)];
     for (let index = 0; index < 3; index++) {
@@ -380,16 +442,16 @@ class Dice {
     display.clear();
 
     // Dice background (contour)
-    const facesWithVisibleCountor = [];
-    const faceCount = this.faces.length;
-    for (let faceIndex = 0; faceIndex < faceCount; faceIndex++) {
-      const face = this.faces[faceIndex];
-      if (-1 < face.α) facesWithVisibleCountor.push(face);
-    }
+    const contours = this.faces.filter(face => face.α > -1).sort((a, b) => b.θ - a.θ);
+    //const faceCount = this.faces.length;
+    //for (let faceIndex = 0; faceIndex < faceCount; faceIndex++) {
+    //  const face = this.faces[faceIndex];
+    //  if (-1 < face.α) facesWithVisibleContour.push(face);
+    //}
     // Sort the faces to draw the contour counter close wise
-    facesWithVisibleCountor.sort((a, b) => b.θ - a.θ);
+    //contours.sort((a, b) => b.θ - a.θ);
 
-    const length = facesWithVisibleCountor.length;
+    const length = contours.length;
     // A circle without elliptic Arc
     if (length === 0) {
       display.drawArc(0, 0, Dice.radius, 0, τ);
@@ -398,8 +460,8 @@ class Dice {
       context.fillStyle = dieVariantObject.bodyFill;
       context.beginPath();
       for (let index = 0; index < length; index++) {
-        const face = facesWithVisibleCountor[index];
-        const angleStop = facesWithVisibleCountor[(index + 1) % length].γ;
+        const face = contours[index];
+        const angleStop = contours[(index + 1) % length].γ;
         display.drawEllipseFromTo(face.originX, face.originY, face.α, face.beta, Face.radius, Face.radius * face.normal.z, face.angle, dieVariantObject.bodyFill);
         display.drawArc(0, 0, Dice.radius, face.θ, angleStop, true);
         lineStops.push(Dice.radius * Math.cos(angleStop), Dice.radius * Math.sin(angleStop));
@@ -411,7 +473,7 @@ class Dice {
       }
       display.strokeFill();
     }
-
+    const faceCount = this.faces.length;
     for (let faceIndex = 0; faceIndex < faceCount; faceIndex++) {
       const face = this.faces[faceIndex];
       if (face.normal.z < 0) face.draw();
