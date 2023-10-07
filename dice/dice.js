@@ -225,7 +225,7 @@ class Face {
   }
 
   draw() {
-    const display = instanceController.display;
+    const display = this.instanceController.display;
     // Fast Divide by 8
     const dmc = Dice.radius >> 3;
     // angle of the normal and the look direction to adjust color and Ellipse ratio rh/rw
@@ -419,6 +419,9 @@ class Dice {
  ***********************************************************************/
 class Display {
 
+  /**
+   * @type {Display | null}
+   */
   static instance = null;
   static clear() {
     return Display.instance?.clear();
@@ -434,6 +437,9 @@ class Display {
     this.canvas = document.querySelector(canvasSelector);
     this.canvas.width = this.width = document.body.clientWidth;
     this.canvas.height = this.height = document.body.clientHeight;
+    /**
+     * @type {CanvasRenderingContext2D}
+     */
     this.context = this.canvas.getContext('2d');
     this.context.font = "16px Sans-Serif";
     this.context.lineWidth = this.context.miterLimit = 1;
@@ -449,6 +455,20 @@ class Display {
    */
   clear() {
     this.context.clearRect(-(this.width >> 1), -(this.height >> 1), this.width, this.height);
+  }
+
+  /**
+   * Draws an arc on the canvas.
+   * @param {number} x - X coordinate of the center.
+   * @param {number} y - Y coordinate of the center.
+   * @param {number} radius - Radius of the arc.
+   * @param {number} startAngle - Start angle of the arc.
+   * @param {number} endAngle - End angle of the arc.
+   * @param {boolean} counterClockwise - Whether to draw counter-clockwise.
+   */
+  drawArc(x, y, radius, startAngle, endAngle, counterClockwise = false) {
+    this.context.arc(x, y, radius, startAngle, endAngle, counterClockwise);
+    this.strokeFill();
   }
 
   /**
