@@ -153,7 +153,15 @@ class Face {
   static normals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
   static radius = 0;
 
-  constructor(instanceController, dice, normalIndex, sms) {
+  /**
+   * Face Constructor
+   * @param {InstanceController} instanceController - The instance controller.
+   * @param {Dice} dice - The dice object.
+   * @param {number} normalIndex - The index of the normal.
+   * @param {number[]} verticies - The verticies of the face.
+   */
+  constructor(instanceController, dice, normalIndex, verticies) {
+    /** @type {InstanceController} */
     this.instanceController = instanceController;
     this.points = [];
     this.dice = dice;
@@ -163,13 +171,14 @@ class Face {
     this.angle = Math.atan2(normal.x, -normal.y);
 
     this.resetOrigins();
-    for (const property in sms) {
-      const object = dice.vertices[sms[property]];
-      this.points.push(object);
-      this.originX += object.x / 4;
-      this.originY += object.y / 4;
-      this.originZ += object.z;
-    }
+
+    verticies.map((faceVertexIndex) => {
+      const vertex = dice.vertices[faceVertexIndex];
+      this.points.push(vertex);
+      this.originX += vertex.x / 4;
+      this.originY += vertex.y / 4;
+      this.originZ += vertex.z;
+    });
 
     if (Math.abs(normal.z) < Math.cos(φ)) {
       const normalX = new Vertex(-normal.y, normal.x, 0).normalize().multiply(Face.radius);
