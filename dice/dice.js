@@ -366,9 +366,9 @@ class Dice {
     if (1e-5 < Math.abs(Dice.α) || 1e-5 < Math.abs(Dice.beta)) this.rollDice(a, b);
 
     this.recalculateComponentPositions();
-    Display.instance.clear();
-    const display = Display.instance;
+    const display = this.instanceController.display;
     const context = display.context;
+    display.clear();
 
     // Dice background (contour)
     const facesWithVisibleCountor = [];
@@ -383,8 +383,7 @@ class Dice {
     const length = facesWithVisibleCountor.length;
     // A circle without elliptic Arc
     if (length === 0) {
-      context.arc(0, 0, Dice.radius, 0, τ);
-      display.strokeFill();
+      display.drawArc(0, 0, Dice.radius, 0, τ);
     } else {
       const lineStops = [];
       context.fillStyle = dieVariantObject.bodyFill;
@@ -392,9 +391,8 @@ class Dice {
       for (let index = 0; index < length; index++) {
         const face = facesWithVisibleCountor[index];
         const angleStop = facesWithVisibleCountor[(index + 1) % length].γ;
-        Display.instance.drawEllipseFromTo(face.originX, face.originY, face.α, face.beta, Face.radius, Face.radius * face.normal.z, face.angle, dieVariantObject.bodyFill);
-        context.arc(0, 0, Dice.radius, face.θ, angleStop, true);
-        display.strokeFill();
+        display.drawEllipseFromTo(face.originX, face.originY, face.α, face.beta, Face.radius, Face.radius * face.normal.z, face.angle, dieVariantObject.bodyFill);
+        display.drawArc(0, 0, Dice.radius, face.θ, angleStop, true);
         lineStops.push(Dice.radius * Math.cos(angleStop), Dice.radius * Math.sin(angleStop));
       }
       context.beginPath();
@@ -420,26 +418,19 @@ class Dice {
 class Display {
 
   /**
-   * @type {Display | null}
-   */
-  static instance = null;
-  static clear() {
-    return Display.instance?.clear();
-  }
-
-  /**
    * @param {InstanceController} [instanceController] - The instance controller.
    * @param {string} [canvasSelector] - CSS selector for display canvas.
    */
   constructor(instanceController, canvasSelector = '#display') {
+    /** @type {InstanceController} */
     this.instanceController = instanceController;
+    /** @type {boolean} */
     this.initialRadiusSet = false;
+    /** @type {HTMLCanvasElement} */
     this.canvas = document.querySelector(canvasSelector);
     this.canvas.width = this.width = document.body.clientWidth;
     this.canvas.height = this.height = document.body.clientHeight;
-    /**
-     * @type {CanvasRenderingContext2D}
-     */
+    /** @type {CanvasRenderingContext2D} */
     this.context = this.canvas.getContext('2d');
     this.context.font = "16px Sans-Serif";
     this.context.lineWidth = this.context.miterLimit = 1;
@@ -447,7 +438,6 @@ class Display {
     this.context.strokeStyle = dieVariantObject.bodyFill;
     window.addEventListener('resize', () => this.onResize());
     window.dispatchEvent(new Event('resize'));
-    Display.instance = this;
   }
 
   /**
@@ -568,7 +558,8 @@ class Display {
 class InputManager {
 
   /**
-   * @param {Display} display - The display object.
+   * 
+   * @param {InstanceController} instanceController - The display object.
    * @param {boolean} [autoRegister] - Should we automatically register event listeners?
    */
   constructor(instanceController, autoRegister = true) {
@@ -623,6 +614,7 @@ class InstanceController {
   static instances = [];
 
   constructor() {
+    /** @type {Display} */
     this.display = new Display(this);
     this.inputManager = new InputManager(this, true);
     this.dice = new Dice(this);
