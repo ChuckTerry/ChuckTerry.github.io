@@ -56,6 +56,14 @@ class Vertex {
     this.z = z;
   }
 
+  get length() {
+    return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2);
+  }
+
+  get magnitude() {
+    return this.length;
+  }
+
   /**
    * Clones the vertex.
    * @returns {Vertex} - The cloned vertex.
@@ -91,25 +99,16 @@ class Vertex {
     return new Vertex(x, y, z);
   }
 
-  /**
-   * Gets the normal base of the vertex.
-   * @param {Vertex} vertex - The other vertex.
-   * @returns {number} - The normal base.
-   */
-  getNormalBase(vertex) {
-    return this.x * vertex.x + this.y * vertex.y + this.z * vertex.z;
-  }
-
-  skew(vertex) {
+  crossProduct(vertex) {
     const x = this.y * vertex.z - vertex.y * this.z;
     const y = this.z * vertex.x - vertex.z * this.x;
     const z = this.x * vertex.y - vertex.x * this.y;
     return new Vertex(x, y, z);
   }
 
-  normal() {
-    const base = Math.sqrt(this.getNormalBase(this));
-    return new Vertex(this.x / base, this.y / base, this.z / base);
+  normalize() {
+    const length = this.length;
+    return new Vertex(this.x / length, this.y / length, this.z / length);
   }
 
   /**
@@ -122,6 +121,30 @@ class Vertex {
 
 }
 
+class Matrix {
+
+  constructor(twoDimensionalArray = [[]], major='row') {
+    this.matrix = twoDimensionalArray;
+    this.major = major;
+    this.width = major === 'row' ? twoDimensionalArray[0].length : twoDimensionalArray.length;
+    this.height = major === 'row' ? twoDimensionalArray.length : twoDimensionalArray[0].length;
+  }
+
+  transpose() {
+    const twoDimensionalArray = [];
+    let rowIndex = this.width;
+    let colIndex = this.height;
+    while (rowIndex--) {
+      const row = [];
+      while (colIndex--) {
+        row.push(this.matrix[colIndex][rowIndex]);
+      }
+      twoDimensionalArray.push(row);
+    }
+    return new Matrix(twoDimensionalArray, this.major === 'row' ? 'column' : 'row');
+  }
+}
+
 /***********************************************************************
  * Represents one face on a die.
  ***********************************************************************/
@@ -130,7 +153,8 @@ class Face {
   static normals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
   static radius = 0;
 
-  constructor(dice, normalIndex, sms) {
+  constructor(instanceController, dice, normalIndex, sms) {
+    this.instanceController = instanceController;
     this.points = [];
     this.dice = dice;
     const normal = Face.normals[normalIndex];
@@ -148,9 +172,9 @@ class Face {
     }
 
     if (Math.abs(normal.z) < Math.cos(φ)) {
-      const normalX = new Vertex(-normal.y, normal.x, 0).normal().multiply(Face.radius);
-      const normalY = normal.skew(normalX);
-      const normalZ = normal.multiply(dstFce);
+      const normalX = new Vertex(-normal.y, normal.x, 0).normalize().multiply(Face.radius);
+      const normalY = normal.crossProduct(normalX);
+      const normalZ = normal.multiply(Face.obverse);
       const eps = normal.z <= 0 ? 1 : -1;
       // Turn counter clockwise to draw the contour
       let sns = eps;
@@ -201,34 +225,35 @@ class Face {
   }
 
   draw() {
+    const display = instanceController.display;
     // Fast Divide by 8
     const dmc = Dice.radius >> 3;
     // angle of the normal and the look direction to adjust color and Ellipse ratio rh/rw
     const viewAngle = Math.abs(this.normal.z);
     const colorBase = 192 + Math.floor(64 * viewAngle);
     const color = dieVariantObject.contour(colorBase);
-    Display.instance.drawEllipse(this.originX, this.originY, Face.radius, Face.radius * viewAngle, this.angle, color);
+    display.drawEllipse(this.originX, this.originY, Face.radius, Face.radius * viewAngle, this.angle, color);
     const rh = dmc * viewAngle;
     /* Die Face Markings */
     const faceValue = this.normal.face + 1;
     const dotColor = dieVariantObject.valueDotColor;
     if (faceValue % 2 === 1) {
-      Display.instance.drawEllipse(this.originX, this.originY, dmc, rh, this.angle, dotColor);
+      display.drawEllipse(this.originX, this.originY, dmc, rh, this.angle, dotColor);
     }
     if (faceValue > 1) {
       const [ox3, oy3] = [this.originX * 3, this.originY * 3];
       const [p1x, p1y] = [this.points[1].x, this.points[1].y];
       const [p3x, p3y] = [this.points[3].x, this.points[3].y];
-      Display.instance.drawEllipse((ox3 + 2 * p1x) / 5, (oy3 + 2 * p1y) / 5, dmc, rh, this.angle, dotColor);
-      Display.instance.drawEllipse((ox3 + 2 * p3x) / 5, (oy3 + 2 * p3y) / 5, dmc, rh, this.angle, dotColor);
+      display.drawEllipse((ox3 + 2 * p1x) / 5, (oy3 + 2 * p1y) / 5, dmc, rh, this.angle, dotColor);
+      display.drawEllipse((ox3 + 2 * p3x) / 5, (oy3 + 2 * p3y) / 5, dmc, rh, this.angle, dotColor);
       if (faceValue > 3) {
         const [p0x, p0y] = [this.points[0].x, this.points[0].y];
         const [p2x, p2y] = [this.points[2].x, this.points[2].y];
-        Display.instance.drawEllipse((ox3 + 2 * p0x) / 5, (oy3 + 2 * p0y) / 5, dmc, rh, this.angle, dotColor);
-        Display.instance.drawEllipse((ox3 + 2 * p2x) / 5, (oy3 + 2 * p2y) / 5, dmc, rh, this.angle, dotColor);
+        display.drawEllipse((ox3 + 2 * p0x) / 5, (oy3 + 2 * p0y) / 5, dmc, rh, this.angle, dotColor);
+        display.drawEllipse((ox3 + 2 * p2x) / 5, (oy3 + 2 * p2y) / 5, dmc, rh, this.angle, dotColor);
         if (faceValue === 6) {
-          Display.instance.drawEllipse((ox3 + p0x + p3x) / 5, (oy3 + p0y + p3y) / 5, dmc, rh, this.angle, dotColor);
-          Display.instance.drawEllipse((ox3 + p2x + p1x) / 5, (oy3 + p2y + p1y) / 5, dmc, rh, this.angle, dotColor);
+          display.drawEllipse((ox3 + p0x + p3x) / 5, (oy3 + p0y + p3y) / 5, dmc, rh, this.angle, dotColor);
+          display.drawEllipse((ox3 + p2x + p1x) / 5, (oy3 + p2y + p1y) / 5, dmc, rh, this.angle, dotColor);
         }
       }
     }
@@ -255,10 +280,12 @@ class Dice {
   static radius = 0;
   static instance = null;
 
-  constructor() {
+  constructor(instanceController) {
+    this.instanceController = instanceController;
+    this.vertexNormals = Vertex.generateArrayFrom([1, 1, 1], [-1, 1, 1], [1, -1, 1], [1, 1, -1], [-1, -1, 1], [-1, 1, -1], [1, -1, -1], [-1, -1, -1]);
     this.recalculateComponentPositions();
     Dice.instance = this;
-  }
+  } 
 
   static resetVelocities() {
     Dice.α = Dice.beta = 0;
@@ -291,13 +318,13 @@ class Dice {
 
   calculateFaces() {
     for (let index = 0; index < 6; index++) {
-      this.faces.push(new Face(this, index, Dice.faceVertices[index]));
+      this.faces.push(new Face(this.instanceController, this, index, Dice.faceVertices[index]));
     }
   }
 
   calculateVerticies() {
     for (let index = 0; index < 8; index++) {
-      this.vertices.push(new Point(index, vertexNormals[index], false));
+      this.vertices.push(new Point(index, this.vertexNormals[index], false));
     }
   }
 
@@ -320,14 +347,14 @@ class Dice {
       Face.normals[index] = new Vertex(x, y, z);
       Face.normals[5 - index] = Face.normals[index].negate();
     }
-    vertexNormals[0] = Face.normals[0].add(Face.normals[1], Face.normals[2]).multiply(dstFce);
-    vertexNormals[1] = Face.normals[0].negate().add(Face.normals[1], Face.normals[2]).multiply(dstFce);
-    vertexNormals[2] = Face.normals[1].negate().add(Face.normals[0], Face.normals[2]).multiply(dstFce);
-    vertexNormals[3] = Face.normals[2].negate().add(Face.normals[0], Face.normals[1]).multiply(dstFce);
-    vertexNormals[4] = vertexNormals[3].negate();
-    vertexNormals[5] = vertexNormals[2].negate();
-    vertexNormals[6] = vertexNormals[1].negate();
-    vertexNormals[7] = vertexNormals[0].negate();
+    this.vertexNormals[0] = Face.normals[0].add(Face.normals[1], Face.normals[2]).multiply(Face.obverse);
+    this.vertexNormals[1] = Face.normals[0].negate().add(Face.normals[1], Face.normals[2]).multiply(Face.obverse);
+    this.vertexNormals[2] = Face.normals[1].negate().add(Face.normals[0], Face.normals[2]).multiply(Face.obverse);
+    this.vertexNormals[3] = Face.normals[2].negate().add(Face.normals[0], Face.normals[1]).multiply(Face.obverse);
+    this.vertexNormals[4] = this.vertexNormals[3].negate();
+    this.vertexNormals[5] = this.vertexNormals[2].negate();
+    this.vertexNormals[6] = this.vertexNormals[1].negate();
+    this.vertexNormals[7] = this.vertexNormals[0].negate();
   }
 
   /**
@@ -398,10 +425,11 @@ class Display {
   }
 
   /**
+   * @param {InstanceController} [instanceController] - The instance controller.
    * @param {string} [canvasSelector] - CSS selector for display canvas.
    */
-  constructor(canvasSelector = '#display') {
-    if (Display.instance instanceof Display) return Display.instance;
+  constructor(instanceController, canvasSelector = '#display') {
+    this.instanceController = instanceController;
     this.initialRadiusSet = false;
     this.canvas = document.querySelector(canvasSelector);
     this.canvas.width = this.width = document.body.clientWidth;
@@ -416,6 +444,9 @@ class Display {
     Display.instance = this;
   }
 
+  /**
+   * Clears the canvas.
+   */
   clear() {
     this.context.clearRect(-(this.width >> 1), -(this.height >> 1), this.width, this.height);
   }
@@ -488,16 +519,16 @@ class Display {
         const value = event.target.value;
         Dice.radius = value;
         Face.radius = value * Math.sin(φ);
-        globalThis.dstFce = value * Math.cos(φ);
-        globalThis.dstObs = 10 * value;
+        Face.obverse = value * Math.cos(φ);
+        Display.bounds = 10 * value;
       });
     }
     const dieRadius = Dice.radius = Math.min(width >> 3, height >> 3);
     document.querySelector('#dice-radius').value = dieRadius;
     Face.radius = dieRadius * Math.sin(φ);
 
-    globalThis.dstFce = dieRadius * Math.cos(φ);
-    globalThis.dstObs = 10 * dieRadius;
+    Face.obverse = dieRadius * Math.cos(φ);
+    Display.bounds = 10 * dieRadius;
     this.context.translate(width >> 1, height >> 1);
     this.context.strokeStyle = dieVariantObject.bodyFill;
   }
@@ -520,8 +551,8 @@ class InputManager {
    * @param {Display} display - The display object.
    * @param {boolean} [autoRegister] - Should we automatically register event listeners?
    */
-  constructor(display, autoRegister = true) {
-    this.display = display;
+  constructor(instanceController, autoRegister = true) {
+    this.display = instanceController.display;
     if (autoRegister) this.registerListeners();
   }
 
@@ -534,7 +565,7 @@ class InputManager {
     this.nsy = event.clientY ?? event.touches[0].clientY;
     this.srs = new Vertex(this.nsx - (this.display.width >> 1), this.nsy - (this.display.height >> 1), 0);
     if (!this.isDragging) return;
-    Dice.updateVelocities(Math.atan((this.nsy - this.osy) / (dstObs >> 4)), -Math.atan((this.nsx - this.osx) / (dstObs >> 4)), true);
+    Dice.updateVelocities(Math.atan((this.nsy - this.osy) / (Display.bounds >> 4)), -Math.atan((this.nsx - this.osx) / (Display.bounds >> 4)), true);
     this.osx = this.nsx;
     this.osy = this.nsy;
   }
@@ -568,6 +599,18 @@ class InputManager {
   }
 }
 
+class InstanceController {
+  static instances = [];
+
+  constructor() {
+    this.display = new Display(this);
+    this.inputManager = new InputManager(this, true);
+    this.dice = new Dice(this);
+    this.dice.drawDice();
+    InstanceController.instances.push(this);
+  }
+}
+
 /**
  * Initialization Logic
  */
@@ -593,11 +636,8 @@ function init() {
     dieVariantObject.valueDotColor = '#DDEEFF';
     dieVariantObject.bodyFill = 'rgb(46, 184, 208)';
   }
-
-  globalThis.inputManager = new InputManager(new Display(), true);
-  const w = Math.sqrt(3);
-  globalThis.vertexNormals = Vertex.generateArrayFrom([w, w, w], [-w, w, w], [w, -w, w], [w, w, -w], [-w, -w, w], [-w, w, -w], [w, -w, -w], [-w, -w, -w]);
-  new Dice().drawDice();
+  
+  globalThis.instanceController = new InstanceController();
 }
 
 init();
