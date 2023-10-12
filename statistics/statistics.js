@@ -147,22 +147,23 @@ function clearAll() {
 }
 
 function doStats() {
+  const fixFunction = DECIMAL_PLACES.value === '0' ? Math.round : (number) => number.toFixed(DECIMAL_PLACES.value);
   const array = setInput2Array();
-  SUM_OUTPUT.value = sum(...array);
+  SUM_OUTPUT.value = fixFunction(sum(...array));
   N_OUTPUT.value = array.length;
   UNIQUE_COUNT_OUTPUT.value = uniqueCount(...array);
-  RANGE_OUTPUT.value = range(...array);
-  FLOOR_OUTPUT.value = floor(...array);
-  CEILING_OUTPUT.value = ceiling(...array);
-  MEAN_OUTPUT.value = mean(...array);
-  MEDIAN_OUTPUT.value = median(...array);
+  RANGE_OUTPUT.value = fixFunction(range(...array));
+  FLOOR_OUTPUT.value = fixFunction(floor(...array));
+  CEILING_OUTPUT.value = fixFunction(ceiling(...array));
+  MEAN_OUTPUT.value = fixFunction(mean(...array));
+  MEDIAN_OUTPUT.value = fixFunction(median(...array));
   MODE_OUTPUT.value = mode(...array);
   const quartiles = getQuartiles(...array);
   Q1_OUTPUT.value = quartiles[0];
   Q2_OUTPUT.value = quartiles[1];
   Q3_OUTPUT.value = quartiles[2];
-  VARIANCE_OUTPUT.value = variance(...array);
-  STD_DEV_OUTPUT.value = standardDeviation(...array);
+  VARIANCE_OUTPUT.value = fixFunction(variance(...array));
+  STD_DEV_OUTPUT.value = fixFunction(standardDeviation(...array));
   updateFrequencyTable(array);
 }
 
