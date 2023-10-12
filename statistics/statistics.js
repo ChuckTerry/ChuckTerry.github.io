@@ -65,11 +65,27 @@ function simplifyRadical(radicand, degree = 2) {
   return innerValue === 1 ? outerValue : `${RADICAL_SQUARE}${innerValue}`;
 }
 
+function centerSplit(...args) {
+  const array = args.flat(3);
+  const mod = array.length / 2;
+  return [array.slice(0, Math.floor(mod)), array.slice(Math.ceil(mod))];
+}
+
+function getMedianIndex(...args) {
+  const length = args.flat(3).length;
+  return length % 2 === 0 ? length / 2 : Math.floor(length / 2);
+}
+
 function median(...args) {
   const array = args.flat(3).sort((a, b) => a > b);
   const length = array.length;
-  const midpoint = Math.ceil(length / 2);
-  return length % 2 === 0 ? mean(array[midpoint], array[midpoint + 1]) : array[midpoint];
+  if (length % 2 === 0) {
+    const midpoint = length / 2;
+    return (array[midpoint - 1] + array[midpoint]) / 2;
+  } else {
+    const midpoint = Math.floor((length - 1) / 2);
+    return array[midpoint];
+  }
 }
 
 function mode(...args) {
@@ -96,13 +112,12 @@ function frequency(...args) {
 
 function getQuartiles(...args) {
   const array = args.flat(3);
-  const nPlus1 = array.length + 1;
-  const q1Index = 0.25 * nPlus1;
-  const q3Index = 0.75 * nPlus1;
-  const q1 = Number.isInteger(q1Index) ? array[q1Index] : (array[Math.floor(q1Index)] + array[Math.ceil(q1Index)]) / 2;
-  const q3 = Number.isInteger(q3Index) ? array[q3Index] : (array[Math.floor(q3Index)] + array[Math.ceil(q3Index)]) / 2;
-  const q2 = q3 - q1;
-  return [q1, q2, q3];
+  const split = centerSplit(array);
+  return [
+    median(split[0]),
+    median(array),
+    median(split[1])
+  ];
 }
 
 function uniqueCount(...args) {
