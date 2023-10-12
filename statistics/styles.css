@@ -1,0 +1,74 @@
+body {
+  background-color: #2F3448;
+  color: #FEFEFE;
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+main {
+  padding: 30px;
+  margin: 20px 60px 10px 60px;
+}
+
+legend {
+  background-color: #3876AF;
+  border: 2px groove rgb(192, 192, 192);
+  border-bottom: none;
+  font-size: 1.55em;
+  font-variant: small-caps;
+  padding: 4px;
+  border-top-right-radius: 16px;
+  border-top-left-radius: 6px;
+}
+
+aside {
+  float: right;
+  height: 100%;
+  margin-left: 30px;
+  padding-right: 20px;
+}
+
+th {
+  font-variant: small-caps;
+  font-weight: normal;
+}
+
+.overbar {
+  text-decoration: overline;
+}
+
+.math {
+  font-family: serif;
+  font-weight: bold;
+  font-style: italic;
+  font-variant: normal;
+}
+
+fieldset {
+  background-color: #2D5376;
+  margin-top: 30px;
+  border-radius: 10px;
+}
+
+input[type='text'] {
+  background-color: #2E375E;
+  color: #FEFEFE;
+  font-size: 1.3em;
+}
+
+#stat-freq-table tr:nth-child(odd) {
+  background-color: #3B415A;
+}
+
+#stat-freq-table-head tr th:not(:last-child) {
+  border-right: 1px solid white;
+}
+
+#stat-freq-table-head>tr>th {
+  padding: 6px 12px;
+}
+
+fieldset>p {
+  margin-top: 0.3em;
+}
