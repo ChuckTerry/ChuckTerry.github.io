@@ -75,3 +75,10 @@ input[type='text'] {
 fieldset>p {
   margin-top: 0.3em;
 }
+
+.partitioning-figures-table input {
+  width: 60px;
+  padding: 4px;
+  margin: 0px 15px;
+  font-size: 1.3em;
+}
