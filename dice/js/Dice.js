@@ -6,8 +6,9 @@ import './globals.js';
 /***********************************************************************
  * Represents a single die.
  ***********************************************************************/
-class Dice {
+export class Dice {
 
+  /** @type {number[]} */
   static deltaAB = [0.005, 0.005];
 
   /**
@@ -33,6 +34,12 @@ class Dice {
 
     /** @type {Vertex[]} */
     this.faceNormals = Vertex.generateArrayFrom([1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, -1], [0, -1, 0], [-1, 0, 0]);
+
+    /** @type {Point[]} */
+    this.vertices = [];
+
+    /** @type {Face[]} */
+    this.faces = [];
 
     this.recalculateComponentPositions();
   }
@@ -87,59 +94,10 @@ class Dice {
   }
 
   /**
-   * Checks if the dice is rolling.
-   * @returns {boolean} Whether the dice is rolling.
-   */
-  isRolling() {
-    return Math.abs(this.rotationAngleX) > 1e-5 || Math.abs(this.rotationAngleY) > 1e-5;
-  }
-
-  /**
-   * Recalculates the positions of the faces and verticies.
-   */
-  recalculateComponentPositions() {
-
-    /** @type {Point[]} */
-    this.vertices = [];
-
-    /** @type {Face[]} */
-    this.faces = [];
-
-    this.calculateVerticies();
-    this.calculateFaces();
-  }
-
-  /**
    * Stops the rotation of the dice.
    */
   stopRotation() {
     this.rotationAngleX = this.rotationAngleY = 0;
-  }
-
-  /**
-   * Caluculates the Dice Position for the next frame.
-   * @param {number} a - Angle of rotation on elliptical x axis.
-   * @param {number} b - Angle of rotation on elliptical y axis.
-   */
-  rollDice(a, b) {
-    const [cosA, cosB, sinA, sinB] = [Math.cos(a), Math.cos(b), Math.sin(a), Math.sin(b)];
-    for (let index = 0; index < 3; index++) {
-      const normal = this.faceNormals[index];
-      const depthFactor = normal.y * sinA + normal.z * cosA;
-      const x = depthFactor * sinB + normal.x * cosB;
-      const y = normal.y * cosA - normal.z * sinA;
-      const z = depthFactor * cosB - normal.x * sinB;
-      this.faceNormals[index] = new Vertex(x, y, z);
-      this.faceNormals[5 - index] = this.faceNormals[index].negate();
-    }
-    this.vertexNormals[0] = this.faceNormals[0].add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
-    this.vertexNormals[1] = this.faceNormals[0].negate().add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
-    this.vertexNormals[2] = this.faceNormals[1].negate().add(this.faceNormals[0], this.faceNormals[2]).multiply(Face.obverse);
-    this.vertexNormals[3] = this.faceNormals[2].negate().add(this.faceNormals[0], this.faceNormals[1]).multiply(Face.obverse);
-    this.vertexNormals[4] = this.vertexNormals[3].negate();
-    this.vertexNormals[5] = this.vertexNormals[2].negate();
-    this.vertexNormals[6] = this.vertexNormals[1].negate();
-    this.vertexNormals[7] = this.vertexNormals[0].negate();
   }
 
   /**
@@ -180,6 +138,50 @@ class Dice {
 
     this.faces.map(face => face.draw());
     window.requestAnimationFrame(() => this.drawDice());
+  }
+
+  /**
+   * Checks if the dice is rolling.
+   * @returns {boolean} Whether the dice is rolling.
+   */
+  isRolling() {
+    return Math.abs(this.rotationAngleX) > 1e-5 || Math.abs(this.rotationAngleY) > 1e-5;
+  }
+
+  /**
+   * Recalculates the positions of the faces and verticies.
+   */
+  recalculateComponentPositions() {
+    this.vertices = [];
+    this.faces = [];
+    this.calculateVerticies();
+    this.calculateFaces();
+  }
+
+  /**
+   * Caluculates the Dice Position for the next frame.
+   * @param {number} a - Angle of rotation on elliptical x axis.
+   * @param {number} b - Angle of rotation on elliptical y axis.
+   */
+  rollDice(a, b) {
+    const [cosA, cosB, sinA, sinB] = [Math.cos(a), Math.cos(b), Math.sin(a), Math.sin(b)];
+    for (let index = 0; index < 3; index++) {
+      const normal = this.faceNormals[index];
+      const depthFactor = normal.y * sinA + normal.z * cosA;
+      const x = depthFactor * sinB + normal.x * cosB;
+      const y = normal.y * cosA - normal.z * sinA;
+      const z = depthFactor * cosB - normal.x * sinB;
+      this.faceNormals[index] = new Vertex(x, y, z);
+      this.faceNormals[5 - index] = this.faceNormals[index].negate();
+    }
+    this.vertexNormals[0] = this.faceNormals[0].add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
+    this.vertexNormals[1] = this.faceNormals[0].negate().add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
+    this.vertexNormals[2] = this.faceNormals[1].negate().add(this.faceNormals[0], this.faceNormals[2]).multiply(Face.obverse);
+    this.vertexNormals[3] = this.faceNormals[2].negate().add(this.faceNormals[0], this.faceNormals[1]).multiply(Face.obverse);
+    this.vertexNormals[4] = this.vertexNormals[3].negate();
+    this.vertexNormals[5] = this.vertexNormals[2].negate();
+    this.vertexNormals[6] = this.vertexNormals[1].negate();
+    this.vertexNormals[7] = this.vertexNormals[0].negate();
   }
 
 }
