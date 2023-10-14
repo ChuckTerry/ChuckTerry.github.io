@@ -1,6 +1,6 @@
-import Dice from "./Dice.js";
-import Display from "./Display.js";
-import InputManager from "./InputManager.js";
+import { Dice } from "./Dice.js";
+import { Display } from "./Display.js";
+import { InputManager } from "./InputManager.js";
 import './globals.js';
 
 /***********************************************************************
