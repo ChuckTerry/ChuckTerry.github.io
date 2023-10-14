@@ -146,8 +146,19 @@ function clearAll() {
   }
 }
 
+function makePrecisionFixer(precision = 2) {
+  if (!makePrecisionFixer[precision]) {
+    makePrecisionFixer[precision] = function (number) {
+      if (typeof number !== 'number') number = parseInt(number, 10);
+      return Number.isInteger(number) ? number.toString() : number.toFixed(precision);
+    }
+  }
+  return makePrecisionFixer[precision];
+}
+
+
 function doStats() {
-  const fixFunction = DECIMAL_PLACES.value === '0' ? Math.round : (number) => number.toFixed(DECIMAL_PLACES.value);
+  const fixFunction = makePrecisionFixer(DECIMAL_PLACES.value);
   const array = setInput2Array();
   SUM_OUTPUT.value = fixFunction(sum(...array));
   N_OUTPUT.value = array.length;
