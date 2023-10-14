@@ -1,18 +1,9 @@
-import { InstanceController } from './InstanceController.js';
-
 /***********************************************************************
  * Represents a die variant.
  ***********************************************************************/
 export class DieVariant {
 
-  /**
-   * @param {InstanceController} instanceController 
-   */
-  constructor(instanceController) {
-
-    /** @type {InstanceController} */
-    this.instanceController = instanceController;
-
+  constructor() {
     /** @type {function (number): string} */
     this.contour = (x) => `rgb(${x - 150}, ${x - 16}, ${x + 16})`;
 
