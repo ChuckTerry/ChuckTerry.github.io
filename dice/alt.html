@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>Virtual Die</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./dice-styles.css" type="text/css" media="all">
+    <script src="./js/index.js" type="module"></script>
+  </head>
+
+  <body>
+    <aside>
+      <h1>Virtual Dice</h1>
+      <label for="half-turn">Half Turn</label>
+      <input type="range" id="half-turn" name="half-turn" min="0" max="360" value="30" step="1" />
+      <label for="dice-radius">Die Radius</label>
+      <input type="range" id="dice-radius" name="dice-radius" min="0" max="3000" value="0" step="1" />
+      <h2>Log Output</h2>
+      <p id="log-output"></p>
+    </aside>
+    <canvas id="display"></canvas>
+  </body>
+
+</html>
