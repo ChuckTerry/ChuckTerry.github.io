@@ -1,4 +1,4 @@
-import { InstanceController } from './InstanceController';
+import { InstanceController } from './InstanceController.js';
 
 /***********************************************************************
  * Represents a die variant.
