@@ -1,6 +1,6 @@
-import { Point } from './Point';
-import { Vertex } from './Vertex';
-import { Face } from './Face';
+import { Point } from './Point.js';
+import { Vertex } from './Vertex.js';
+import { Face } from './Face.js';
 import './globals.js';
 
 /***********************************************************************
