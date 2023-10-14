@@ -76,7 +76,7 @@ export class Vertex {
    * @returns {Vertex} - The vertex resulting from the addition of the given vertices.
    */
   add(...vertices) {
-    const [x, y, z] = vertices.reduce(([accX, accY, accZ], vertex) => {[accX + vertex.x, accY + vertex.y, accZ + vertex.z], [this.x, this.y, this.z]});
+    const [x, y, z] = vertices.reduce(([accX, accY, accZ], vertex) => [accX + vertex.x, accY + vertex.y, accZ + vertex.z], [this.x, this.y, this.z]);
     return new Vertex(x, y, z);
   }
 
