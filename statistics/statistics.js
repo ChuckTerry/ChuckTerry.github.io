@@ -97,7 +97,7 @@ function makePrecisionFixer(precision = 2) {
       while (string.at(-1) === '0') {
         string = string.slice(0, -1);
       }
-      return string;
+      return string === '' ? '0' : string;
     };
   }
   return makePrecisionFixer[precision];
