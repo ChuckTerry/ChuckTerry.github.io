@@ -1,38 +1,41 @@
-function sum(...args) {
-  return args.flat(3).reduce((accumulator, value) => accumulator + value, 0);
-}
-
-function floor(...args) {
-  const array = args.flat(3);
-  return Math.min(...array);
-}
-
 function ceiling(...args) {
   const array = args.flat(3);
   return Math.max(...array);
 }
 
-function mean(...args) {
+function centerSplit(...args) {
   const array = args.flat(3);
-  const length = array.length;
-  return sum(array) / length;
+  const mod = array.length / 2;
+  return [array.slice(0, Math.floor(mod)), array.slice(Math.ceil(mod))];
 }
 
-function range(...args) {
-  const array = args.flat(3);
-  return Math.max(...array) - Math.min(...array);
+function clearAll() {
+  SET_INPUT.value = '';
+  const outputCount = OUTPUT_ARRAY.length;
+  for (let outputIndex = 0; outputIndex < outputCount; outputIndex++) {
+    OUTPUT_ARRAY[outputIndex].value = '';
+  }
 }
 
-function variance(...args) {
-  const array = args.flat(3);
-  const length = array.length;
-  const setMean = mean(...array);
-  const sumOfSquares = array.flat(3).reduce((accumulator, value) => accumulator + Math.pow(value - setMean, 2), 0);
-  return sumOfSquares / length;
-}
-
-function standardDeviation(...args) {
-  return Math.sqrt(variance(...args));
+function doStats() {
+  const fixFunction = makePrecisionFixer(DECIMAL_PLACES.value);
+  const array = setInput2Array();
+  SUM_OUTPUT.value = fixFunction(sum(...array));
+  N_OUTPUT.value = array.length;
+  UNIQUE_COUNT_OUTPUT.value = uniqueCount(...array);
+  RANGE_OUTPUT.value = fixFunction(range(...array));
+  FLOOR_OUTPUT.value = fixFunction(floor(...array));
+  CEILING_OUTPUT.value = fixFunction(ceiling(...array));
+  MEAN_OUTPUT.value = fixFunction(mean(...array));
+  MEDIAN_OUTPUT.value = fixFunction(median(...array));
+  MODE_OUTPUT.value = mode(...array);
+  const quartiles = getQuartiles(...array);
+  Q1_OUTPUT.value = quartiles[0];
+  Q2_OUTPUT.value = quartiles[1];
+  Q3_OUTPUT.value = quartiles[2];
+  VARIANCE_OUTPUT.value = fixFunction(variance(...array));
+  STD_DEV_OUTPUT.value = fixFunction(standardDeviation(...array));
+  updateFrequencyTable(array);
 }
 
 function factorial(number) {
@@ -45,35 +48,65 @@ function factorial(number) {
   return value;
 }
 
-function simplifyRadical(radicand, degree = 2) {
-  const factorArray = getPrimeFactors(radicand);
-  let outerValue = 1; let innerValue = 1;
-  while (factorArray.length !== 0) {
-    let count = 1;
-    const currentFactor = factorArray.shift();
-    while (factorArray[0] === currentFactor) {
-      factorArray.shift();
-      count++;
-    }
-    if (count % 2 !== 0) {
-      innerValue = innerValue * currentFactor;
-      count--;
-    }
-    if (count !== 0) outerValue = outerValue * ((count / 2) * currentFactor);
-  }
-  if (innerValue !== 1 && outerValue !== 1) return `${outerValue}${RADICAL_SQUARE}${innerValue}`;
-  return innerValue === 1 ? outerValue : `${RADICAL_SQUARE}${innerValue}`;
-}
-
-function centerSplit(...args) {
-  const array = args.flat(3);
-  const mod = array.length / 2;
-  return [array.slice(0, Math.floor(mod)), array.slice(Math.ceil(mod))];
-}
-
 function getMedianIndex(...args) {
   const length = args.flat(3).length;
   return length % 2 === 0 ? length / 2 : Math.floor(length / 2);
+}
+
+function floor(...args) {
+  const array = args.flat(3);
+  return Math.min(...array);
+}
+
+function frequency(...args) {
+  const array = args.flat(3);
+  const length = array.length;
+  const frequencyMap = array.reduce((map, value) => map.set(value, (map.has(value) ? map.get(value) : 0) + 1), new Map());
+  return Array.from(frequencyMap);
+}
+
+function getQuartiles(...args) {
+  const array = args.flat(3);
+  const split = centerSplit(array);
+  return [
+    median(split[0]),
+    median(array),
+    median(split[1])
+  ];
+}
+
+function makeFrequencyTableRow(number, freq, length) {
+  const row = document.createElement('tr');
+  const numberCell = document.createElement('td');
+  numberCell.innerText = number;
+  row.append(numberCell);
+  const frequencyCell = document.createElement('td');
+  frequencyCell.innerText = freq;
+  row.append(frequencyCell);
+  const relativeFrequencyCell = document.createElement('td');
+  relativeFrequencyCell.innerText = `${((freq / length) * 100).toFixed(2)}%`;
+  row.append(relativeFrequencyCell);
+  return row;
+}
+
+function makePrecisionFixer(precision = 2) {
+  if (!makePrecisionFixer[precision]) {
+    makePrecisionFixer[precision] = function (number) {
+      if (typeof number !== 'number') number = parseFloat(number, 10);
+      let string = Number.isInteger(number) ? number.toString() : number.toFixed(precision);
+      while (string.at(-1) === '0') {
+        string = string.slice(0, -1);
+      }
+      return string;
+    };
+  }
+  return makePrecisionFixer[precision];
+}
+
+function mean(...args) {
+  const array = args.flat(3);
+  const length = array.length;
+  return sum(array) / length;
 }
 
 function median(...args) {
@@ -103,31 +136,10 @@ function mode(...args) {
   return modes.length === 1 ? modes[0] : modes;
 }
 
-function frequency(...args) {
+function range(...args) {
   const array = args.flat(3);
-  const length = array.length;
-  const frequencyMap = array.reduce((map, value) => map.set(value, (map.has(value) ? map.get(value) : 0) + 1), new Map());
-  return Array.from(frequencyMap);
+  return Math.max(...array) - Math.min(...array);
 }
-
-function getQuartiles(...args) {
-  const array = args.flat(3);
-  const split = centerSplit(array);
-  return [
-    median(split[0]),
-    median(array),
-    median(split[1])
-  ];
-}
-
-function uniqueCount(...args) {
-  const array = args.flat(3);
-  return Array.from(new Set(array)).length;
-}
-
-
-
-
 
 function setInput2Array() {
   return SET_INPUT.value.split('\n').join(',').split(/[^\d\.]/)
@@ -136,46 +148,63 @@ function setInput2Array() {
     .sort((a, b) => a - b);
 }
 
-
-
-function clearAll() {
-  SET_INPUT.value = '';
-  const outputCount = OUTPUT_ARRAY.length;
-  for (let outputIndex = 0; outputIndex < outputCount; outputIndex++) {
-    OUTPUT_ARRAY[outputIndex].value = '';
-  }
-}
-
-function makePrecisionFixer(precision = 2) {
-  if (!makePrecisionFixer[precision]) {
-    makePrecisionFixer[precision] = function (number) {
-      if (typeof number !== 'number') number = parseInt(number, 10);
-      return Number.isInteger(number) ? number.toString() : number.toFixed(precision);
+function simplifyRadical(radicand, degree = 2) {
+  const factorArray = getPrimeFactors(radicand);
+  let outerValue = 1; let innerValue = 1;
+  while (factorArray.length !== 0) {
+    let count = 1;
+    const currentFactor = factorArray.shift();
+    while (factorArray[0] === currentFactor) {
+      factorArray.shift();
+      count++;
     }
+    if (count % 2 !== 0) {
+      innerValue = innerValue * currentFactor;
+      count--;
+    }
+    if (count !== 0) outerValue = outerValue * ((count / 2) * currentFactor);
   }
-  return makePrecisionFixer[precision];
+  if (innerValue !== 1 && outerValue !== 1) return `${outerValue}${RADICAL_SQUARE}${innerValue}`;
+  return innerValue === 1 ? outerValue : `${RADICAL_SQUARE}${innerValue}`;
 }
 
+function standardDeviation(...args) {
+  return Math.sqrt(variance(...args));
+}
 
-function doStats() {
-  const fixFunction = makePrecisionFixer(DECIMAL_PLACES.value);
-  const array = setInput2Array();
-  SUM_OUTPUT.value = fixFunction(sum(...array));
-  N_OUTPUT.value = array.length;
-  UNIQUE_COUNT_OUTPUT.value = uniqueCount(...array);
-  RANGE_OUTPUT.value = fixFunction(range(...array));
-  FLOOR_OUTPUT.value = fixFunction(floor(...array));
-  CEILING_OUTPUT.value = fixFunction(ceiling(...array));
-  MEAN_OUTPUT.value = fixFunction(mean(...array));
-  MEDIAN_OUTPUT.value = fixFunction(median(...array));
-  MODE_OUTPUT.value = mode(...array);
-  const quartiles = getQuartiles(...array);
-  Q1_OUTPUT.value = quartiles[0];
-  Q2_OUTPUT.value = quartiles[1];
-  Q3_OUTPUT.value = quartiles[2];
-  VARIANCE_OUTPUT.value = fixFunction(variance(...array));
-  STD_DEV_OUTPUT.value = fixFunction(standardDeviation(...array));
-  updateFrequencyTable(array);
+function sum(...args) {
+  return args.flat(3).reduce((accumulator, value) => accumulator + value, 0);
+}
+
+function uniqueCount(...args) {
+  const array = args.flat(3);
+  return Array.from(new Set(array)).length;
+}
+
+function updateFrequencyTable(...args) {
+  const array = args.flat(3);
+  const frequencyArray = Array.from(array.reduce((map, value) => map.set(value, (map.has(value) ? map.get(value) : 0) + 1), new Map()));
+  const uniqueCount = frequencyArray.length;
+  const newTBody = document.createElement('tbody');
+  const oldTBody = document.querySelector('#stat-freq-table');
+  for (let i = 0; i < uniqueCount; i++) {
+    const [number, numberFreq] = frequencyArray[i];
+    newTBody.append(makeFrequencyTableRow(number, numberFreq, uniqueCount));
+  }
+  oldTBody.parentNode.replaceChild(newTBody, oldTBody);
+  newTBody.id = 'stat-freq-table';
+}
+
+function variance(...args) {
+  const array = args.flat(3);
+  const length = array.length;
+  const setMean = mean(...array);
+  const sumOfSquares = array.flat(3).reduce((accumulator, value) => accumulator + Math.pow(value - setMean, 2), 0);
+  return sumOfSquares / length;
+}
+
+String.toFixed = function toFixed(precision = 0) {
+  return parseInt(this, 10).toFixed(precision);
 }
 
 window.addEventListener('load', () => {
@@ -203,31 +232,3 @@ window.addEventListener('load', () => {
 
   DECIMAL_PLACES.addEventListener('change', () => DECIMAL_POINT_VALUE.innerText = DECIMAL_PLACES.value);
 });
-
-function makeFrequencyTableRow(number, freq, length) {
-  const row = document.createElement('tr');
-  const numberCell = document.createElement('td');
-  numberCell.innerText = number;
-  row.append(numberCell);
-  const frequencyCell = document.createElement('td');
-  frequencyCell.innerText = freq;
-  row.append(frequencyCell);
-  const relativeFrequencyCell = document.createElement('td');
-  relativeFrequencyCell.innerText = `${((freq / length) * 100).toFixed(2)}%`;
-  row.append(relativeFrequencyCell);
-  return row;
-}
-
-function updateFrequencyTable(...args) {
-  const array = args.flat(3);
-  const frequencyArray = Array.from(array.reduce((map, value) => map.set(value, (map.has(value) ? map.get(value) : 0) + 1), new Map()));
-  const uniqueCount = frequencyArray.length;
-  const newTBody = document.createElement('tbody');
-  const oldTBody = document.querySelector('#stat-freq-table');
-  for (let i = 0; i < uniqueCount; i++) {
-    const [number, numberFreq] = frequencyArray[i];
-    newTBody.append(makeFrequencyTableRow(number, numberFreq, uniqueCount));
-  }
-  oldTBody.parentNode.replaceChild(newTBody, oldTBody);
-  newTBody.id = 'stat-freq-table';
-}
