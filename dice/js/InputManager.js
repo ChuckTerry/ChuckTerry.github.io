@@ -1,4 +1,5 @@
 import { Vertex } from './Vertex.js';
+import { Display } from './Display.js';
 import './globals.js';
 
 /***********************************************************************
