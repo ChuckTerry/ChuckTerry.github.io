@@ -174,10 +174,11 @@ export class Dice {
       this.faceNormals[index] = new Vertex(x, y, z);
       this.faceNormals[5 - index] = this.faceNormals[index].negate();
     }
-    this.vertexNormals[0] = this.faceNormals[0].add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
-    this.vertexNormals[1] = this.faceNormals[0].negate().add(this.faceNormals[1], this.faceNormals[2]).multiply(Face.obverse);
-    this.vertexNormals[2] = this.faceNormals[1].negate().add(this.faceNormals[0], this.faceNormals[2]).multiply(Face.obverse);
-    this.vertexNormals[3] = this.faceNormals[2].negate().add(this.faceNormals[0], this.faceNormals[1]).multiply(Face.obverse);
+    const distanceFromCenter = this.faces[0].distanceFromCenter;
+    this.vertexNormals[0] = this.faceNormals[0].add(this.faceNormals[1], this.faceNormals[2]).multiply(distanceFromCenter);
+    this.vertexNormals[1] = this.faceNormals[0].negate().add(this.faceNormals[1], this.faceNormals[2]).multiply(distanceFromCenter);
+    this.vertexNormals[2] = this.faceNormals[1].negate().add(this.faceNormals[0], this.faceNormals[2]).multiply(distanceFromCenter);
+    this.vertexNormals[3] = this.faceNormals[2].negate().add(this.faceNormals[0], this.faceNormals[1]).multiply(distanceFromCenter);
     this.vertexNormals[4] = this.vertexNormals[3].negate();
     this.vertexNormals[5] = this.vertexNormals[2].negate();
     this.vertexNormals[6] = this.vertexNormals[1].negate();
