@@ -1,6 +1,6 @@
 import { Point } from './Point.js';
 import { Vertex } from './Vertex.js';
-
+import './globals.js';
 
 /***********************************************************************
  * Represents one face on a die.
