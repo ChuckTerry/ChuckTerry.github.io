@@ -18,16 +18,27 @@ export class Display {
     /** @type {HTMLCanvasElement} */
     this.canvas = document.querySelector(canvasSelector);
 
-    this.canvas.width = this.width = document.body.clientWidth;
-    this.canvas.height = this.height = document.body.clientHeight;
+    /** @type {number} */
+    this.width = this.canvas.width = document.body.clientWidth;
+
+    /** @type {number} */
+    this.height = this.canvas.height = document.body.clientHeight;
 
     /** @type {CanvasRenderingContext2D} */
     this.context = this.canvas.getContext('2d');
 
+    /** @type {string} */
     this.context.font = "16px Sans-Serif";
+
+    /** @type {number} */
     this.context.lineWidth = this.context.miterLimit = 1;
+
+    /** @type {string} */
     this.context.lineJoin = "miter";
+
+    /** @type {string} */
     this.context.strokeStyle = globalThis.dieVariantObject.bodyFill;
+
     window.addEventListener('resize', () => this.onResize());
     window.dispatchEvent(new Event('resize'));
   }
