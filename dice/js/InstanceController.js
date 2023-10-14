@@ -21,8 +21,6 @@ export class InstanceController {
     /** @type {Dice} */
     this.dice = new Dice(this);
 
-    this.dieVariantObject = globalThis.dieVariantObject = new DieVariant(this);
-
     this.dice.drawDice();
     InstanceController.instances.push(this);
   }
