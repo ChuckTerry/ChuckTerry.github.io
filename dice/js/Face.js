@@ -34,6 +34,9 @@ export class Face {
     /** @type {Point} */
     this.normal = new Point(normalIndex, normal, true);
 
+    /** @type {number} */
+    this.distanceFromCenter = this.updateDistanceFromCenter();
+
     /**
      * Angle of Ellipse Major Axis
      * @type {Number}
@@ -55,7 +58,7 @@ export class Face {
     if (Math.abs(normal.z) < Math.cos(φ)) {
       const normalX = new Vertex(-normal.y, normal.x, 0).normalize().multiply(this.radius);
       const normalY = normal.crossProduct(normalX);
-      const normalZ = normal.multiply(Face.obverse);
+      const normalZ = normal.multiply(this.distanceFromCenter);
       const rotationStep = normal.z <= 0 ? 1 : -1;
 
       let ro = normalX.multiply(Math.cos(-rotationStep * Δ)).add(normalY.multiply(Math.sin(-rotationStep * Δ)), normalZ);
@@ -159,6 +162,16 @@ export class Face {
   resetOrigins() {
     /** @type {number} */
     this.originX = this.originY = this.originZ = 0;
+  }
+
+  /**
+   * Updates the face's distance from the center.
+   * @returns {number} The distance from the center.
+   */
+  updateDistanceFromCenter() {
+    const {width, height} = this.instanceController.display;
+    const radius = Math.min(width >> 3, height >> 3);
+    return this.distanceFromCenter = radius * Math.cos(φ)
   }
 
 }
