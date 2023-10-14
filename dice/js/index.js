@@ -7,10 +7,7 @@ import './globals.js';
  */
 function init() {
   if (document.readyState !== 'complete') return window.addEventListener('load', init);
-
   globalThis.instanceController = new InstanceController();
-  globalThis.dieVariantObject = new DieVariant(globalThis.instanceController);
-
 }
 
 init();
