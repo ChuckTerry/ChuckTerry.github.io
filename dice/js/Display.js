@@ -26,7 +26,7 @@ export class Display {
     this.context.font = "16px Sans-Serif";
     this.context.lineWidth = this.context.miterLimit = 1;
     this.context.lineJoin = "miter";
-    this.context.strokeStyle = dieVariantObject.bodyFill;
+    this.context.strokeStyle = globalThis.dieVariantObject.bodyFill;
     window.addEventListener('resize', () => this.onResize());
     window.dispatchEvent(new Event('resize'));
   }
@@ -144,7 +144,7 @@ export class Display {
     Face.obverse = dieRadius * Math.cos(φ);
     Display.bounds = 10 * dieRadius;
     this.context.translate(width >> 1, height >> 1);
-    this.context.strokeStyle = dieVariantObject.bodyFill;
+    this.context.strokeStyle = globalThis.dieVariantObject.bodyFill;
   }
 
   /**
