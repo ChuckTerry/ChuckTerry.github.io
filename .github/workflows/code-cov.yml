@@ -2,15 +2,13 @@ name: CodeCov
 run-name: ${{ github.actor }} - Checking Code Voverage
 on: [push]
 jobs:
-  Explore-GitHub-Actions:
+  CodeCoverage:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Run triggered by a ${{ github.event_name }} event on ${{ github.repository }}@${{ github.ref }}"
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - run: echo "Checkout Successful"
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - uses: actions/checkout@master
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          verbose: true
       - run: echo "Status is ${{ job.status }}."
