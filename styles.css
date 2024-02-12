@@ -12,8 +12,7 @@ body {
 
 aside {
   background-color: var(--aqua-pastel);
-    background-image:
-      linear-gradient(to bottom, rgba(190, 225, 233, 0), hsla(191, 29, 71, 0.8));
+    background-image: linear-gradient(to bottom, rgba(190, 225, 233, 0), #95d4e2);;
     background-repeat: no-repeat;
 }
 
