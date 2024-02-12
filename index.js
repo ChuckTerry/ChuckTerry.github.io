@@ -1,0 +1,4 @@
+/* DevTools Risky CopyPasta Notice */
+(async (devConsole, logger = devConsole.log) => {
+  setTimeout(logger.bind (devConsole, `While I'm glad you seem to know your way around the place...\r\n\r\n%cYou have opened your browser's DevTools Console.%c\n\n\n\tThis tool is used during web development to increase productivity and troubleshoot code.\n\tDo %cNOT%c paste any code here given to you by someone else. It may compromise your account\n\tor have other negative side effects. Please report any person attempting to convince you\n\totherwise to this websites technical support team.`, "font-weight: bold; font-size: 16px;", "font-weight: normal; font-size: 11px;", "font-weight: bolder; font-size: 16px; color: #FF3028; text-decoration: underline red;", "font-weight: normal; font-size: 11px; color: #FFFFFF; text-decoration: none;" ), 0);
+})((globalThis || window || this)?.console || (() => {}));
