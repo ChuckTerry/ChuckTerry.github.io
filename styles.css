@@ -23,7 +23,6 @@ header {
   position: fixed;
   width: 100%;
   top: 0;
-  text-align: center;
 }
 
 
@@ -187,4 +186,15 @@ main > div.main-center {
 .footer-space {
   height: 52px;
   width: 100%;
+}
+
+.header-space {
+  height: 35px;
+}
+
+.bottom-right {
+  position: fixed;
+  right: 0;
+  width: 200px;
+  bottom: 30px;
 }
