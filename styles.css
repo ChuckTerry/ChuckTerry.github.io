@@ -18,10 +18,14 @@ aside {
 }
 
 header {
-  position: relative;
   z-index: 100;
   border-bottom: 2px solid black;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  text-align: center;
 }
+
 
 nav {
   padding: 8px 8px 6px 6px;
