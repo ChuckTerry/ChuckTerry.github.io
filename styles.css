@@ -39,7 +39,7 @@ section:not(.fluid-motion-demo) {
 
 footer {
   border-top: 4px double #111111;
-  position: absolute;
+  position: fixed;
   width: 100%;
   bottom: 0;
   text-align: center;
@@ -170,4 +170,13 @@ main > aside.right-margin {
 }
 main > div.main-center {
   grid-area: 1 / 2 / 2 / 3;
+}
+
+.max-third {
+  max-width: 30%;
+}
+
+.footer-space {
+  height: 60px;
+  width: 100%;
 }
