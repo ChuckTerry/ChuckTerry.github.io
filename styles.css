@@ -8,6 +8,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  line-height: 120%;
 }
 
 aside {
@@ -92,9 +93,9 @@ address > .name {
   font-size: 20px;
 }
 
-
-
-
+.float-right {
+  float: right;
+}
 
 nav .nav-right {
   float: right;
@@ -149,8 +150,6 @@ nav > div {
   display: table-row;
 }
 
-
-
 main {
   display: grid;
   min-height: 90vh;
@@ -164,6 +163,7 @@ main > aside.left-margin {
   grid-area: 1 / 1 / 2 / 2;
   background-color: var(--aqua-pastel);
 }
+
 main > aside.right-margin {
   grid-area: 1 / 3 / 2 / 4;
   background-color: var(--aqua-pastel);
