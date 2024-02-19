@@ -1,0 +1,99 @@
+table {
+  cursor: crosshair;
+  border-collapse: collapse;
+}
+
+table > caption {
+  caption-side: top;
+  text-align: center;
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 10px;
+  border: none;
+  border-bottom: 2px solid black;
+}
+
+table * {
+  border-spacing: 0px;
+  border: 2px solid black;
+  font-family: monospace;
+}
+
+table td {
+  cursor: none;
+}
+
+th {
+  background-color: #2864e6;
+  color: #FAFAFA;
+}
+
+th,
+td {
+  padding: 2px;
+  width: 43px;
+  text-align: center;
+}
+
+tr th:nth-child(1) {
+  width: 15px;
+}
+
+tr th:nth-child(2) {
+  width: 30px;
+}
+
+th.active {
+  background-color: #27cdff;
+  color: #0b088d
+}
+
+.active {
+  background-color: black;
+  color: white;
+  outline: 4px solid #12d112;
+}
+
+.column-active {
+  box-shadow: -4px 0 0 #12d112AB, 4px 0 0 #12d112AB;
+}
+
+.row-active {
+  box-shadow: 0 -4px 0 #12d112AB, 0 4px 0 #12d112AB;
+}
+
+.no {
+  background-color: #CCCCCC;
+}
+
+.no.active {
+  background-color: #999999;
+  outline: 2px solid #bf1414;
+}
+
+.undocumented {
+  background-color: #fad978;
+}
+
+.legend {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  margin: 8px 6px;
+  border: 1px solid black
+}
+
+.legend-text {
+  vertical-align: top;
+  line-height: 240%;
+}
+
+.selected {
+  background-color: #12d112c3;
+  outline: 2px solid black;
+}
+
+.selected.no {
+  background-color: #bf1414c3;
+  outline: 4px solid #640404;
+}

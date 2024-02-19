@@ -7,95 +7,22 @@
     <link rel="icon" href="https://chuckterry.me/favicon.ico" type="image/x-icon" />
     <meta name="author" content="Chuck Terry" />
     <meta name="description" content="Instruction Set Lookup Table for the Motorola NC6800" />
-    <script>
-      function clearActive() {
-        const allActive = [...document.querySelectorAll('.active')];
-        const cellCount = allActive.length;
-        for (let index = 0; index < cellCount; index++) {
-          const cell = allActive[index];
-          cell.classList.remove('active');
-        }
-      }
-
-      function mouseEnter(event) {
-        clearActive();
-        const element = event.target;
-        element.classList.add('active');
-        const currentRow = element.parentElement;
-        rowCells = [...currentRow.children];
-        const position = rowCells.indexOf(element);
-        const msbRow = document.querySelector('.msb');
-        const msbHead = [...msbRow.children][position + 1];
-        msbHead.classList.add('active');
-        rowCells[0].classList.add('active');
-      }
-
-      window.addEventListener('load', () => {
-        const allCells = [...document.querySelectorAll('td')];
-        const cellCount = allCells.length;
-        for (let index = 0; index < cellCount; index++) {
-          const cell = allCells[index];
-          cell.addEventListener('mouseenter', mouseEnter);
-        }
-        document.querySelector('table').addEventListener('mouseleave', clearActive);
-      });
-    </script>
-    <style>
-      table {
-        cursor: crosshair;
-      }
-
-      table * {
-        border-spacing: 0px;
-        border: 1px solid black;
-      }
-    
-      th {
-        background-color: #1850c9;
-        color: #FAFAFA;
-      }
-    
-      th,
-      td {
-        padding: 2px;
-        width: 53px;
-        text-align: center;
-      }
-    
-      .active {
-        background-color: black;
-        color: white;        
-        outline: 2px solid #12d112;
-      }
-    
-      .no.active {
-        background-color: #999999;
-        outline: 2px solid #bf1414;
-      }
-
-      .selected {
-        background-color: #12d112c3;
-        outline: 2px solid black;
-      }
-
-      .selected.no {
-        background-color: #bf1414c3;
-        outline: 2px solid #640404;
-      }
-    </style>
+    <script type="text/javascript" src="table-magic.js" defer></script>
+    <link href="instruction-set-styles.css" rel="stylesheet" type="text/css" />
   </head>
 
   <body>
     <table>
+      <caption>Motorola MC6800 Microprocessor Instruction Set</caption>
       <thead>
         <tr>
-          <th colspan="19">MSB</th>
+          <th colspan="19" title="Most Significant Bit" class="byte">MSB</th>
         </tr>
       </thead>
       <tbody>
         <tr class="msb">
-          <th rowspan="18">LSB</th>
-          <th></th>
+          <th rowspan="18" title="Least Significant Bit" class="byte">L<br/>S<br/>B</th>
+          <th id="opcode-cell"></th>
           <th>0</th>
           <th>1</th>
           <th>2</th>
@@ -119,14 +46,14 @@
           <td>SBA</td>
           <td>BRA</td>
           <td>TSX</td>
-          <td>NEG A</td>
+          <td class="acca">NEG A</td>
           <td>NEG B</td>
           <td>NEG</td>
           <td>NEG</td>
-          <td>SUB A</td>
-          <td>SUB A</td>
-          <td>SUB A</td>
-          <td>SUB A</td>
+          <td class="acca">SUB A</td>
+          <td class="acca">SUB A</td>
+          <td class="acca">SUB A</td>
+          <td class="acca">SUB A</td>
           <td>SUB B</td>
           <td>SUB B</td>
           <td>SUB B</td>
@@ -142,10 +69,10 @@
           <td class="no"></td>
           <td class="no"></td>
           <td class="no"></td>
-          <td>CMP A</td>
-          <td>CMP A</td>
-          <td>CMP A</td>
-          <td>CMP A</td>
+          <td class="acca">CMP A</td>
+          <td class="acca">CMP A</td>
+          <td class="acca">CMP A</td>
+          <td class="acca">CMP A</td>
           <td>CMP B</td>
           <td>CMP B</td>
           <td>CMP B</td>
@@ -161,10 +88,10 @@
           <td class="no"></td>
           <td class="no"></td>
           <td class="no"></td>
-          <td>SBC A</td>
-          <td>SBC A</td>
-          <td>SBC A</td>
-          <td>SBC A</td>
+          <td class="acca">SBC A</td>
+          <td class="acca">SBC A</td>
+          <td class="acca">SBC A</td>
+          <td class="acca">SBC A</td>
           <td>SBC B</td>
           <td>SBC B</td>
           <td>SBC B</td>
@@ -176,7 +103,7 @@
           <td class="no"></td>
           <td>BLS</td>
           <td>PUL B</td>
-          <td>COM A</td>
+          <td class="acca">COM A</td>
           <td>COM B</td>
           <td>COM</td>
           <td>COM</td>
@@ -192,17 +119,17 @@
         <tr>
           <th>4</th>
           <td class="no"></td>
-          <td class="undocumented">NBA</td>
+          <td class="undocumented acca">NBA</td>
           <td>BCC</td>
           <td>DES</td>
-          <td>LSR A</td>
+          <td class="acca">LSR A</td>
           <td>LSR B</td>
           <td>LSR</td>
           <td>LSR</td>
-          <td>AND A</td>
-          <td>AND A</td>
-          <td>AND A</td>
-          <td>AND A</td>
+          <td class="acca">AND A</td>
+          <td class="acca">AND A</td>
+          <td class="acca">AND A</td>
+          <td class="acca">AND A</td>
           <td>AND B</td>
           <td>AND B</td>
           <td>AND B</td>
@@ -218,10 +145,10 @@
           <td class="no"></td>
           <td class="no"></td>
           <td class="no"></td>
-          <td>BIT A</td>
-          <td>BIT A</td>
-          <td>BIT A</td>
-          <td>BIT A</td>
+          <td class="acca">BIT A</td>
+          <td class="acca">BIT A</td>
+          <td class="acca">BIT A</td>
+          <td class="acca">BIT A</td>
           <td>BIT B</td>
           <td>BIT B</td>
           <td>BIT B</td>
@@ -230,17 +157,17 @@
         <tr>
           <th>6</th>
           <td>TAP</td>
-          <td>TAB</td>
+          <td class="acca">TAB</td>
           <td>BNE</td>
-          <td>PSH A</td>
-          <td>ROR A</td>
+          <td class="acca">PSH A</td>
+          <td class="acca">ROR A</td>
           <td>ROR B</td>
           <td>ROR</td>
           <td>ROR</td>
-          <td>LDA A</td>
-          <td>LDA A</td>
-          <td>LDA A</td>
-          <td>LDA A</td>
+          <td class="acca">LDA A</td>
+          <td class="acca">LDA A</td>
+          <td class="acca">LDA A</td>
+          <td class="acca">LDA A</td>
           <td>LDA B</td>
           <td>LDA B</td>
           <td>LDA B</td>
@@ -252,14 +179,14 @@
           <td>TBA</td>
           <td>BEQ</td>
           <td>PSH B</td>
-          <td>ASR A</td>
+          <td class="acca">ASR A</td>
           <td>ASR B</td>
           <td>ASR</td>
           <td>ASR</td>
-          <td class="undocumented">STA A</td>
-          <td>STA A</td>
-          <td>STA A</td>
-          <td>STA A</td>
+          <td class="undocumented acca">STA A</td>
+          <td class="acca">STA A</td>
+          <td class="acca">STA A</td>
+          <td class="acca">STA A</td>
           <td class="undocumented">STA B</td>
           <td>STA B</td>
           <td>STA B</td>
@@ -271,14 +198,14 @@
           <td class="no"></td>
           <td>BVC</td>
           <td class="no"></td>
-          <td>ASL A</td>
+          <td class="acca">ASL A</td>
           <td>ASL B</td>
           <td>ASL</td>
           <td>ASL</td>
-          <td>EOR A</td>
-          <td>EOR A</td>
-          <td>EOR A</td>
-          <td>EOR A</td>
+          <td class="acca">EOR A</td>
+          <td class="acca">EOR A</td>
+          <td class="acca">EOR A</td>
+          <td class="acca">EOR A</td>
           <td>EOR B</td>
           <td>EOR B</td>
           <td>EOR B</td>
@@ -287,17 +214,17 @@
         <tr>
           <th>9</th>
           <td>DEX</td>
-          <td>DAA</td>
+          <td class="acca">DAA</td>
           <td>BVS</td>
           <td>RTS</td>
-          <td>ROL A</td>
+          <td class="acca">ROL A</td>
           <td>ROL B</td>
           <td>ROL</td>
           <td>ROL</td>
-          <td>ADC A</td>
-          <td>ADC A</td>
-          <td>ADC A</td>
-          <td>ADC A</td>
+          <td class="acca">ADC A</td>
+          <td class="acca">ADC A</td>
+          <td class="acca">ADC A</td>
+          <td class="acca">ADC A</td>
           <td>ADC B</td>
           <td>ADC B</td>
           <td>ADC B</td>
@@ -309,14 +236,14 @@
           <td class="no"></td>
           <td>BPL</td>
           <td class="no"></td>
-          <td>DEC A</td>
+          <td class="acca">DEC A</td>
           <td>DEC B</td>
           <td>DEC</td>
           <td>DEC</td>
-          <td>ORA A</td>
-          <td>ORA A</td>
-          <td>ORA A</td>
-          <td>ORA A</td>
+          <td class="acca">ORA A</td>
+          <td class="acca">ORA A</td>
+          <td class="acca">ORA A</td>
+          <td class="acca">ORA A</td>
           <td>ORA B</td>
           <td>ORA B</td>
           <td>ORA B</td>
@@ -332,10 +259,10 @@
           <td class="no"></td>
           <td class="no"></td>
           <td class="no"></td>
-          <td>ADD A</td>
-          <td>ADD A</td>
-          <td>ADD A</td>
-          <td>ADD A</td>
+          <td class="acca">ADD A</td>
+          <td class="acca">ADD A</td>
+          <td class="acca">ADD A</td>
+          <td class="acca">ADD A</td>
           <td>ADD B</td>
           <td>ADD B</td>
           <td>ADD B</td>
@@ -347,7 +274,7 @@
           <td class="no"></td>
           <td>BGE</td>
           <td class="no"></td>
-          <td>INC A</td>
+          <td class="acca">INC A</td>
           <td>INC B</td>
           <td>INC</td>
           <td>INC</td>
@@ -366,7 +293,7 @@
           <td class="no"></td>
           <td>BLT</td>
           <td class="no"></td>
-          <td>TST A</td>
+          <td class="acca">TST A</td>
           <td>TST B</td>
           <td>TST</td>
           <td>TST</td>
@@ -404,7 +331,7 @@
           <td class="no"></td>
           <td>BLE</td>
           <td>SWI</td>
-          <td>CLR A</td>
+          <td class="acca">CLR A</td>
           <td>CLR B</td>
           <td>CLR</td>
           <td>CLR</td>
@@ -419,6 +346,12 @@
         </tr>
       </tbody>
     </table>
+    <div>
+      <div>
+        <div class="undocumented legend"></div><span class="legend-text">Undocumented</span>
+        <div class="no legend"></div><span class="legend-text">Invalid</span>
+      </div>
+    </div>
   </body>
 
 </html>
