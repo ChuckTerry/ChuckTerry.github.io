@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>MC6800 Instruction Set</title>
+    <link rel="icon" href="https://chuckterry.me/favicon.ico" type="image/x-icon" />
+    <meta name="author" content="Chuck Terry" />
+    <meta name="description" content="Instruction Set Lookup Table for the Motorola NC6800" />
+    <script>
+      function clearActive() {
+        const allActive = [...document.querySelectorAll('.active')];
+        const cellCount = allActive.length;
+        for (let index = 0; index < cellCount; index++) {
+          const cell = allActive[index];
+          cell.classList.remove('active');
+        }
+      }
+
+      function mouseEnter(event) {
+        clearActive();
+        const element = event.target;
+        element.classList.add('active');
+        const currentRow = element.parentElement;
+        rowCells = [...currentRow.children];
+        const position = rowCells.indexOf(element);
+        const msbRow = document.querySelector('.msb');
+        const msbHead = [...msbRow.children][position + 1];
+        msbHead.classList.add('active');
+        rowCells[0].classList.add('active');
+      }
+
+      window.addEventListener('load', () => {
+        const allCells = [...document.querySelectorAll('td')];
+        const cellCount = allCells.length;
+        for (let index = 0; index < cellCount; index++) {
+          const cell = allCells[index];
+          cell.addEventListener('mouseenter', mouseEnter);
+        }
+      });
+    </script>
+    <style>
+      table * {
+        border-spacing: 0px;
+        border: 1px solid black;
+      }
+    
+      th {
+        background-color: rgb(40, 80, 220);
+        color: #FAFAFA;
+      }
+    
+      th,
+      td {
+        padding: 6px;
+      }
+    
+      .active {
+        background-color: black;
+        color: white;
+      }
+    
+      .no.active {
+        background-color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <table>
+      <thead>
+        <tr>
+          <th colspan="19">MSB</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="msb">
+          <th rowspan="18">LSB</th>
+          <th></th>
+          <th>0</th>
+          <th>1</th>
+          <th>2</th>
+          <th>3</th>
+          <th>4</th>
+          <th>5</th>
+          <th>6</th>
+          <th>7</th>
+          <th>8</th>
+          <th>9</th>
+          <th>A</th>
+          <th>B</th>
+          <th>C</th>
+          <th>D</th>
+          <th>E</th>
+          <th>F</th>
+        </tr>
+        <tr>
+          <th>0</th>
+          <td class="no"></td>
+          <td>SBA</td>
+          <td>BRA</td>
+          <td>TSX</td>
+          <td>NEG A</td>
+          <td>NEG B</td>
+          <td>NEG</td>
+          <td>NEG</td>
+          <td>SUB A</td>
+          <td>SUB A</td>
+          <td>SUB A</td>
+          <td>SUB A</td>
+          <td>SUB B</td>
+          <td>SUB B</td>
+          <td>SUB B</td>
+          <td>SUB B</td>
+        </tr>
+        <tr>
+          <th>1</th>
+          <td>NOP</td>
+          <td>CBA</td>
+          <td class="no"></td>
+          <td>INS</td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>CMP A</td>
+          <td>CMP A</td>
+          <td>CMP A</td>
+          <td>CMP A</td>
+          <td>CMP B</td>
+          <td>CMP B</td>
+          <td>CMP B</td>
+          <td>CMP B</td>
+        </tr>
+        <tr>
+          <th>2</th>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>BHI</td>
+          <td>PUL A</td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>SBC A</td>
+          <td>SBC A</td>
+          <td>SBC A</td>
+          <td>SBC A</td>
+          <td>SBC B</td>
+          <td>SBC B</td>
+          <td>SBC B</td>
+          <td>SBC B</td>
+        </tr>
+        <tr>
+          <th>3</th>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>BLS</td>
+          <td>PUL B</td>
+          <td>COM A</td>
+          <td>COM B</td>
+          <td>COM</td>
+          <td>COM</td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+        </tr>
+        <tr>
+          <th>4</th>
+          <td class="no"></td>
+          <td>NBA</td>
+          <td>BCC</td>
+          <td>DES</td>
+          <td>LSR A</td>
+          <td>LSR B</td>
+          <td>LSR</td>
+          <td>LSR</td>
+          <td>AND A</td>
+          <td>AND A</td>
+          <td>AND A</td>
+          <td>AND A</td>
+          <td>AND B</td>
+          <td>AND B</td>
+          <td>AND B</td>
+          <td>AND B</td>
+        </tr>
+        <tr>
+          <th>5</th>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>BCS</td>
+          <td>TXS</td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>BIT A</td>
+          <td>BIT A</td>
+          <td>BIT A</td>
+          <td>BIT A</td>
+          <td>BIT B</td>
+          <td>BIT B</td>
+          <td>BIT B</td>
+          <td>BIT B</td>
+        </tr>
+        <tr>
+          <th>6</th>
+          <td>TAP</td>
+          <td>TAB</td>
+          <td>BNE</td>
+          <td>PSH A</td>
+          <td>ROR A</td>
+          <td>ROR B</td>
+          <td>ROR</td>
+          <td>ROR</td>
+          <td>LDA A</td>
+          <td>LDA A</td>
+          <td>LDA A</td>
+          <td>LDA A</td>
+          <td>LDA B</td>
+          <td>LDA B</td>
+          <td>LDA B</td>
+          <td>LDA B</td>
+        </tr>
+        <tr>
+          <th>7</th>
+          <td>TPA</td>
+          <td>TBA</td>
+          <td>BEQ</td>
+          <td>PSH B</td>
+          <td>ASR A</td>
+          <td>ASR B</td>
+          <td>ASR</td>
+          <td>ASR</td>
+          <td>STA A</td>
+          <td>STA A</td>
+          <td>STA A</td>
+          <td>STA A</td>
+          <td>STA B</td>
+          <td>STA B</td>
+          <td>STA B</td>
+          <td>STA B</td>
+        </tr>
+        <tr>
+          <th>8</th>
+          <td>INX</td>
+          <td class="no"></td>
+          <td>BVC</td>
+          <td class="no"></td>
+          <td>ASL A</td>
+          <td>ASL B</td>
+          <td>ASL</td>
+          <td>ASL</td>
+          <td>EOR A</td>
+          <td>EOR A</td>
+          <td>EOR A</td>
+          <td>EOR A</td>
+          <td>EOR B</td>
+          <td>EOR B</td>
+          <td>EOR B</td>
+          <td>EOR B</td>
+        </tr>
+        <tr>
+          <th>9</th>
+          <td>DEX</td>
+          <td>DAA</td>
+          <td>BVS</td>
+          <td>RTS</td>
+          <td>ROL A</td>
+          <td>ROL B</td>
+          <td>ROL</td>
+          <td>ROL</td>
+          <td>ADC A</td>
+          <td>ADC A</td>
+          <td>ADC A</td>
+          <td>ADC A</td>
+          <td>ADC B</td>
+          <td>ADC B</td>
+          <td>ADC B</td>
+          <td>ADC B</td>
+        </tr>
+        <tr>
+          <th>A</th>
+          <td>CLV</td>
+          <td class="no"></td>
+          <td>BPL</td>
+          <td class="no"></td>
+          <td>DEC A</td>
+          <td>DEC B</td>
+          <td>DEC</td>
+          <td>DEC</td>
+          <td>ORA A</td>
+          <td>ORA A</td>
+          <td>ORA A</td>
+          <td>ORA A</td>
+          <td>ORA B</td>
+          <td>ORA B</td>
+          <td>ORA B</td>
+          <td>ORA B</td>
+        </tr>
+        <tr>
+          <th>B</th>
+          <td>SEV</td>
+          <td>ABA</td>
+          <td>BMI</td>
+          <td>RTI</td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>ADD A</td>
+          <td>ADD A</td>
+          <td>ADD A</td>
+          <td>ADD A</td>
+          <td>ADD B</td>
+          <td>ADD B</td>
+          <td>ADD B</td>
+          <td>ADD B</td>
+        </tr>
+        <tr>
+          <th>C</th>
+          <td>CLC</td>
+          <td class="no"></td>
+          <td>BGE</td>
+          <td class="no"></td>
+          <td>INC A</td>
+          <td>INC B</td>
+          <td>INC</td>
+          <td>INC</td>
+          <td>CPX</td>
+          <td>CPX</td>
+          <td>CPX</td>
+          <td>CPX</td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td class="no"></td>
+        </tr>
+        <tr>
+          <th>D</th>
+          <td>SEC</td>
+          <td class="no"></td>
+          <td>BLT</td>
+          <td class="no"></td>
+          <td>TST A</td>
+          <td>TST B</td>
+          <td>TST</td>
+          <td>TST</td>
+          <td>BSR</td>
+          <td>HCF</td>
+          <td>JSR</td>
+          <td>JSR</td>
+          <td class="no"></td>
+          <td>HCF</td>
+          <td class="no"></td>
+          <td class="no"></td>
+        </tr>
+        <tr>
+          <th>E</th>
+          <td>CLI</td>
+          <td class="no"></td>
+          <td>BGT</td>
+          <td>WAI</td>
+          <td class="no"></td>
+          <td class="no"></td>
+          <td>JMP</td>
+          <td>JMP</td>
+          <td>LDS</td>
+          <td>LDS</td>
+          <td>LDS</td>
+          <td>LDS</td>
+          <td>LDX</td>
+          <td>LDX</td>
+          <td>LDX</td>
+          <td>LDX</td>
+        </tr>
+        <tr>
+          <th>F</th>
+          <td>SEI</td>
+          <td class="no"></td>
+          <td>BLE</td>
+          <td>SWI</td>
+          <td>CLR A</td>
+          <td>CLR B</td>
+          <td>CLR</td>
+          <td>CLR</td>
+          <td>STS</td>
+          <td>STS</td>
+          <td>STS</td>
+          <td>STS</td>
+          <td>STX</td>
+          <td>STX</td>
+          <td>STX</td>
+          <td>STX</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+
+</html>
