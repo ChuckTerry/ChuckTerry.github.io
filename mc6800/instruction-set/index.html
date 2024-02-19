@@ -37,31 +37,50 @@
           const cell = allCells[index];
           cell.addEventListener('mouseenter', mouseEnter);
         }
+        document.querySelector('table').addEventListener('mouseleave', clearActive);
       });
     </script>
     <style>
+      table {
+        cursor: crosshair;
+      }
+
       table * {
         border-spacing: 0px;
         border: 1px solid black;
       }
     
       th {
-        background-color: rgb(40, 80, 220);
+        background-color: #1850c9;
         color: #FAFAFA;
       }
     
       th,
       td {
-        padding: 6px;
+        padding: 2px;
+        width: 53px;
+        text-align: center;
       }
     
       .active {
         background-color: black;
-        color: white;
+        color: white;        
+        outline: 2px solid #12d112;
       }
     
       .no.active {
-        background-color: red;
+        background-color: #999999;
+        outline: 2px solid #bf1414;
+      }
+
+      .selected {
+        background-color: #12d112c3;
+        outline: 2px solid black;
+      }
+
+      .selected.no {
+        background-color: #bf1414c3;
+        outline: 2px solid #640404;
       }
     </style>
   </head>
@@ -173,7 +192,7 @@
         <tr>
           <th>4</th>
           <td class="no"></td>
-          <td>NBA</td>
+          <td class="undocumented">NBA</td>
           <td>BCC</td>
           <td>DES</td>
           <td>LSR A</td>
@@ -237,11 +256,11 @@
           <td>ASR B</td>
           <td>ASR</td>
           <td>ASR</td>
+          <td class="undocumented">STA A</td>
           <td>STA A</td>
           <td>STA A</td>
           <td>STA A</td>
-          <td>STA A</td>
-          <td>STA B</td>
+          <td class="undocumented">STA B</td>
           <td>STA B</td>
           <td>STA B</td>
           <td>STA B</td>
@@ -352,11 +371,11 @@
           <td>TST</td>
           <td>TST</td>
           <td>BSR</td>
-          <td>HCF</td>
+          <td class="undocumented">HCF</td>
           <td>JSR</td>
           <td>JSR</td>
           <td class="no"></td>
-          <td>HCF</td>
+          <td class="undocumented">HCF</td>
           <td class="no"></td>
           <td class="no"></td>
         </tr>
@@ -389,11 +408,11 @@
           <td>CLR B</td>
           <td>CLR</td>
           <td>CLR</td>
+          <td class="undocumented">STS</td>
           <td>STS</td>
           <td>STS</td>
           <td>STS</td>
-          <td>STS</td>
-          <td>STX</td>
+          <td class="undocumented">STX</td>
           <td>STX</td>
           <td>STX</td>
           <td>STX</td>
