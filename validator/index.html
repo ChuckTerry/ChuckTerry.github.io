@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Chuck Terry</title>
+    <link rel="icon" href="https://chuckterry.me/favicon.ico" type="image/x-icon" />
+    <meta name="author" content="Chuck Terry" />
+    <meta name="description" content="WEB-115 Validator" />
+    <script type="text/javascript" src="./index.js" defer></script>
+    <link href="styles.css" rel="stylesheet" type="text/css"/>
+  </head>
+  <body>
+    <div id="screen-reader-skip">
+      <a tabindex="0" href="#main-content">Skip to Main Content</a>
+    </div>
+    <header>
+      <nav>
+        <div class="nav-left">
+          <div class="logo">
+            <!-- Add Logo Image -->
+          </div>
+          <div class="title">
+            <h1>Chuck Terry</h1>
+          </div>
+        </div>
+        <div class="nav-right">
+          <div class="links">
+            <span><a href="#">Home</a></span>
+            <span><a href="/external-links">Links</a></span>
+            <span><a href="contact/index.html">Contact</a></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="header-space"></div>
+    <main id="main-content">
+      <aside class="left-margin"></aside>
+      <div class="main-center">
+        <p>This form does nothing, no data you input is saved or transmitted. This is only an example.</p>
+        <form>
+          <label for="email-input">Email: </label><input type="text" name="email-input" id="email-input" onblur="checkValid()" oninput="validateEmail()" /><br>
+          <label for="ssn-input">SSN (masked): </label><input type="password" name="ssn-input" id="ssn-input" onblur="checkValid()" oninput="validateSsn()" /><br>
+          <label for="phone-input">Phone: </label><input type="text" name="phone-input" id="phone-input" onblur="checkValid()" oninput="validatePhone()" /><br>
+          <label for="age-input">Age: </label><input type="text" name="age-input" id="age-input" onblur="checkValid()" oninput="validateAge()" /><br>
+          <label for="password-input">Password: </label><input type="text" name="password-input" id="password-input" onblur="checkValid()" oninput="validatePassword()" /><br>
+        </form>
+        <p id="valid-fields">
+          Looks good!  All inputs with text are valid!
+        </p>
+        <p id="invalid-fields" style="display: none;">
+          Oh No!  One or more inputs have invalid data!
+        </p>
+      </div>
+      <aside class="right-margin"></aside>
+    </main>
+    <footer>
+      <p>Copyright 2022 - <span class="current-year">2022</span> &copy; Chuck Terry - All Rights Reserved.</p>
+      <script id="footer-year-update">
+        document.querySelector('.current-year').innerText = new Date().getFullYear();
+        document.querySelector('#footer-year-update').remove();
+      </script>
+    </footer>
+    <div class="footer-space"></div>
+  </body>
+
+</html>
