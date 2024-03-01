@@ -1,3 +1,7 @@
+input {
+  margin-bottom: 12px;
+}
+
 .valid {
   border: 2px solid green;
 }
