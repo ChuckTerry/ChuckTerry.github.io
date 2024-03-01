@@ -17,7 +17,7 @@ function validateSsn() {
 function validatePhone() {
   const element = document.querySelector('#phone-input');
   const value = element.value;
-  const regex = /^(\+1|1)?\(?\d{3}\)?\-?\d{3}\-?\d{4}$/;
+  const regex = /^(\+1|1)?\s?\(?\d{3}\)?\s?\-?\d{3}\-?\d{4}$/;
   element.className = value === '' ? '' : regex.exec(value) ? 'valid' : 'invalid';
   return false;
 }
