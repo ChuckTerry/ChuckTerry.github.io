@@ -51,6 +51,6 @@ function checkValid() {
     const element = elements[index];
     if (element.className === 'invalid') valid = false;
   }
-  document.querySelector('valid-fields').style.display = valid ? '' : 'none';
-  document.querySelector('invalid-fields').style.display = valid ? 'none' : '';
+  document.querySelector('valid-fields').style.display === valid ? '' : 'none';
+  document.querySelector('invalid-fields').style.display === valid ? 'none' : '';
 }
