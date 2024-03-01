@@ -43,7 +43,7 @@
           <label for="name-input">Full Name: </label><br><input type="text" name="name-input" id="name-input" /><br>
           <label for="email-input">Email: </label><br><input type="text" name="email-input" id="email-input" onblur="checkValid()" oninput="validateEmail()" /><br>
 
-          <label for="password-input">Password (not masked):</label><br>
+          <label for="password-input">Password (not masked):</label>
           <ul>
             <li>At least 8 Characters long</li>
             <li>At least 1 lowercase letter.</li>
@@ -58,7 +58,6 @@
             <label for="phone-input">Phone: </label><br><input type="text" name="phone-input" id="phone-input" onblur="checkValid()" oninput="validatePhone()" /><br>
             <label for="age-input">Age: </label><br><input type="text" name="age-input" id="age-input" onblur="checkValid()" oninput="validateAge()" /><br>
           </fieldset>
-          <button type="button" id="submit-button">Submit</button><br>
           <label for="comments">Comments:</label><br>
           <textarea name="comments" id="comments" rows="4"  cols="40"></textarea>
         </form>
