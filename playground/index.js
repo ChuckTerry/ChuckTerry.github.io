@@ -1,3 +1,26 @@
+(()=>{
+  const ERR = console.error;
+  const LOG = console.log;
+  const PRINT = (logType, message) => {
+    const element = document.createElement('p')
+    element.innerText = `[${logType}]  ${message}`;
+    if (logType === 'ERR') {
+      element.style.color = 'E21120';
+    }
+    document.body.append(element)
+  };
+
+  console.error = (...args) => {
+    ERR(...args);
+    PRINT('ERR', ...args);
+  }
+  
+  console.log = (...args) => {
+    LOG(...args);
+    PRINT('LOG', ...args);
+  }
+})();
+
 const buttonInitializePlayground = document.querySelector('#initialize-playground');
 const initListener = buttonInitializePlayground.addEventListener('click', initializePlayground);
 
