@@ -1,23 +1,39 @@
 (()=>{
-  const ERR = console.error;
-  const LOG = console.log;
-  const PRINT = (logType, message) => {
-    const element = document.createElement('p')
-    element.innerText = `[${logType}]  ${message}`;
-    if (logType === 'ERR') {
-      element.style.color = 'E21120';
+  const nativeError = console.error;
+  const nativeLog = console.log;
+  const nativWarn = console.warn;
+  
+  const consoleToHTML = (logType, message) => {
+    const element = document.createElement('p');
+    element.innerText = `[${logType}]  ${JSON.stringify(message)}`;
+    
+    if (logType === 'error') {
+      element.style.color = '#E21120';
+      element.style.fontWeight = 'boldest';
     }
+
+    if (logType === 'warn') {
+      element.style.backgroundColor = '#EED202';
+      element.style.fontWeight = 'bold';
+    }
+    
+    element.style.borderBottom = '1px solid #020202';
     document.body.append(element)
   };
 
   console.error = (...args) => {
-    ERR(...args);
-    PRINT('ERR', ...args);
+    nativeError(...args);
+    consoleToHTML('error', ...args);
   }
   
   console.log = (...args) => {
-    LOG(...args);
-    PRINT('LOG', ...args);
+    nativeLog(...args);
+    consoleToHTML('log', ...args);
+  }
+  
+  console.warn = (...args) => {
+    nativeWarn(...args);
+    consoleToHTML('warn', ...args);
   }
 })();
 
