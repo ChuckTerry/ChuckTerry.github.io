@@ -5,7 +5,9 @@
   
   const consoleToHTML = (logType, message) => {
     const element = document.createElement('p');
-    element.innerText = `[${logType}]  ${JSON.stringify(message)}`;
+    const string = JSON.stringify(message);
+    const replaced = string.replace('\t', '\u00A0\u00A0\u00A0\u00A0').replace(' ', '\u00A0');
+    element.innerText = `[${logType}]  ${replaced}`;
     
     if (logType === 'error') {
       element.style.color = '#E21120';
