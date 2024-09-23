@@ -1,7 +1,9 @@
 (()=>{
   const nativeError = console.error;
   const nativeLog = console.log;
-  const nativWarn = console.warn;
+  const nativeWarn = console.warn;
+  const nativeDebug = console.debug;
+  const nativeInfo = console.info;
   
   const consoleToHTML = (logType, message) => {
     const element = document.createElement('p');
@@ -36,6 +38,16 @@
   console.warn = (...args) => {
     nativeWarn(...args);
     consoleToHTML('warn', ...args);
+  }
+  
+  console.debug = (...args) => {
+    nativeDebug(...args);
+    consoleToHTML('debug', ...args);
+  }
+  
+  console.info = (...args) => {
+    nativeInfo(...args);
+    consoleToHTML('info', ...args);
   }
 })();
 
