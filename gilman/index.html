@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Gilman Modal Sizing Issue</title>
+    <link rel="icon" href="https://chuckterry.me/favicon.ico" type="image/x-icon" />
+    <meta name="author" content="Chuck Terry" />
+    <meta name="description" content="Gilman Modal Sizing Issue - Causes Form Action Buttons to Not be Displayed on Smaller Screens." />
+    <link href="styles.css" rel="stylesheet" type="text/css" media="screen"/>
+    <link href="print.css" rel="stylesheet" type="text/css" media="print" />
+    <link rel="icon" sizes="192x192" href="https://chuckterry.me/apple-icon-192.png">
+  </head>
+
+  <body>
+    <div id="screen-reader-skip">
+      <a tabindex="0" href="#main-content">Skip to Main Content</a>
+    </div>
+    <header>
+      <nav>
+        <div class="nav-left">
+          <div class="logo">
+            <!-- Add Logo Image -->
+          </div>
+          <div class="title">
+            <h1>Chuck Terry</h1>
+          </div>
+        </div>
+        <div class="nav-right">
+          <div class="links">
+            <span><a href="/">Home</a></span>
+            <span><a href="/external-links">Links</a></span>
+            <span><a href="contact/index.html">Contact</a></span>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="header-space"></div>
+    <main id="main-content">
+      <aside class="left-margin"></aside>
+      <div class="main-center">
+        <section>
+          <h2>Gilman Submission Issue</h2>
+          <p>The modal for the follow on service project submission does not display the form control buttons (Used for Submission) correctly on smaller screens.  On Jamie's laptop, for instance, you must set the zoom level to 90% in the browser in order to interact with the submit button.  This can be corrected on the backend with a small CSS tweak.  Please forward to your DevOps team, they should be able to identify and correct the problem quite easily :)</p>
+          <p>Screen Capture at normal zoom level (100%):</p>
+          <img src="images/Screenshot 2024-09-30 020130.png" alt="Submission Page at 100% Zoom" />
+          <p>Screen Capture at 90% zoom level:</p>
+          <img src="images/Screenshot 2024-09-30 020026.png" alt="Submission Page at 90% Zoom" />
+        </section>
+
+      </div>
+      <aside class="right-margin"></aside>
+    </main>
+    <footer>
+      <p>Copyright 2022 - <span class="current-year">2022</span> &copy; Chuck Terry - All Rights Reserved.</p>
+      <script id="footer-year-update">
+        document.querySelector('.current-year').innerText = new Date().getFullYear();
+        document.querySelector('#footer-year-update').remove();
+      </script>
+    </footer>
+    <div class="footer-space"></div>
+  </body>
+
+</html>
