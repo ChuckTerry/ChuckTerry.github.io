@@ -1,4 +1,4 @@
-++import { CurrentImage } from "./scripts/CurrentImage.js";
+import { CurrentImage } from "./scripts/CurrentImage.js";
 import { ConfigForm } from "./scripts/ConfigForm.js";
 
 function init() {
