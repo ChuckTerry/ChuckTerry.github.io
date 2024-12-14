@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>Threshold via Weighted Color Channels</title>
+      <meta charset="UTF-8">
+      <meta name="description" content="Threshold Images using Weighted Color Channels">
+      <meta name="keywords" content="Threshold, Color Channel, Photo Editing">
+      <meta name="author" content="Chuck Terry (Chuck.Terry@Outlook.com)">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="./styles.css">
+      <script src="./script.js" type="module"></script>
+  </head>
+  <body>
+    <canvas></canvas>
+      <form id="config-form">
+          <!-- Options -->
+          <fieldset>
+            <legend>Threshold Options</legend>
+            <!-- File upload Button -->
+            <input type="file" id="file-input" accept="image/*"><br><br>
+            <!-- Output Bias -->
+            <label for="output-bias">Threshold Bias</label>
+            <input type="range" id="output-bias" min="0" max="1" step="0.05" value="0.5"><br><br>
+          </fieldset>
+          <!-- ColorPickers -->
+          <fieldset>
+            <legend>Output Value Colors</legend>
+            <!-- Values Below Threshold -->
+            <label for="below-color">Color Below</label><br>
+            <input type="color" id="below-color" value="#000000">
+            <input class="transparency-check" type="checkbox" id="below-transparent">
+            <label for="below-transparent">Transparent</label><br><br>
+            <!-- Values Above Threshold -->
+            <label for="above-color">Color Above</label><br>
+            <input type="color" id="above-color" value="#FFFFFF">
+            <input class="transparency-check" type="checkbox" id="above-transparent">
+            <label for="above-transparent">Transparent</label><br><br>
+          </fieldset>
+          <!-- Red Group -->
+          <fieldset>
+              <legend class="red"><label for="red-include">Red Channel</label> <input type="checkbox" id="red-include" checked></legend>
+              <!-- Red Threshold Slider -->
+              <input type="range" id="red-threshold" min="0" max="255" value="128">
+              <label for="red-threshold">Threshold</label><br>
+              <!-- Red Weight Slider -->
+              <input type="range" id="red-weight" min="0" max="1" step="0.1" value="0.5">
+              <label for="red-weight">Weight</label>
+          </fieldset>
+          <!-- Green Group -->
+          <fieldset>
+              <legend class="green"><label for="green-include">Green Channel</label><input type="checkbox" id="green-include" checked></legend>
+              <!-- Green Threshold Slider -->
+              <input type="range" id="green-threshold" min="0" max="255" value="128">
+              <label for="green-threshold">Threshold</label><br>
+              <!-- Green Weight Slider -->
+              <input type="range" id="green-weight" min="0" max="1" step="0.1" value="0.5">
+              <label for="green-weight">Weight</label>
+          </fieldset>
+          <!-- Blue Group -->
+          <fieldset>
+              <legend class="blue"><label for="blue-include">Blue Channel</label><input type="checkbox" id="blue-include" checked></legend>
+              <!-- Blue Threshold Slider -->
+              <input type="range" id="blue-threshold" min="0" max="255" value="128">
+              <label for="blue-threshold">Threshold</label><br>
+              <!-- Blue Weight Slider -->
+              <input type="range" id="blue-weight" min="0" max="1" step="0.1" value="0.5">
+              <label for="blue-weight">Weight</label>
+          </fieldset>
+      </form>
+  </body>
+</html>
