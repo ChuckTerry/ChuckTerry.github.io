@@ -70,4 +70,3 @@ export class ConfigForm {
         this.currentImage.applyThreshold(config);
     }
 }
-+
