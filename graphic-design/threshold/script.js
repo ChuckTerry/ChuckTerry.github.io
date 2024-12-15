@@ -8,7 +8,6 @@ function downloadCanvasContents() {
   const fileName = document.querySelector("#file-input").value.split('\\').at(-1);
   link.download = fileName;
   link.href = dataUrl.replace("image/png", "image/octet-stream");
-  console.log(link);
   link.click();
 }
 
