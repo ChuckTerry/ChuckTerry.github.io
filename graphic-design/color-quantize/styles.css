@@ -1,0 +1,65 @@
+body {
+    margin: 0;
+    padding: 0;
+
+    canvas {
+        float: right;
+    }
+
+    form {
+        left: 0;
+        padding-left: 8px;
+        position: fixed;
+        top: 0;
+        width: 17vw;
+
+        fieldset,
+        legend {
+            background-color: rgba(232, 237, 244, 0.802);
+            margin-top: 0.7em;
+        }
+
+        legend {
+            background-color: rgba(232, 237, 244, 0.802);
+            border: 1px solid rgb(156, 156, 156);
+            border-bottom: none;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            padding: 2px 10px 0 8px;
+        }
+
+        .state-button {
+            background-color: rgba(232, 237, 244, 0.802);
+            border: 1px solid rgb(156, 156, 156);
+            border-radius: 8px;
+            font-size: large;
+            padding: 4px 10px 2px 8px;
+        }
+    }
+
+    .hidden {
+        display: none;
+    }
+
+    .modal {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: white;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+        #close-modal {
+            cursor: pointer;
+        }
+
+        .color-modal-div {
+            width: 50px;
+            height: 50px;
+            margin: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+    }
+}
