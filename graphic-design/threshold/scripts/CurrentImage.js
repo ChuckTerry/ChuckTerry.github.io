@@ -3,6 +3,8 @@ export class CurrentImage {
         this.canvas = document.querySelector('canvas');
         this.context = this.canvas.getContext('2d');
         this.image = new Image();
+        this.imageDataStack = [];
+        this.redoStack = [];
     }
 
     loadImage(file) {
@@ -13,6 +15,8 @@ export class CurrentImage {
                 this.canvas.height = this.image.height;
                 this.context.drawImage(this.image, 0, 0);
                 this.imageData = this.context.getImageData(0, 0, this.canvas.width, this.canvas.height);
+                this.imageDataStack.push(this.imageData);
+                this.redoStack = [];
             };
             this.image.src = event.target.result;
         };
@@ -20,12 +24,12 @@ export class CurrentImage {
     }
 
     applyThreshold(config) {
-        const { aboveColor, aboveTransparent, belowColor, belowTransparent, bias, blueThreshold, greenThreshold, includeBlue, includeGreen, includeRed, redThreshold } = config;
         if (this.imageData?.data === undefined) {
             return;
         }
         const imageData = new ImageData(new Uint8ClampedArray(this.imageData.data), this.image.width, this.image.height);
         const data = imageData.data;
+        const { aboveColor, aboveTransparent, belowColor, belowTransparent, bias, blueThreshold, greenThreshold, includeBlue, includeGreen, includeRed, redThreshold } = config;
         const redWeight = includeRed ? config.redWeight : 0;
         const greenWeight = includeGreen ? config.greenWeight : 0;
         const blueWeight = includeBlue ? config.blueWeight : 0;
@@ -52,6 +56,25 @@ export class CurrentImage {
                 data[i + 2] = color[2];
             }
         }
+        this.imageDataStack.push(imageData);
+        this.redoStack = [];
         this.context.putImageData(imageData, 0, 0);
+    }
+
+    undo() {
+        if (this.imageDataStack.length > 1) {
+            const currentImageData = this.imageDataStack.pop();
+            this.redoStack.push(currentImageData);
+            const previousImageData = this.imageDataStack[this.imageDataStack.length - 1];
+            this.context.putImageData(previousImageData, 0, 0);
+        }
+    }
+
+    redo() {
+        if (this.redoStack.length > 0) {
+            const redoImageData = this.redoStack.pop();
+            this.imageDataStack.push(redoImageData);
+            this.context.putImageData(redoImageData, 0, 0);
+        }
     }
 }
