@@ -17,9 +17,13 @@ function init() {
         if (event.ctrlKey && event.key === 's') {
             event.preventDefault();
             event.stopImmediatePropagation();
-	    	downloadCanvasContents();
+        	downloadCanvasContents();
         }
-	    return false;
+        return false;
+    });
+    document.querySelector('#grid-visibility').addEventListener('click', function() {
+        const method = this.checked ? 'add' : 'remove';
+        document.querySelector('body').classList[method]('show-grid');
     });
 }
 
