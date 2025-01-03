@@ -2,6 +2,8 @@ export class ConfigForm {
     constructor(currentImage) {
         this.form = document.getElementById('config-form');
         this.currentImage = currentImage;
+        this.userSettingsStack = [];
+        this.redoSettingsStack = [];
         this.fileInput = document.getElementById('file-input');
         this.fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
@@ -31,6 +33,18 @@ export class ConfigForm {
         this.blueThreshold = document.getElementById('blue-threshold');
         this.blueWeight = document.getElementById('blue-weight');
         this.form.addEventListener('input', () => this.applyEffects());
+
+        const undoButton = document.getElementById('undo-button');
+        undoButton.addEventListener('click', () => {
+            this.currentImage.undo();
+            this.undo();
+        });
+
+        const redoButton = document.getElementById('redo-button');
+        redoButton.addEventListener('click', () => {
+            this.currentImage.redo();
+            this.redo();
+        });
     }
 
     getConfig() {
@@ -65,8 +79,48 @@ export class ConfigForm {
         ] : [0, 0, 0];
     }
 
+    rgbArrayToHex(rgb) {
+        return '#' + rgb.map((value) => value.toString(16).padStart(2, '0')).join('');
+    }
+
     applyEffects() {
         const config = this.getConfig();
+        this.userSettingsStack.push(config);
+        this.redoSettingsStack = [];
         this.currentImage.applyThreshold(config);
+    }
+
+    setConfig(config) {
+        this.redInclude.checked = config.includeRed;
+        this.redThreshold.value = config.redThreshold;
+        this.redWeight.value = config.redWeight;
+        this.greenInclude.checked = config.includeGreen;
+        this.greenThreshold.value = config.greenThreshold;
+        this.greenWeight.value = config.greenWeight;
+        this.blueInclude.checked = config.includeBlue;
+        this.blueThreshold.value = config.blueThreshold;
+        this.blueWeight.value = config.blueWeight;
+        this.belowColorPicker.value = this.rgbArrayToHex(config.belowColor);
+        this.belowTransparent.checked = config.belowTransparent;
+        this.aboveColorPicker.value = this.rgbArrayToHex(config.aboveColor);
+        this.aboveTransparent.checked = config.aboveTransparent;
+        this.bias.value = config.bias;
+    }
+
+    undo() {
+        if (this.userSettingsStack.length > 1) {
+            const currentConfig = this.userSettingsStack.pop();
+            this.redoSettingsStack.push(currentConfig);
+            const previousConfig = this.userSettingsStack[this.userSettingsStack.length - 1];
+            this.setConfig(previousConfig);
+        }
+    }
+
+    redo() {
+        if (this.redoSettingsStack.length > 0) {
+            const redoConfig = this.redoSettingsStack.pop();
+            this.userSettingsStack.push(redoConfig);
+            this.setConfig(redoConfig);
+        }
     }
 }
