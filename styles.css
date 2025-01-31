@@ -198,3 +198,69 @@ main > div.main-center {
   width: 200px;
   bottom: 30px;
 }
+
+code.javascript.dark {
+  display: block;
+  padding: 16px 20px;
+  padding-top: 16px;
+  padding-right: 20px;
+  padding-bottom: 16px;
+  padding-left: 20px;
+  width: max-content;
+  border-style: inset;
+  border-width: 4px;
+  border-color: #999999;
+
+  .bracket-1,
+  .paren-1,
+  .template-escape {
+    color: #FFDD20;
+  }
+
+  .brace-1,
+  .paren-2 {
+    color: #CC88CC;
+  }
+
+  .brace-2,
+  .paren-3 {
+    color: #20AAFF;
+  }
+
+  .api-keyword {
+    color: #88DDFF;
+  }
+
+  .operator-keyword-dull {
+    color: #5599DD;
+  }
+
+  .operator-symbol {
+    color: #FFFFFF;
+  }
+
+  .user-variable {
+    color: #40AAFF;
+  }
+
+  .control-flow {
+    color: #CC88CC;
+  }
+
+  .string {
+    color: #CC9070;
+  }
+
+  .method {
+    color: #DDDDAA;
+  }
+
+  .regexp {
+    color: #FF8890;
+  }
+
+  .number {
+    color: #99DD99;
+  }
+}
+
