@@ -222,10 +222,18 @@ code.javascript.dark {
   width: max-content;
   border: 4px inset #999999;
 
-  .bracket-1,
-  .paren-1,
-  .template-escape {
-    color: #FFDD20;
+  .api-keyword,
+  .parameter,
+  .property {
+    color: #88DDFF;
+  }
+
+  .arrow-operator,
+  .boolean,
+  .jsdoc,
+  .keyword,
+  .operator-keyword-dull {
+    color: #5599DD;
   }
 
   .brace-1,
@@ -237,41 +245,55 @@ code.javascript.dark {
   .paren-3 {
     color: #20AAFF;
   }
-
-  .api-keyword {
-    color: #88DDFF;
+  
+  .bracket-1,
+  .paren-1,
+  .template-escape {
+    color: #FFDD20;
   }
 
-  .operator-keyword-dull {
-    color: #5599DD;
+  .class-name,
+  .type {
+    color: #40CCAA;
   }
 
+  .comment {
+    color: #709955;
+  }
+
+  .comparison,
+  .delimiter,
   .operator-symbol {
     color: #FFFFFF;
   }
 
-  .user-variable {
-    color: #40AAFF;
-  }
-
-  .control-flow {
+  .control-flow,
+  .statement {
     color: #CC88CC;
-  }
-
-  .string {
-    color: #CC9070;
   }
 
   .method {
     color: #DDDDAA;
   }
 
+  .number {
+    color: #99DD99;
+  }
+
   .regexp {
     color: #FF8890;
   }
 
-  .number {
-    color: #99DD99;
+  .string {
+    color: #CC9070;
+  }
+
+  .unused-variable {
+    color: #7099AA;
+  }
+
+  .user-variable {
+    color: #40AAFF;
   }
 }
 
