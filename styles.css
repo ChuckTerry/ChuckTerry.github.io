@@ -199,6 +199,22 @@ main > div.main-center {
   bottom: 30px;
 }
 
+.indent {
+  margin-left: 12px;
+  .indent {
+    margin-left: 24px;
+    .indent {
+      margin-left: 36px;
+      .indent {
+        margin-left: 48px;
+        .indent {
+          margin-left: 60px;
+        }
+      }
+    }
+  }
+}
+
 code.javascript.dark {
   background-color: #202020;
   display: block;
