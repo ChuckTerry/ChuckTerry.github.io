@@ -40,26 +40,27 @@
     <main id="main-content">
       <aside class="left-margin"></aside>
       <div class="main-center">
-        <section>
-          <img src="/images/painted-chuck.png" alt="Chuck Terry Painted" class="bottom-right" />
-          <p>You've found the Bookmarklets page!  A <a href="https://en.wikipedia.org/wiki/Bookmarklet">bookmarklet</a> is a bit like a bookmark, but it executes JavaScript instead of loading a webpage...  Well...  Sometimes that JavaScript loads a webpage, but you get the idea.  To "install" or "add" a bookmarklet to your browser, drag and drop the link onto your favorites bar.  Then to use it, simply click it.  It's that easy.  Unless otherwise noted, all code contained in the bookmarklets is my own work and is copyrighted under the MIT license</p>
-        </section>
+        <img src="/images/painted-chuck.png" alt="Chuck Terry Painted" class="bottom-right" />
         <section>
           <h2>Bookmarklets</h2>
-          <h3>Wayback Machine (Internet Archive)</h3>
-          <p><a href="/* Author: https://github.com/ChuckTerry, License: MIT */javascript:void((function(){l=window.location;h=l.hostname;p=l.pathname;w='web.archive.org';l.href=h===w?p.split(/\/web\/.*?\//)[1]:`https://${w}/web/${h}${p}`})());">Wayback</a> &lt;-- <em>Drag that link onto your favorites bar to use the bookmarklet.</em></p>
-          <p>The <a href="https://web.archive.org/">Wayback Machine</a> is a site that catalogs web pages over time, allowing you to see previous versions of web pages that it has indexed.</p>
-          <p>This bookmarket will do one of two things.  If you are on a webpage that isn't the wayback machine, it will take you to the most recent version of the page the Wayback Machine has in it's collection (If it exists).  If you are on the Wayback Machine viewing a page, it will take you to the live version of that page.</p>
-          <h4>Source Code</h4>
-          <p>You can see the minified code by right-clicking the bookmarklet and selecting edit.  Below is the source code:</p>
-          <code class="javascript dark"><span class="paren-1">(</span><span class="paren-2">(</span><span class="api-keyword">location</span><span class="paren-2">)</span><span class="operator-keyword-dull"> =&gt; </span><span class="brace-1">{</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="operator-keyword-dull">const </span><span class="brace-2">{ </span><span class="user-variable">hostname</span><span class="operator-symbol">, </span><span class="user-variable">pathname </span><span class="brace-2">} </span><span class="operator-symbol">= </span><span class="api-keyword">location</span><span class="operator-symbol">;</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="control-flow">if </span><span class="paren-3">(</span><span class="user-variable">hostname </span><span class="operator-symbol">=== </span><span class="string">'web.archive.org'</span><span class="paren-3">) </span><span class="brace-2">{</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="api-keyword">location</span><span class="operator-symbol">.</span><span class="api-keyword">href </span><span class="operator-symbol">= </span><span class="user-variable">pathname</span><span class="operator-symbol">.</span><span class="method">split</span><span class="paren-1">(</span><span class="regexp">/\/web\/.*?\//</span><span class="paren-1">)</span><span class="bracket-1">[</span><span class="number">1</span><span class="bracket-1">]</span><span class="operator-symbol">;</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="brace-2">} </span><span class="control-flow">else </span><span class="brace-2">{</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="api-keyword">location</span><span class="operator-symbol">.</span><span class="api-keyword">href </span><span class="operator-symbol">= </span><span class="string">`https://web.archive.org/web/</span><span class="template-escape">${</span><span class="user-variable">hostname</span><span class="template-escape">}${</span><span class="user-variable">pathname</span><span class="template-escape">}</span><span class="string">`</span><span class="operator-symbol">;</span><br>
-          &nbsp;&nbsp;&nbsp;&nbsp;<span class="brace-2">}</span><br>
-          <span class="brace-1">}</span><span class="paren-1">)(</span><span class="api-keyword">window</span><span class="operator-symbol">.</span><span class="api-keyword">location</span><span class="paren-1">)</span><span class="operator-symbol">;</span></code>
+          <p>You've found the Bookmarklets page!  A <a href="https://en.wikipedia.org/wiki/Bookmarklet">bookmarklet</a> is a bit like a bookmark, but it executes JavaScript instead of loading a webpage...  Well...  Sometimes that JavaScript loads a webpage, but you get the idea.  To "install" or "add" a bookmarklet to your browser, drag and drop the link onto your favorites bar.  Then to use it, simply click it.  It's that easy.  Unless otherwise noted, all code contained in the bookmarklets is my own work and is copyrighted under the <a href="/license-text/MIT.txt">MIT license</a>.</p>
+          <section class="indent">
+            <h3>Wayback Machine (Internet Archive)</h3>
+            <p class="indent"><a href="/* Author: https://github.com/ChuckTerry, License: MIT */javascript:void((function(){l=window.location;h=l.hostname;p=l.pathname;w='web.archive.org';l.href=h===w?p.split(/\/web\/.*?\//)[1]:`https://${w}/web/${h}${p}`})());">Wayback</a> ← <em>Drag that link onto your favorites bar to use the bookmarklet.</em></p>
+            <p class="indent">The <a href="https://web.archive.org/">Wayback Machine</a> is a site that catalogs web pages over time, allowing you to see previous versions of web pages that it has indexed.</p>
+            <p class="indent">This bookmarket will do one of two things.  If you are on a webpage that isn't the wayback machine, it will take you to the most recent version of the page the Wayback Machine has in it's collection (If it exists).  If you are on the Wayback Machine viewing a page, it will take you to the live version of that page.</p>
+            <h4>Source Code</h4>
+            <p>You can see the minified code by right-clicking the bookmarklet and selecting edit.  Below is the source code:</p>
+            <code class="javascript dark indent"><span class="paren-1">(</span><span class="paren-2">(</span><span class="api-keyword">location</span><span class="paren-2">)</span><span class="operator-keyword-dull"> =&gt; </span><span class="brace-1">{</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="operator-keyword-dull">const </span><span class="brace-2">{ </span><span class="user-variable">hostname</span><span class="operator-symbol">, </span><span class="user-variable">pathname </span><span class="brace-2">} </span><span class="operator-symbol">= </span><span class="api-keyword">location</span><span class="operator-symbol">;</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="control-flow">if </span><span class="paren-3">(</span><span class="user-variable">hostname </span><span class="operator-symbol">=== </span><span class="string">'web.archive.org'</span><span class="paren-3">) </span><span class="brace-2">{</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="api-keyword">location</span><span class="operator-symbol">.</span><span class="api-keyword">href </span><span class="operator-symbol">= </span><span class="user-variable">pathname</span><span class="operator-symbol">.</span><span class="method">split</span><span class="paren-1">(</span><span class="regexp">/\/web\/.*?\//</span><span class="paren-1">)</span><span class="bracket-1">[</span><span class="number">1</span><span class="bracket-1">]</span><span class="operator-symbol">;</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="brace-2">} </span><span class="control-flow">else </span><span class="brace-2">{</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="api-keyword">location</span><span class="operator-symbol">.</span><span class="api-keyword">href </span><span class="operator-symbol">= </span><span class="string">`https://web.archive.org/web/</span><span class="template-escape">${</span><span class="user-variable">hostname</span><span class="template-escape">}${</span><span class="user-variable">pathname</span><span class="template-escape">}</span><span class="string">`</span><span class="operator-symbol">;</span><br>
+              &nbsp;&nbsp;&nbsp;&nbsp;<span class="brace-2">}</span><br>
+              <span class="brace-1">}</span><span class="paren-1">)(</span><span class="api-keyword">window</span><span class="operator-symbol">.</span><span class="api-keyword">location</span><span class="paren-1">)</span><span class="operator-symbol">;</span>
+            </code>
+          </section>
         </section>
       </div>
       <aside class="right-margin"></aside>
