@@ -40,7 +40,7 @@ function fillAll() {
   	const key = Object.keys(element).filter((prop) => {
   		return prop.startsWith('__reactProps');
   	})[0];
-  	const boundFunction = element[key].onChange.bind(element)
+  	const boundFunction = element[key].onChange.bind(element);
   	controller(controller, boundFunction, factory, ...args);
   }
 
@@ -62,13 +62,15 @@ function initDemo() {
     agreeButton.addEventListener('click', () => {
       if (!agreeButton.disabled) {
         agreeButton.disabled = true;
-        runButton.style = ''
+        runButton.style = '';
         runButton.removeAttribute('disabled');
         runButton.addEventListener('click', () => {
           fillAll();
         });
       }
     });
+  } else {
+    window.setTimeout(initDemo, 500);
   }
 }
 
