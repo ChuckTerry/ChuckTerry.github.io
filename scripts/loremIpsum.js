@@ -54,20 +54,26 @@ function fillAll() {
   }
 }
 
-const agreeButton = document.querySelector('#code-agree');
-const runButton = document.querySelector('#code-run');
+function initDemo() {
+  const agreeButton = document.querySelector('#code-agree');
+  const runButton = document.querySelector('#code-run');
 
-if (agreeButton && runButton) {
-  agreeButton.addEventListener('click', () => {
-    if (!agreeButton.disabled) {
-      agreeButton.disabled = true;
-      runButton.style = ''
-      runButton.removeAttribute('disabled');
-      runButton.addEventListener('click', () => {
-        fillAll();
-      });
-    }
-  });
+  if (agreeButton && runButton) {
+    agreeButton.addEventListener('click', () => {
+      if (!agreeButton.disabled) {
+        agreeButton.disabled = true;
+        runButton.style = ''
+        runButton.removeAttribute('disabled');
+        runButton.addEventListener('click', () => {
+          fillAll();
+        });
+      }
+    });
+  }
 }
+
+// Because one will do nothing based on Document State
+document.addEventListener('DOMContentLoaded', initDemo);
+initDemo();
 
 
